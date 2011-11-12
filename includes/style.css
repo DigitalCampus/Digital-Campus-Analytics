@@ -1,0 +1,275 @@
+@CHARSET "UTF-8";
+
+/* 
+Style sheet for screen
+*/
+
+* {
+	padding:0;
+	margin:0;
+}
+
+body {
+	margin:0 0 5px 0;
+	background:#000;
+	color:#444;
+	font-size: 100%; /* Resets 1em to 10px */
+	font-family: Verdana, 'Lucida Grande', Tahoma, Arial, Sans-Serif;
+}
+
+#page {
+	background:#fff;
+	margin: 30px 5% 5px 5%;
+	border: 2px solid #9aca3c;
+	-moz-border-radius: 1em 1em;
+  	border-radius: 1em 1em;
+  	min-height:500px;
+}
+
+#header {
+	background: #9aca3c;
+	-moz-border-radius-topleft: 0.8em;
+	-moz-border-radius-topright: 0.8em;
+  	border-top-left-radius: 0.8em;
+  	border-top-right-radius: 0.8em;
+  	padding:5px 10px;
+}
+
+#title {
+	float:left;	
+	width:60%;
+}
+
+#title h1 {
+	font-size:130%;
+	display:inline;
+}
+
+#title img {
+	vertical-align:center;
+}
+
+#header-right {
+	float:left;	
+	text-align:right;
+	width:38%;
+}
+
+#menu {
+	border-top: 1px solid #aaa;
+	background: #9aca3c;
+	padding:5px 10px;
+	
+}
+
+#content {
+	padding:5px 10px;
+	font-size:80%;
+}
+
+#content h2,h3 {
+	margin: 10px 0;	
+}
+
+#footer {
+	text-align:center;
+	font-size:90%;
+}
+
+#footer a:hover, a:visited, a {
+	color:#444;
+	
+}
+
+li {
+	margin-left:15px;	
+}
+/* Forms */
+
+div.formblock {
+	clear:both;	
+	margin:10px;
+	padding:10px;
+}
+
+div.formlabel {
+	float:left;
+	width:100px;
+}
+
+div.formfield {
+	float:left;
+}
+
+div.forminfo {
+	float:left;	
+}
+
+
+/* Task manager table */
+	
+table.taskman {
+	border:1px solid #77a240;
+	background: #9aca3c;
+	border-collapse:collapse;
+	font-size:100%;
+}
+
+table.admin {
+	border:1px solid #77a240;
+	background: #9aca3c;
+	border-collapse:collapse;
+	font-size:80%;
+}
+
+tr {
+	border-top:1px solid #77a240;
+}
+
+th {
+	border:none;
+	padding:3px;
+}
+
+td {
+	border:none;
+	padding:5px 10px;
+	vertical-align:top;
+}
+
+tr.overdue {
+	background: #ff6b6b;	
+}
+
+tr.duetoday {
+	background: #fffd94;	
+}
+
+tr.n {
+	background: #fff;	
+}
+tr.n:hover {
+	background: yellow;	
+}
+
+tr.l {
+	background: #fff;	
+}
+tr.l:hover {
+	background: yellow;
+	cursor:pointer;	
+}
+
+div.datawarning {
+	padding:5px;
+	margin:10px;
+	border:1px solid red;
+	min-height:50px;
+}
+
+
+div.summary {
+	float:left;
+	padding:5px;
+	margin:10px;
+	border:1px solid #ccc;
+	width:45%;
+	min-height:100px;
+	min-width:450px;
+}
+
+div.summary h2{
+	font-size:100%;
+}
+
+div.summary h3{
+	font-size:100%;
+	margin-top:5px;
+}
+
+div.summarygraph {
+	padding:5px;
+	margin:10px;
+	border:1px solid #ccc;
+}
+
+div.graph {
+	padding:5px;
+	margin:10px;
+	border:1px solid #ccc;
+}
+
+div.risk {
+	border:1px solid black;
+	margin:0px 30%;
+	padding:5px; 
+	min-width:20px; 
+	text-align:center;
+	vertical-align:center;
+	font-size:120%;
+	font-weight:bold;
+  	border-radius: 0.4em;
+}
+
+div.highrisk {
+	background:#ff0000;
+}
+
+div.mediumrisk {
+	background:#ffff00;
+}
+
+div.lowrisk {
+	background:#00ff00;
+}
+
+span.selected {
+	color:green;	
+}
+
+/*report table*/
+table.rtable {
+	border:1px solid #77a240;
+	border-collapse:collapse;
+	font-size:100%;
+}
+
+tr.rrow {
+	border-top:1px solid #77a240;
+}
+
+td.rqcell {
+	background: #9aca3c;
+	border:none;
+	padding:5px 10px;
+	vertical-align:top;
+	text-align:right;
+	font-weight:bold;
+	width:200px;
+}
+
+td.rdcell {
+	border:none;
+	padding:5px 10px;
+	vertical-align:top;
+	width:400px;
+}
+
+td.rrcell {
+	border:none;
+	padding:5px 10px;
+	vertical-align:top;
+	width:100px;
+}
+td.sh {
+	font-weight:bold;
+}
+
+tr.nav {
+	background: #fff;
+}
+#riskfactor {
+	border: 1px solid #ccc;
+	padding:5px;
+	margin:10px;
+}
