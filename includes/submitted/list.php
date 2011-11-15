@@ -21,7 +21,8 @@
 		$newprev = max($submitted->start - $submitted->limit,0);
 		$prevlink = sprintf("%ssubmitted.php?&view=%s&days=%d&start=%d",$CONFIG->homeAddress,$view,$days,$newprev);
 	}
-	
+
+	if($submitted->count > 0){
 ?>
 
 <table class="taskman">
@@ -72,3 +73,8 @@
 			
 	?>
 </table>
+<?php 
+	} else {
+		echo getstring('warning.norecords');
+	}
+?>

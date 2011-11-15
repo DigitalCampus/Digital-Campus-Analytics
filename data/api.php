@@ -1,32 +1,6 @@
 <?php
 
 /*
- * Define the protocol tables
- * (makes it easier to update when just the name of the table changes)
- */
-define('REGISTRATION','REGISTRATION_FORM_CORE');
-define('REG_HOMEAPPLIANCES','REGISTRATION_FORM_Q_HOMEAPPLIANCES');
-
-define('ANCFIRST','ANCFIRST_VISITV4_CORE');
-define('ANCFIRST_FPMETHOD','ANCFIRST_VISITV4_Q_FPMETHOD');
-define('ANCFIRST_ATTENDED','ANCFIRST_VISITV4_Q_WHOATTENDED');
-
-define('ANCFOLLOW','ANCFOLLOW_UPV3_CORE');
-
-define('ANCTRANSFER','ANCTRANSFERV4_CORE');
-define('ANCTRANSFER_FPMETHOD','ANCTRANSFERV4_Q_FPMETHOD');
-define('ANCTRANSFER_ATTENDED','ANCTRANSFERV4_Q_WHOATTENDED');
-
-define('ANCLABTEST','ANCLAB_TESTV2_CORE');
-
-define('DELIVERY','');
-
-define('DEFAULT_LIMIT',50);
-define('DEFAULT_START',0);
-define('DEFAULT,DAYS',7);
-
-
-/*
  * Comparison functions
  */
 function cmpPatients($a,$b){
@@ -929,7 +903,28 @@ class API {
 				WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
 		
 		// TODO delivery
-		
+		$sql .= " UNION
+					SELECT
+						p._CREATION_DATE as datestamp,
+						p.Q_USERID,
+						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
+						p.Q_HEALTHPOINTID,
+						php.hpname as patientlocation,
+						hp.hpname as protocollocation,
+						'".getString('protocol.delivery')."' as protocol,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname,
+						p._CREATOR_URI_USER,
+						p.Q_GPSDATA_LAT,
+						p.Q_GPSDATA_LNG,
+						p.Q_LOCATION,
+						hp.locationlat,
+						hp.locationlng
+					FROM ".DELIVERY." p 
+					LEFT OUTER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
+					INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
+					WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
 		
 		$sql .= ") a ORDER BY datestamp DESC";
 		//query to get the total no of records
@@ -948,7 +943,7 @@ class API {
 			$submitted->count = $row->norecords;
 		}
 
-		$submitted->start = min($submitted->count-1,$start);
+		$submitted->start = max(min($submitted->count-1,$start),0);
 		$submitted->limit = $limit;
 		$start = $submitted->start;
 		

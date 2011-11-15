@@ -8,6 +8,7 @@ $time = $time[1] + $time[0];
 $start = $time;
 
 require_once $CONFIG->homePath."lib/general.php";
+require_once $CONFIG->homePath."data/define.php";
 require_once $CONFIG->homePath."data/api.php";
 require_once $CONFIG->homePath."lib/paramlib.php";
 require_once $CONFIG->homePath."lib/accesslib.php";
