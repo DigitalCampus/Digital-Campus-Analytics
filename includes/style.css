@@ -67,8 +67,11 @@ body {
 	font-size:80%;
 }
 
+#content h2 {
+	font-size:120%;
+}
 #content h2,h3 {
-	margin: 10px 0;	
+	margin: 0 0 10px 0;	
 }
 
 #footer {
@@ -196,7 +199,6 @@ div.summarygraph {
 div.graph {
 	padding:5px;
 	margin:10px;
-	border:1px solid #ccc;
 }
 
 div.risk {

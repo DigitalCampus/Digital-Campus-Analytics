@@ -902,7 +902,7 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
 		
-		// TODO delivery
+		/*delivery
 		$sql .= " UNION
 					SELECT
 						p._CREATION_DATE as datestamp,
@@ -925,7 +925,7 @@ class API {
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 					INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 					WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
-		
+		*/
 		$sql .= ") a ORDER BY datestamp DESC";
 		//query to get the total no of records
 		$countsql = "SELECT COUNT(*) AS norecords FROM (".$sql.") a;";

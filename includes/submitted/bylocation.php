@@ -83,7 +83,12 @@ foreach($submitted->protocols as $s){
         ?>
 
         var chart = new google.visualization.LineChart(document.getElementById('submitted_location_chart_div'));
-        chart.draw(data, {width: <?php echo $options['width'] ?>, height: <?php echo $options['height'] ?>, title: '<?php echo getString("submitted.chart.bylocation.title")?>'});
+        chart.draw(data, {	width: <?php echo $options['width'] ?>, 
+                			height: <?php echo $options['height'] ?>,
+                			hAxis: {title: 'Date'},
+                			vAxis: {title: 'Number submitted'},
+                			chartArea:{left:50,top:5,width:"55%",height:"75%"}
+							});
       }
     </script>
 

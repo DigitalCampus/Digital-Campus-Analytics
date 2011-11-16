@@ -1,7 +1,7 @@
 <div id="submittedsummary" class="summary">
-<h2>
+<h2><?php echo getString("submitted.chart.bylocation.title")?></h2>
+<h3>
 	<?php 
-		echo getstring('dashboard.submitted.title');
 		$daysarr = array(7,14,31);
 		foreach ($daysarr as $r){
 			if ($days == $r){
@@ -11,7 +11,7 @@
 			}
 		}
 	?>
-</h2>
+</h3>
 <?php 
 	$options = Array('height'=>300,'width'=>450,'class'=>'graph');
 	include('includes/submitted/bylocation.php');
