@@ -24,6 +24,7 @@ $LANG['dash.atrisk.total'] = 'Total at Risk: %d';
 $LANG['dash.social.summary.header'] = 'Social Factors Summary';
 $LANG['dash.tasks.summary.header'] = 'Protocols due in next: %s %s %s';
 $LANG['dashboard.anc1defaulters.title'] = 'ANC 1 Defaulters';
+$LANG['dashboard.anc2defaulters.title'] = 'ANC 2 Defaulters';
 $LANG['dashboard.submitted.nodays'] = '%s days';
 $LANG['dashboard.submitted.title'] = 'Protocols submitted in last:';
 $LANG['datacheck.duplicate.protocol.info'] = 'Protocols submitted more than once';

@@ -29,8 +29,7 @@ for ($i=0; $i<7 ;$i++){
 	$date->add(new DateInterval('P1M'));
 }
 
-// exec query and loop through results
-// if creation date > ANC1DUEBY then defaulter, group by month/year of ANC1DUEBY
+// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 // otherwise non defaulter
 $results = $API->runSql($sql);
 while($row = mysql_fetch_array($results)){
@@ -44,7 +43,7 @@ while($row = mysql_fetch_array($results)){
 	}
 }
 
-// change into a percentage ratehr than absolute values
+// change into a percentage rather than absolute values
 foreach($summary as $k=>$v){
 	$total = $v->defaulters + $v->nondefaulters;
 	if ($total > 0){

@@ -4,6 +4,8 @@ include_once "includes/dashboard/submitted.php";
 
 include_once "includes/kpi/anc1defaulters.php"; 
 
+include_once "includes/kpi/anc2defaulters.php";
+
 /*include_once "includes/dashboard/appts.php";
 
 include_once "includes/dashboard/labtest.php";
