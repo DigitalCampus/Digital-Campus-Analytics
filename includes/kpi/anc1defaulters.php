@@ -1,3 +1,5 @@
+<div id="anc1defaulters" class="summary">
+<h2><?php echo getstring('dashboard.anc1defaulters.title');?></h2>
 <?php 
 
 /*
@@ -19,6 +21,6 @@ $sql = "SELECT 	p._URI,
 
 
 ?>
-
+</div>
 
 
