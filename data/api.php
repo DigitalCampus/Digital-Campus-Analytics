@@ -964,9 +964,89 @@ class API {
 	    return $submitted; 
 	}
 	
-	function labTestCheck(){
-		$missing=array();
-		return $missing;
+	function getANC1Defaulters($opts=array()){
+		if(array_key_exists('months',$opts)){
+			$months = max(0,$opts['months']);
+		} else {
+			$months = 6;
+		}
+		if(array_key_exists('viewby',$opts)){
+			$viewby = $opts['viewby'];
+		} else {
+			$viewby = 'months';
+		}
+		
+		// get all the submitted ANC1 protocols from first day of the month 6 months ago
+		$sql = "SELECT 	p._URI,
+						p.Q_USERID, 
+						p.Q_HEALTHPOINTID, 
+						p.Q_LMP, 
+						p.TODAY as createdate, 
+						DATE_ADD(p.Q_LMP, INTERVAL ".ANC1_DUE_BY_END." DAY) AS ANC1DUEBY ,
+						hp.hpname as healthpoint
+				FROM ".ANCFIRST." p 
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
+				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
+				AND p.Q_HEALTHPOINTID != '9999'
+				ORDER BY p.TODAY ASC";
+
+		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
+		// otherwise non defaulter
+		$results = _mysql_query($sql,$this->DB);
+		$summary = array();
+		
+		if($viewby == 'months'){
+			$date = new DateTime();
+			$date->sub(new DateInterval('P'.$months.'M'));
+			
+			for ($i=0; $i<$months+1 ;$i++){
+				$summary[$date->format('M-Y')] = new stdClass;
+				$summary[$date->format('M-Y')]->defaulters = 0;
+				$summary[$date->format('M-Y')]->nondefaulters = 0;
+				$date->add(new DateInterval('P1M'));
+			}
+			
+			while($row = mysql_fetch_array($results)){
+				$date = new DateTime($row['createdate']);
+				$arrayIndex = $date->format('M-Y');
+			
+				if ($row['createdate'] > $row['ANC1DUEBY'] ){
+					$summary[$arrayIndex]->defaulters++;
+				} else {
+					$summary[$arrayIndex]->nondefaulters++;
+				}
+			}
+		} else if($viewby == 'healthpoints'){
+			$hps = $this->getHealthPoints();
+			
+			foreach ($hps as $hp){
+				$summary[$hp->hpname] = new stdClass;
+				$summary[$hp->hpname]->defaulters = 0;
+				$summary[$hp->hpname]->nondefaulters = 0;
+			}
+			while($row = mysql_fetch_array($results)){
+				$arrayIndex = $row['healthpoint'];
+					
+				if ($row['createdate'] > $row['ANC1DUEBY'] ){
+					$summary[$arrayIndex]->defaulters++;
+				} else {
+					$summary[$arrayIndex]->nondefaulters++;
+				}
+			}
+		}
+		
+		// change into a percentage rather than absolute values
+		foreach($summary as $k=>$v){
+			$total = $v->defaulters + $v->nondefaulters;
+			if ($total > 0){
+				$pc_default = ($v->defaulters * 100)/$total;
+				$pc_nondefault = ($v->nondefaulters * 100)/$total;
+				$summary[$k]->defaulters = $pc_default;
+				$summary[$k]->nondefaulters = $pc_nondefault;
+			}
+		}
+		return $summary;
 	}
 	
 	function datacheckSummary(){
