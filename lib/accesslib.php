@@ -35,7 +35,7 @@ function userLogin($username,$password){
  *
  * @return string | false
  */ 
-function startSession($time = 99999999, $ses = 'Scorecard') {
+function startSession($time = 99999999, $ses = 'OpenQuiz') {
     ini_set('session.cache_expire', $time);
     session_set_cookie_params($time);
     session_name($ses);
@@ -51,11 +51,8 @@ function startSession($time = 99999999, $ses = 'Scorecard') {
  * 
  */ 
  function clearSession() {
-    //clear user cache
-    //clearUserCache();
     $_SESSION["session_username"] = "";  
-    setcookie("user","",time()-3600, "/");                 
-    //setcookie("Cohere","",time()-3600, "/");                 
+    setcookie("user","",time()-3600, "/");                                  
  } 
  
  /**

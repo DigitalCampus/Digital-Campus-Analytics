@@ -5,8 +5,7 @@ global $HEADER;
 $BODY_ATT = 'onload="onLoad();" onresize="onResize();"';
 $HEADER = "<script src='/timeplot/api/1.0/timeplot-api.js?local' type='text/javascript'></script>";
 
-echo "page under development";
-die;
+
 include_once "includes/header.php";
 
 ?>

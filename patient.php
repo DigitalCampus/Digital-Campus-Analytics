@@ -8,7 +8,7 @@ $protocol = optional_param("protocol","registration",PARAM_TEXT);
 
 $healthposts = $API->getHealthPoints();
 
-$TITLE = "User Manager";
+$TITLE = getString("patientmanager.title");
 
 if($hpcode != "" && $patientid != ""){
 	$patient = $API->getPatient(array('hpcode'=>$hpcode,'patid'=>$patientid));	
