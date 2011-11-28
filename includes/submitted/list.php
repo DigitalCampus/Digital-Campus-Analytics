@@ -61,12 +61,12 @@
 							$CONFIG->homeAddress,
 							$s->Q_HEALTHPOINTID,
 							$s->Q_USERID,
-							preg_replace('([0-9])','',str_replace(' ','',strtolower($s->protocol)))
+							$s->protocol
 							);
 			echo "<td nowrap>".date('H:i D d M Y',$s->datestamp)."<br/>".displayAsEthioDate($s->datestamp)."</td>";
 			echo "<td nowrap>".$s->patientlocation."/".$s->Q_USERID."</td>";
 			echo "<td nowrap>".$s->patientname."</td>";
-			echo "<td nowrap>".$s->protocol."</td>";
+			echo "<td nowrap>".getString($s->protocol)."</td>";
 			echo "<td nowrap>".$s->submittedname." at ".$s->protocollocation."</td>";
 			echo "</tr>";
 		}

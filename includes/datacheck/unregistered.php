@@ -17,7 +17,7 @@
 				echo "<tr class='n'>";
 				echo "<td nowrap>".$d->submittedname." at ".$d->protocollocation."</td>";
 				echo "<td nowrap>".$d->patientlocation."/".$d->Q_USERID."</td>";
-				echo "<td nowrap>".$d->protocol."</td>";
+				echo "<td nowrap>".getstring($d->protocol)."</td>";
 				echo "</tr>";
 			}
 				

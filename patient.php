@@ -4,7 +4,7 @@ require_once "config.php";
 $hpcode = optional_param("hpcode","",PARAM_TEXT);
 $patientid = optional_param("patientid","",PARAM_TEXT);
 $submit = optional_param("submit","",PARAM_TEXT);
-$protocol = optional_param("protocol","registration",PARAM_TEXT);
+$protocol = optional_param("protocol",PROTOCOL_REGISTRATION,PARAM_TEXT);
 
 $healthposts = $API->getHealthPoints();
 
@@ -25,7 +25,7 @@ require_once "includes/header.php";
 printf("<h2 class='printhide'>%s</h2>", getString("patientmanager.title"));
 ?>
 <form action="" method="get" class="printhide">
-	<input type="hidden" name="protocol" value="registration"/>
+	<input type="hidden" name="protocol" value="<?php echo PROTOCOL_REGISTRATION; ?>"/>
 	<?php echo getString("patientmanager.form.healthpost");?>
 	<select name="hpcode">
 		<?php 
@@ -56,43 +56,43 @@ if (!isset($patient) && $submit == ""){
 echo "<h3/>".$TITLE."</h3>";
 echo "<span class='printhide'>";
 if(!$patient->regcomplete){
-	echo getstring('protocol.registration');
-} else if($protocol == "registration" && $patient){
-	echo "<span class='selected'>".getstring('protocol.registration')."</span>";
+	echo getstring(PROTOCOL_REGISTRATION);
+} else if($protocol == PROTOCOL_REGISTRATION && $patient){
+	echo "<span class='selected'>".getstring(PROTOCOL_REGISTRATION)."</span>";
 } else {
-	printf("<a href='?patientid=%s&hpcode=%s&protocol=registration'>%s</a>",$patientid,$hpcode, getstring('protocol.registration'));
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode, PROTOCOL_REGISTRATION, getstring(PROTOCOL_REGISTRATION));
 }
 printf(" | ");
 if(!isset($patient->ancfirst)){
-	echo getstring('protocol.ancfirst');
-} else if ($protocol == 'ancfirstvisit'){
-	echo "<span class='selected'>".getstring('protocol.ancfirst')."</span>";
+	echo getstring(PROTOCOL_ANCFIRST);
+} else if ($protocol == PROTOCOL_ANCFIRST){
+	echo "<span class='selected'>".getstring(PROTOCOL_ANCFIRST)."</span>";
 } else {
-	printf("<a href='?patientid=%s&hpcode=%s&protocol=ancfirstvisit'>%s</a>",$patientid,$hpcode,getstring('protocol.ancfirst'));
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_ANCFIRST, getstring(PROTOCOL_ANCFIRST));
 }
 printf(" | ");
-if(!isset($patient->ancfollow[0]) && !isset($patient->ancfollow[1]) && !isset($patient->ancfollow[2])){
-	echo getstring('protocol.ancfollow');
-} else if ($protocol == "ancfollowup"){
-	echo "<span class='selected'>".getstring('protocol.ancfollow')."</span>"; 
+if(count($patient->ancfollow)==0){
+	echo getstring(PROTOCOL_ANCFOLLOW);
+} else if ($protocol == PROTOCOL_ANCFOLLOW){
+	echo "<span class='selected'>".getstring(PROTOCOL_ANCFOLLOW)."</span>"; 
 } else {
-	printf("<a href='?patientid=%s&hpcode=%s&protocol=ancfollowup'>%s</a>",$patientid,$hpcode,getstring('protocol.ancfollow'));
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_ANCFOLLOW,getstring(PROTOCOL_ANCFOLLOW));
 }
 printf(" | ");
 if(count($patient->anctransfer)==0){
-	echo getstring('protocol.anctransfer');
-} else if ($protocol == "anctransfer"){
-	echo "<span class='selected'>".getstring('protocol.anctransfer')."</span>"; 
+	echo getstring(PROTOCOL_ANCTRANSFER);
+} else if ($protocol == PROTOCOL_ANCTRANSFER){
+	echo "<span class='selected'>".getstring(PROTOCOL_ANCTRANSFER)."</span>"; 
 } else {
-	printf("<a href='?patientid=%s&hpcode=%s&protocol=anctransfer'>%s</a>",$patientid,$hpcode,getstring('protocol.anctransfer'));
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_ANCTRANSFER,getstring(PROTOCOL_ANCTRANSFER));
 }
 printf(" | ");
 if(count($patient->anclabtest)==0){
-	echo getstring('protocol.anclabtest');
-} else if ($protocol == "anclabtest"){
-	echo "<span class='selected'>".getstring('protocol.anclabtest')."</span>"; 
+	echo getstring(PROTOCOL_ANCLABTEST);
+} else if ($protocol == PROTOCOL_ANCLABTEST){
+	echo "<span class='selected'>".getstring(PROTOCOL_ANCLABTEST)."</span>"; 
 } else {
-	printf("<a href='?patientid=%s&hpcode=%s&protocol=anclabtest'>%s</a>",$patientid,$hpcode,getstring('protocol.anclabtest'));
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_ANCLABTEST, getstring(PROTOCOL_ANCLABTEST));
 }
 /*printf(" | ");
 if(!isset($patient->delivery)){
@@ -106,21 +106,21 @@ echo "</span>";
 
 include_once('includes/patient/risk.php');
 
-if ($patient->regcomplete && $protocol=="registration"){
+if ($patient->regcomplete && $protocol == PROTOCOL_REGISTRATION){
 	include_once('includes/patient/registration.php');
 }
 
 /*
  * ANC First Visit Procotol
  */
-if ($patient->ancfirst && $protocol=="ancfirstvisit"){
+if ($patient->ancfirst && $protocol==PROTOCOL_ANCFIRST){
 	include_once('includes/patient/anc1.php');
 } 
 
 /*
  * ANC follow ups
  */
-if ($patient->ancfollow && $protocol=="ancfollowup"){
+if ($patient->ancfollow && $protocol==PROTOCOL_ANCFOLLOW){
 	$ancfollow = $patient->ancfollow;
 	include('includes/patient/ancfollow.php');
 } 
@@ -128,7 +128,7 @@ if ($patient->ancfollow && $protocol=="ancfollowup"){
 /*
  * ANC Transfers
  */
-if ($patient->anctransfer && $protocol=="anctransfer"){
+if ($patient->anctransfer && $protocol==PROTOCOL_ANCTRANSFER){
 	$anctransfer = $patient->anctransfer;
 	include('includes/patient/anctransfer.php');
 } 
@@ -136,7 +136,7 @@ if ($patient->anctransfer && $protocol=="anctransfer"){
 /*
  * ANC Lab Tests
  */
-if ($patient->anclabtest && $protocol=="anclabtest"){
+if ($patient->anclabtest && $protocol==PROTOCOL_ANCLABTEST){
 	$anclabtest = $patient->anclabtest;
 	include('includes/patient/anclabtest.php');
 } 

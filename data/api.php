@@ -167,7 +167,7 @@ class API {
 	function updatePatients(){
 		//add any new patients to the patientcurrent table
 		$sql = "INSERT INTO patientcurrent (hpcode,patid) 
-				SELECT DISTINCT i.Q_HEALTHPOINTID, i.Q_USERID FROM ".REGISTRATION." i
+				SELECT DISTINCT i.Q_HEALTHPOINTID, i.Q_USERID FROM ".TABLE_REGISTRATION." i
 				LEFT OUTER JOIN patientcurrent pc ON i.Q_HEALTHPOINTID = pc.hpcode AND i.Q_USERID = pc.patid
 				WHERE pc.pcid is NULL";
 		$result = _mysql_query($sql,$this->DB);
@@ -195,7 +195,7 @@ class API {
 	function getCurrentPatients(){
 		$sql = "SELECT 	hp.hpcode,
 						Q_USERID as patientid
-				FROM ".REGISTRATION." r
+				FROM ".TABLE_REGISTRATION." r
 				INNER JOIN patientcurrent pc ON pc.hpcode = r.Q_HEALTHPOINTID AND pc.patid = r.Q_USERID
 				INNER JOIN healthpoint hp ON hp.hpcode = r.Q_HEALTHPOINTID
 				WHERE pc.pcurrent = 1";	
@@ -249,7 +249,7 @@ class API {
 						Q_YEAROFBIRTH,
 						_URI,
 						TODAY AS CREATEDON
-				FROM ".REGISTRATION." r
+				FROM ".TABLE_REGISTRATION." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -267,7 +267,7 @@ class API {
 	  		$pat->regcomplete = true;
 	  		$pat->Q_HOMEAPPLIANCES = array();
 	  		// get the Home applicances source
-	  		$appsql = "SELECT VALUE FROM ".REG_HOMEAPPLIANCES." WHERE _PARENT_AURI = '".$pat->_URI."'";
+	  		$appsql = "SELECT VALUE FROM ".TABLE_REG_HOMEAPPLIANCES." WHERE _PARENT_AURI = '".$pat->_URI."'";
 	  		$appresult = _mysql_query($appsql,$this->DB);
 	  		if (!$appresult){
 	  			writeToLog('error','database',$appsql);
@@ -278,13 +278,16 @@ class API {
 	  		}
 	  	}
   		
+	  	// add protocol details
 		$pat->ancfirst = $this->getPatientANCFirst($opts);
 		$pat->ancfollow = $this->getPatientANCFollow($opts); 
 		$pat->anctransfer = $this->getPatientANCTransfer($opts);
 		$pat->anclabtest= $this->getPatientANCLabTest($opts);
-		// TODO add delivery
-		//$pat->delivery = $this->getPatientDelivery($opts);
+		$pat->delivery = $this->getPatientDelivery($opts);
 		
+		// TODO add PNC
+		
+		// risk assessment
 		$ra = new RiskAssessment();
 		$pat->risk = $ra->getRisks($pat);
 		return $pat;		
@@ -376,7 +379,7 @@ class API {
 						Q_YEAROFBIRTH,
 						Q_YOUNGESTCHILD,
 						TODAY AS CREATEDON
-				FROM ".ANCFIRST." r
+				FROM ".TABLE_ANCFIRST." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -389,7 +392,7 @@ class API {
 	  	while($pat = mysql_fetch_object($result)){
 	  		$pat->Q_FPMETHOD = array();
 	  		// get the Home applicances source
-	  		$appsql = "SELECT VALUE FROM ".ANCFIRST_FPMETHOD." WHERE _PARENT_AURI = '".$pat->_URI."'";
+	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCFIRST_FPMETHOD." WHERE _PARENT_AURI = '".$pat->_URI."'";
 	  		$appresult = _mysql_query($appsql,$this->DB);
 		  	if (!$appresult){
 		    	writeToLog('error','database',$appsql);
@@ -401,7 +404,7 @@ class API {
 	  		
 	  		$pat->Q_WHOATTENDED = array();
 	  		// get the Home applicances source
-	  		$appsql = "SELECT VALUE FROM ".ANCFIRST_ATTENDED ." WHERE _PARENT_AURI = '".$pat->_URI."'";
+	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCFIRST_ATTENDED ." WHERE _PARENT_AURI = '".$pat->_URI."'";
 	  		$appresult = _mysql_query($appsql,$this->DB);
 		  	if (!$appresult){
 		    	writeToLog('error','database',$appsql);
@@ -478,7 +481,7 @@ class API {
 						Q_WEIGHT,
 						Q_YEAROFBIRTH,
 						TODAY AS CREATEDON
-				FROM ".ANCFOLLOW." r
+				FROM ".TABLE_ANCFOLLOW." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -490,8 +493,10 @@ class API {
 	    	return;
 	    }
 	    $protocols = array();
+	    $count=0;
 	  	while($pat = mysql_fetch_object($result)){
-	  		$protocols[$pat->Q_FOLLOWUPNO-1] = $pat;
+	  		$protocols[$count] = $pat;
+	  		$count++;
 	  	}
 		
 	  	return $protocols;
@@ -537,7 +542,7 @@ class API {
 						Q_YEAROFBIRTH,
 						Q_YOUNGESTCHILD,
 						TODAY AS CREATEDON
-				FROM ".ANCTRANSFER." r
+				FROM ".TABLE_ANCTRANSFER." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -554,7 +559,7 @@ class API {
 	  		
 	  		$pat->Q_FPMETHOD = array();
 	  		// get the Home applicances source
-	  		$appsql = "SELECT VALUE FROM ".ANCTRANSFER_FPMETHOD." WHERE _PARENT_AURI = '".$pat->_URI."'";
+	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCTRANSFER_FPMETHOD." WHERE _PARENT_AURI = '".$pat->_URI."'";
 	  		$appresult = _mysql_query($appsql,$this->DB);
 		  	if (!$appresult){
 		    	writeToLog('error','database',$appsql);
@@ -566,7 +571,7 @@ class API {
 	  		
 	  		$pat->Q_WHOATTENDED = array();
 	  		// get the Home applicances source
-	  		$appsql = "SELECT VALUE FROM ".ANCTRANSFER_ATTENDED ." WHERE _PARENT_AURI = '".$pat->_URI."'";
+	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCTRANSFER_ATTENDED ." WHERE _PARENT_AURI = '".$pat->_URI."'";
 	  		$appresult = _mysql_query($appsql,$this->DB);
 		  	if (!$appresult){
 		    	writeToLog('error','database',$appsql);
@@ -606,7 +611,7 @@ class API {
 						Q_USERID,
 						Q_YEAROFBIRTH,
 						TODAY AS CREATEDON
-				FROM ".ANCLABTEST." r
+				FROM ".TABLE_ANCLABTEST." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -631,56 +636,74 @@ class API {
 	}
 	
 	function getPatientDelivery($opts=array()){
-		$sql = "
-		
-					Q_ADVICEDANGERSIGNS,
-					Q_ADVICEFEEDING,
-					Q_AGE,
-					Q_ANEMIA,
-					Q_APPOINTMENTDATE,
-					Q_ARVMOM,
-					Q_BREASTFEEDING,
-					Q_CARDIACPULSE,
-					Q_CONDITION,
-					Q_CONSENT,
-					Q_CSECTION,
-					Q_DELIVERYDATE,
-					Q_DELIVERYOUTCOME,
-					Q_DELIVERYSITE,
-					Q_DELIVERYTIME,
-					Q_DIASTOLICBP,
-					Q_ECLAMPSIA,
-					Q_EPISIOTOMY,
-					Q_GENITALIAEXTERNAL,
-					Q_GESTATIONALAGE,
-					Q_GPSDATA_ACC,
-					Q_GPSDATA_ALT,
-					Q_GPSDATA_LAT,
-					Q_GPSDATA_LNG,
-					Q_HEALTHPOINTID,
-					Q_IDCARD,
-					Q_IRONSUPPL,
-					Q_LABORONSETTIME,
-					Q_LOCATION,
-					Q_MATERNALDEATH,
-					Q_MECONIUM,
-					Q_MISOPROSTOL,
-					Q_MISOPROSTOLTABLETS,
-					Q_MISOPROSTOLTIMING,
-					Q_OXYTOCIN,
-					Q_PLACENTA,
-					Q_PPH,
-					Q_PRESENTATION,
-					Q_PROM,
-					Q_REFERRALREASON,
-					Q_SYSTOLICBP,
-					Q_TEMPERATURE,
-					Q_USERID,
-					Q_VACUUMFORCEPS,
-					Q_VAGINALDELIVERY,
-					Q_VITASUPPL,
-					Q_YEAROFBIRTH,
-		";
+		$sql = "SELECT 	pathp.hpcode,
+						pathp.hpname as patientlocation,
+						hp.hpname as protocollocation,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname,
+						_URI,
+						Q_ADVICEDANGERSIGNS,
+						Q_ADVICEFEEDING,
+						Q_AGE,
+						Q_ANEMIA,
+						Q_APPOINTMENTDATE,
+						Q_ARVMOM,
+						Q_BREASTFEEDING,
+						Q_CARDIACPULSE,
+						Q_CONDITION,
+						Q_CONSENT,
+						Q_CSECTION,
+						Q_DELIVERYDATE,
+						Q_DELIVERYOUTCOME,
+						Q_DELIVERYSITE,
+						Q_DELIVERYTIME,
+						Q_DIASTOLICBP,
+						Q_ECLAMPSIA,
+						Q_EPISIOTOMY,
+						Q_GENITALIAEXTERNAL,
+						Q_GESTATIONALAGE,
+						Q_GPSDATA_ACC,
+						Q_GPSDATA_ALT,
+						Q_GPSDATA_LAT,
+						Q_GPSDATA_LNG,
+						Q_HEALTHPOINTID,
+						Q_IDCARD,
+						Q_IRONSUPPL,
+						Q_LABORONSETTIME,
+						Q_LOCATION,
+						Q_MATERNALDEATH,
+						Q_MECONIUM,
+						Q_MISOPROSTOL,
+						Q_MISOPROSTOLTABLETS,
+						Q_MISOPROSTOLTIMING,
+						Q_OXYTOCIN,
+						Q_PLACENTA,
+						Q_PPH,
+						Q_PRESENTATION,
+						Q_PROM,
+						Q_REFERRALREASON,
+						Q_SYSTOLICBP,
+						Q_TEMPERATURE,
+						Q_USERID,
+						Q_VACUUMFORCEPS,
+						Q_VAGINALDELIVERY,
+						Q_VITASUPPL,
+						Q_YEAROFBIRTH,
+						TODAY AS CREATEDON
+				FROM ".TABLE_DELIVERY." p
+				INNER JOIN healthpoint pathp ON pathp.hpcode = p.Q_HEALTHPOINTID
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
+				WHERE pathp.hpcode = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'
+				ORDER BY TODAY ASC";
+		$result = _mysql_query($sql,$this->DB);
+		if (!$result){
+			writeToLog('error','database',$sql);
+			return;
+		}
+		while($o = mysql_fetch_object($result)){
+			// TODO add babies
+			return $o;
+		}
 	}
 	
 	function getPatientDeliveryBaby(){
@@ -731,7 +754,7 @@ class API {
 					p.Q_HEALTHPOINTID,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
-					'".getString('protocol.registration')."' as protocol,
+					'".PROTOCOL_REGISTRATION."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					p._CREATOR_URI_USER,
 					p.Q_GPSDATA_LAT,
@@ -739,7 +762,7 @@ class API {
 					p.Q_LOCATION,
 					hp.locationlat,
 					hp.locationlng
-				FROM ".REGISTRATION." p 
+				FROM ".TABLE_REGISTRATION." p 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -754,7 +777,7 @@ class API {
 					p.Q_HEALTHPOINTID,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
-					'".getString('protocol.ancfirst')."' as protocol,
+					'".PROTOCOL_ANCFIRST."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					p._CREATOR_URI_USER,
 					p.Q_GPSDATA_LAT,
@@ -762,8 +785,8 @@ class API {
 					p.Q_LOCATION,
 					hp.locationlat,
 					hp.locationlng
-				FROM ".ANCFIRST." p 
-				LEFT OUTER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				FROM ".TABLE_ANCFIRST." p 
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -777,7 +800,7 @@ class API {
 					p.Q_HEALTHPOINTID,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
-					CONCAT('".getString('protocol.ancfollow')."',' ',p.Q_FOLLOWUPNO) as protocol,
+					'".PROTOCOL_ANCFOLLOW."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					p._CREATOR_URI_USER,
 					p.Q_GPSDATA_LAT,
@@ -785,8 +808,8 @@ class API {
 					p.Q_LOCATION,
 					hp.locationlat,
 					hp.locationlng
-				FROM ".ANCFOLLOW." p 
-				LEFT OUTER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				FROM ".TABLE_ANCFOLLOW." p 
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -801,7 +824,7 @@ class API {
 					p.Q_HEALTHPOINTID,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
-					'".getString('protocol.anclabtest')."' as protocol,
+					'".PROTOCOL_ANCLABTEST."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					p._CREATOR_URI_USER,
 					'' AS Q_GPSDATA_LAT,
@@ -809,8 +832,8 @@ class API {
 					'' AS Q_LOCATION,
 					hp.locationlat,
 					hp.locationlng
-				FROM ".ANCLABTEST." p 
-				LEFT OUTER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				FROM ".TABLE_ANCLABTEST." p 
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -825,7 +848,7 @@ class API {
 					p.Q_HEALTHPOINTID,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
-					'".getString('protocol.anctransfer')."' as protocol,
+					'".PROTOCOL_ANCTRANSFER."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					p._CREATOR_URI_USER,
 					p.Q_GPSDATA_LAT,
@@ -833,14 +856,14 @@ class API {
 					p.Q_LOCATION,
 					hp.locationlat,
 					hp.locationlng
-				FROM ".ANCTRANSFER." p 
-				LEFT OUTER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				FROM ".TABLE_ANCTRANSFER." p 
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
 		
-		/*delivery
+		//delivery
 		$sql .= " UNION
 					SELECT
 						p._CREATION_DATE as datestamp,
@@ -849,7 +872,7 @@ class API {
 						p.Q_HEALTHPOINTID,
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,
-						'".getString('protocol.delivery')."' as protocol,
+						'".PROTOCOL_DELIVERY."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						p._CREATOR_URI_USER,
 						p.Q_GPSDATA_LAT,
@@ -857,13 +880,13 @@ class API {
 						p.Q_LOCATION,
 						hp.locationlat,
 						hp.locationlng
-					FROM ".DELIVERY." p 
-					LEFT OUTER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+					FROM ".TABLE_DELIVERY." p 
+					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 					INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 					WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
-		*/
+
 		$sql .= ") a ORDER BY datestamp DESC";
 		//query to get the total no of records
 		$countsql = "SELECT COUNT(*) AS norecords FROM (".$sql.") a;";
@@ -922,7 +945,7 @@ class API {
 						p.TODAY as createdate, 
 						DATE_ADD(p.Q_LMP, INTERVAL ".ANC1_DUE_BY_END." DAY) AS ANC1DUEBY ,
 						hp.hpname as healthpoint
-				FROM ".ANCFIRST." p 
+				FROM ".TABLE_ANCFIRST." p 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
@@ -1004,7 +1027,7 @@ class API {
 		$sql = "SELECT 	i.Q_HEALTHPOINTID as healthpointcode, 
 				hp.hpname as healthpointname, 
 				i.Q_USERID as patientid
-				FROM ".REGISTRATION." i
+				FROM ".TABLE_REGISTRATION." i
 				INNER JOIN healthpoint hp ON hp.hpcode = i.Q_HEALTHPOINTID
 				GROUP BY hp.hpname, 
 					i.Q_HEALTHPOINTID, 
@@ -1029,10 +1052,10 @@ class API {
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,  
 						p.Q_USERID,
-						'".getstring('protocol.ancfirst')."' as protocol,
+						'".PROTOCOL_ANCFIRST."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".ANCFIRST." p
-				LEFT OUTER JOIN ".REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
+				FROM ".TABLE_ANCFIRST." p
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -1044,10 +1067,10 @@ class API {
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation, 
 						p.Q_USERID,
-						CONCAT('".getString('protocol.ancfollow')."',' ',p.Q_FOLLOWUPNO) as protocol,
+						'".PROTOCOL_ANCFOLLOW."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".ANCFOLLOW." p
-				LEFT OUTER JOIN ".REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
+				FROM ".TABLE_ANCFOLLOW." p
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -1058,10 +1081,10 @@ class API {
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,   
 						p.Q_USERID,
-						'".getstring('protocol.anclabtest')."'as protocol,
+						'".PROTOCOL_ANCLABTEST."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".ANCLABTEST." p
-				LEFT OUTER JOIN ".REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
+				FROM ".TABLE_ANCLABTEST." p
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -1073,17 +1096,29 @@ class API {
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation, 
 						p.Q_USERID,
-						'".getstring('protocol.anctransfer')."'as protocol,
+						'".PROTOCOL_ANCTRANSFER."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".ANCTRANSFER." p
-				LEFT OUTER JOIN ".REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
+				FROM ".TABLE_ANCTRANSFER." p
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE r._URI is null";
 
-		//TODO unregistered from delivery
-		
+		// unregistered from delivery
+		$sql .= " UNION
+				SELECT p.Q_HEALTHPOINTID, 
+						php.hpname as patientlocation,
+						hp.hpname as protocollocation, 
+						p.Q_USERID,
+						'".PROTOCOL_DELIVERY."' as protocol,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname
+				FROM ".TABLE_DELIVERY." p
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
+				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
+				WHERE r._URI is null";
 		
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
@@ -1104,9 +1139,9 @@ class API {
 						php.hpname as patientlocation, 
 						hp.hpname as protocollocation, 
 						i.Q_USERID ,
-						'".getstring('protocol.ancfirst')."'as protocol,
+						'".PROTOCOL_ANCFIRST."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".ANCFIRST." i
+				FROM ".TABLE_ANCFIRST." i
 				INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
 				INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
@@ -1124,15 +1159,15 @@ class API {
 			array_push($report,$row);
 		}
 
-		//TODO duplicate follow up 
+		// duplicate follow up 
 		$sql = "SELECT 	i.Q_HEALTHPOINTID,
 						php.hpname as patientlocation, 
 						hp.hpname as protocollocation, 
 						i.Q_USERID ,
-						'".getstring('protocol.ancfollow')."'as protocol,
+						'".PROTOCOL_ANCFOLLOW."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						i.Q_FOLLOWUPNO
-				FROM ".ANCFOLLOW." i
+				FROM ".TABLE_ANCFOLLOW." i
 				INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
 				INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
@@ -1152,10 +1187,37 @@ class API {
 		}
 		
 		
-		//TODO duplicate labtest?
+		// TODO duplicate labtest
+		// check in case they really do have 2?
+		$sql = "SELECT 	i.Q_HEALTHPOINTID,
+						php.hpname as patientlocation, 
+						hp.hpname as protocollocation, 
+						i.Q_USERID ,
+						'".PROTOCOL_ANCLABTEST."' as protocol,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname
+				FROM ".TABLE_ANCLABTEST." i
+				INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
+				INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
+				GROUP BY php.hpname, 
+					i.Q_HEALTHPOINTID, 
+					i.Q_USERID
+				HAVING count(i._URI)>1";
 		
-		//TODO duplicate transfer?
+		$result = _mysql_query($sql,$this->DB);
+		if (!$result){
+			writeToLog('error','database',$sql);
+			return;
+		}
+		while($row = mysql_fetch_object($result)){
+			array_push($report,$row);
+		}
 		
+		// TODO duplicate transfer
+		
+		// TODO duplicate delivery
+		
+		// TODO duplicate PNC
 		return $report;
 	}
 	
@@ -1170,9 +1232,9 @@ class API {
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 						'ANC Follow Up 1 submitted but no ANC First Visit' as reason
-				FROM ".ANCFOLLOW." p 
-				LEFT OUTER JOIN ".ANCFIRST." first ON p.Q_USERID = first.Q_USERID AND p.Q_HEALTHPOINTID = first.Q_HEALTHPOINTID 
-				INNER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				FROM ".TABLE_ANCFOLLOW." p 
+				LEFT OUTER JOIN ".TABLE_ANCFIRST." first ON p.Q_USERID = first.Q_USERID AND p.Q_HEALTHPOINTID = first.Q_HEALTHPOINTID 
+				INNER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -1188,10 +1250,10 @@ class API {
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 						'ANC Follow Up 3 submitted but no ANC Follow Up 2' as reason
-				FROM ".ANCFOLLOW." p 
-				LEFT OUTER JOIN (SELECT * FROM ".ANCFOLLOW." WHERE Q_FOLLOWUPNO='2') follow
+				FROM ".TABLE_ANCFOLLOW." p 
+				LEFT OUTER JOIN (SELECT * FROM ".TABLE_ANCFOLLOW." WHERE Q_FOLLOWUPNO='2') follow
 					ON p.Q_USERID = follow.Q_USERID AND p.Q_HEALTHPOINTID = follow.Q_HEALTHPOINTID 
-				INNER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				INNER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -1208,10 +1270,10 @@ class API {
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 						'ANC Follow Up 4 submitted but no ANC Follow Up 3' as reason
-				FROM ".ANCFOLLOW." p 
-				LEFT OUTER JOIN (SELECT * FROM ".ANCFOLLOW." WHERE Q_FOLLOWUPNO='2') follow
+				FROM ".TABLE_ANCFOLLOW." p 
+				LEFT OUTER JOIN (SELECT * FROM ".TABLE_ANCFOLLOW." WHERE Q_FOLLOWUPNO='2') follow
 					ON p.Q_USERID = follow.Q_USERID AND p.Q_HEALTHPOINTID = follow.Q_HEALTHPOINTID 
-				INNER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				INNER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
@@ -1227,9 +1289,9 @@ class API {
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 						'ANC Lab Test submitted but no ANC First Visit' as reason
-				FROM ".ANCLABTEST." p 
-				LEFT OUTER JOIN ".ANCFIRST." first ON p.Q_USERID = first.Q_USERID AND p.Q_HEALTHPOINTID = first.Q_HEALTHPOINTID 
-				INNER JOIN ".REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				FROM ".TABLE_ANCLABTEST." p 
+				LEFT OUTER JOIN ".TABLE_ANCFIRST." first ON p.Q_USERID = first.Q_USERID AND p.Q_HEALTHPOINTID = first.Q_HEALTHPOINTID 
+				INNER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID

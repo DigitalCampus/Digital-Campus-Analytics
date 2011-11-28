@@ -23,7 +23,7 @@ $sql = "SELECT 	p._URI,
 				p.Q_HEALTHPOINTID, 
 				p.TODAY as createdate,
 				p.Q_TETANUS
-		FROM ".ANCFIRST." p 
+		FROM ".TABLE_ANCFIRST." p 
 		WHERE p.TODAY > date_format(curdate() - interval 6 month,'%Y-%m-01 00:00:00')
 		AND p.Q_HEALTHPOINTID != '9999'
 		ORDER BY p.TODAY ASC";
