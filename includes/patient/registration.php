@@ -1,4 +1,4 @@
-<h3><?php echo getstring('protocol.registration');?></h3>
+<h3><?php echo getstring(PROTOCOL_REGISTRATION);?></h3>
 
 <table class='rtable'>
 <tr class='rrow'>

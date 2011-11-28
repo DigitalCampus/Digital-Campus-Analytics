@@ -94,14 +94,14 @@ if(count($patient->anclabtest)==0){
 } else {
 	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_ANCLABTEST, getstring(PROTOCOL_ANCLABTEST));
 }
-/*printf(" | ");
+printf(" | ");
 if(!isset($patient->delivery)){
-	echo getstring('protocol.delivery');
-} else if ($protocol == "delivery"){
-	echo "<span class='selected'>".getstring('protocol.delivery')."</span>"; 
+	echo getstring(PROTOCOL_DELIVERY);
+} else if ($protocol == PROTOCOL_DELIVERY){
+	echo "<span class='selected'>".getstring(PROTOCOL_DELIVERY)."</span>"; 
 } else {
-	printf("<a href='?patientid=%s&hpcode=%s&protocol=delivery'>%s</a>",$patientid,$hpcode,getstring('protocol.delivery'));
-}*/
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_DELIVERY, getstring(PROTOCOL_DELIVERY));
+}
 echo "</span>";
 
 include_once('includes/patient/risk.php');
@@ -143,13 +143,10 @@ if ($patient->anclabtest && $protocol==PROTOCOL_ANCLABTEST){
 
 /*
  * Labour/Delivery
-
-if ($patient->delivery){
-	include_once('includes/patient/delivery.php');
-}  */
-
-
-
+ */
+if ($patient->delivery && $protocol==PROTOCOL_DELIVERY){
+	include('includes/patient/delivery.php');
+} 
 
 include_once "includes/footer.php";
 ?>

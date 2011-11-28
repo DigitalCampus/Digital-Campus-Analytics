@@ -4,7 +4,7 @@
 	}
 ?>
 
-<h3><?php echo getstring('protocol.ancfirst');?></h3>
+<h3><?php echo getstring(PROTOCOL_ANCFIRST);?></h3>
 
 <table class='rtable'>
 <tr class='rrow'>

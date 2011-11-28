@@ -1,4 +1,4 @@
-<h3><?php echo getstring('protocol.anclabtest');?></h3>
+<h3><?php echo getstring(PROTOCOL_ANCLABTEST);?></h3>
 <table class='rtable'>
 <tr class='rrow'>
 	<th><?php echo getstring('table.heading.question');?></th>
