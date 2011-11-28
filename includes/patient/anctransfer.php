@@ -207,12 +207,12 @@
 	?>
 </tr>
 <tr class="rrow">
-<td class="rqcell"><?php echo getstring('Q_BLEEDING');?></td>
+<td class="rqcell"><?php echo getstring('Q_BLEEDINGPREVPREG');?></td>
 	<?php 
 		for($i=0;$i <count($anctransfer); $i++ ){
 			echo "<td class='rdcell'>";
 			if (isset($anctransfer[$i])){
-				echo $anctransfer[$i]->Q_BLEEDING;
+				echo $anctransfer[$i]->Q_BLEEDINGPREVPREG;
 			}
 			echo "</td>";
 			echo "<td class='rrcell'></td>";
@@ -369,32 +369,7 @@
 	?>
 </tr>
 
-<tr class="rrow">
-<td class="rqcell"><?php echo getstring('Q_LMP');?></td>
-	<?php 
-		for($i=0;$i <count($anctransfer); $i++ ){
-			echo "<td class='rdcell'>";
-			if (isset($anctransfer[$i])){
-				echo displayAsEthioDate(strtotime($anctransfer[$i]->Q_LMP));
-			}
-			echo "</td>";
-			echo "<td class='rrcell'></td>";
-		}
-	?>
-</tr>
-<tr class="rrow">
-<td class="rqcell"><?php echo getstring('Q_EDD');?></td>
-	<?php 
-		for($i=0;$i <count($anctransfer); $i++ ){
-			echo "<td class='rdcell'>";
-			if (isset($anctransfer[$i])){
-				echo displayAsEthioDate(strtotime($anctransfer[$i]->Q_EDD));
-			}
-			echo "</td>";
-			echo "<td class='rrcell'></td>";
-		}
-	?>
-</tr>
+
 <tr class="rrow">
 <td class="rqcell"><?php echo getstring('Q_DELIVERYPLACE');?></td>
 	<?php 

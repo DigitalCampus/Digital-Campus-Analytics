@@ -171,6 +171,33 @@
 		}
 	?>
 </tr>
+
+<tr class="rrow">
+<td class="rqcell"><?php echo getstring('Q_LMP');?></td>
+	<?php 
+		foreach($i as $x){
+			echo "<td class='rdcell'>";
+			if (isset($ancfollow[$x])){
+				echo displayAsEthioDate(strtotime($ancfollow[$x]->Q_LMP));
+			}
+			echo "</td>";
+			echo "<td class='rrcell'></td>";
+		}
+	?>
+</tr>
+<tr class="rrow">
+<td class="rqcell"><?php echo getstring('Q_EDD');?></td>
+	<?php 
+		foreach($i as $x){
+			echo "<td class='rdcell'>";
+			if (isset($ancfollow[$x])){
+				echo displayAsEthioDate(strtotime($ancfollow[$x]->Q_EDD));
+			}
+			echo "</td>";
+			echo "<td class='rrcell'></td>";
+		}
+	?>
+</tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_SOCIALSUPPORT');?></td>
 	<?php 
