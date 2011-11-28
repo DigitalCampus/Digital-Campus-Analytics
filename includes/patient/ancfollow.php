@@ -8,7 +8,7 @@
 	<th><?php echo getstring('table.heading.question');?></th>
 	<?php 
 		foreach($i as $x){
-			echo "<th>".getstring('table.heading.data')."</th><th>".getstring('table.heading.risk')."</th>";
+			echo "<th>".getstring('table.heading.data')."</th>";
 		}
 	?>
 </tr>
@@ -21,7 +21,6 @@
 				printf('on %s by %s (%s)',displayAsEthioDate(strtotime($ancfollow[$x]->CREATEDON)), $ancfollow[$x]->submittedname, $ancfollow[$x]->protocollocation);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -34,7 +33,6 @@
 				echo $ancfollow[$x]->Q_USERID;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -47,7 +45,6 @@
 				echo $ancfollow[$x]->patientlocation;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -60,7 +57,6 @@
 				echo $ancfollow[$x]->Q_YEAROFBIRTH;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -73,7 +69,6 @@
 				echo $ancfollow[$x]->Q_AGE;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -89,7 +84,6 @@
 				echo $ancfollow[$x]->Q_ABDOMINALPAIN;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -102,7 +96,6 @@
 				echo $ancfollow[$x]->Q_BLEEDING;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -115,7 +108,6 @@
 				echo $ancfollow[$x]->Q_FATIGUE;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -128,7 +120,6 @@
 				echo $ancfollow[$x]->Q_FEVER;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -141,7 +132,6 @@
 				echo $ancfollow[$x]->Q_HEADACHE;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -154,7 +144,6 @@
 				echo $ancfollow[$x]->Q_OTHERHEALTHISSUES;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -167,7 +156,6 @@
 				echo getstring("Q_DELIVERYPLAN.".$ancfollow[$x]->Q_DELIVERYPLAN);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -181,7 +169,6 @@
 				echo displayAsEthioDate(strtotime($ancfollow[$x]->Q_LMP));
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -194,7 +181,6 @@
 				echo displayAsEthioDate(strtotime($ancfollow[$x]->Q_EDD));
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -207,7 +193,6 @@
 				echo getstring("Q_SOCIALSUPPORT.".$ancfollow[$x]->Q_SOCIALSUPPORT);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -220,7 +205,6 @@
 				echo $ancfollow[$x]->Q_ECONOMICS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -233,7 +217,6 @@
 				echo $ancfollow[$x]->Q_TRANSPORTATION;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -249,7 +232,6 @@
 				echo $ancfollow[$x]->Q_DIABETES;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -262,7 +244,6 @@
 				echo $ancfollow[$x]->Q_TUBERCULOSIS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -275,7 +256,6 @@
 				echo $ancfollow[$x]->Q_HYPERTENSION;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -288,7 +268,6 @@
 				echo $ancfollow[$x]->Q_MALARIA;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -301,7 +280,6 @@
 				echo $ancfollow[$x]->Q_BEDNETS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -314,7 +292,6 @@
 				echo $ancfollow[$x]->Q_TETANUS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -327,7 +304,6 @@
 				echo $ancfollow[$x]->Q_IRONTABLETS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -340,7 +316,6 @@
 				echo getstring("Q_IRONGIVEN.".$ancfollow[$x]->Q_IRONGIVEN);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -353,7 +328,6 @@
 				echo getstring("Q_HIV.".$ancfollow[$x]->Q_HIV);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -366,7 +340,6 @@
 				echo $ancfollow[$x]->Q_HIVTREATMENT;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -379,7 +352,6 @@
 				echo $ancfollow[$x]->Q_FOLICACID;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -392,7 +364,6 @@
 				echo $ancfollow[$x]->Q_MEBENDAZOL;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -405,7 +376,6 @@
 				echo $ancfollow[$x]->Q_IODIZEDSALTS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -418,7 +388,6 @@
 				echo $ancfollow[$x]->Q_DRUGS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -431,7 +400,6 @@
 				echo $ancfollow[$x]->Q_DRUGSDESCRIPTION;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -444,7 +412,6 @@
 				echo $ancfollow[$x]->Q_OTHERHEALTHPROBLEMS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -460,7 +427,6 @@
 				echo $ancfollow[$x]->Q_WEIGHT;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -473,7 +439,6 @@
 				echo getstring('Q_HEIGHT.'.$ancfollow[$x]->Q_HEIGHT);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -486,7 +451,6 @@
 				echo $ancfollow[$x]->Q_SYSTOLICBP."/".$ancfollow[$x]->Q_DIASTOLICBP;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -499,7 +463,6 @@
 				echo getstring('Q_PALLORANEMIA.'.$ancfollow[$x]->Q_PALLORANEMIA);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -512,7 +475,6 @@
 				echo $ancfollow[$x]->Q_CARDIACPULSE;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -525,7 +487,6 @@
 				echo getstring('Q_EDEMA.'.$ancfollow[$x]->Q_EDEMA);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -538,7 +499,6 @@
 				echo $ancfollow[$x]->Q_FUNDALHEIGHT;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -551,7 +511,6 @@
 				echo $ancfollow[$x]->Q_GESTATIONALAGE;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -564,7 +523,6 @@
 				echo getstring('Q_PRESENTATION.'.$ancfollow[$x]->Q_PRESENTATION);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -577,7 +535,6 @@
 				echo getstring('Q_FETALHEARTRATEAUDIBLE.'.$ancfollow[$x]->Q_FETALHEARTRATEAUDIBLE);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -590,7 +547,6 @@
 				echo $ancfollow[$x]->Q_FETALHEARTRATE24W;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -606,7 +562,6 @@
 				echo getstring("Q_IDCARD.".$ancfollow[$x]->Q_IDCARD);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -619,7 +574,6 @@
 				echo displayAsEthioDate(strtotime($ancfollow[$x]->Q_APPOINTMENTDATE));
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -632,7 +586,6 @@
 				echo getstring("Q_LOCATION.".$ancfollow[$x]->Q_LOCATION);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
@@ -647,7 +600,6 @@
 				}
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
 		}
 	?>
 </tr>
