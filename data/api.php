@@ -715,12 +715,13 @@ class API {
 				array_push($o->Q_BIRTHATTENDANT,$app->VALUE);
 			}
 			// TODO add babies
+			$o->Q_BABY = $this->getPatientDeliveryBaby($o->_URI);
 			return $o;
 		}
 	}
 	
-	function getPatientDeliveryBaby(){
-		$sql = "
+	function getPatientDeliveryBaby($uri){
+		$sql = sprintf("SELECT
 						Q_APGAR1MIN,
 						Q_APGAR5MIN,
 						Q_ARVNEWBORNHIV,
@@ -736,10 +737,19 @@ class API {
 						Q_OTHERCOMMENTS,
 						Q_POLIO0IMMUNO,
 						Q_TTCEYEOINTMENT,
-						Q_VITAMINK,
-			
-		";
-		
+						Q_VITAMINK
+				FROM %s
+				WHERE _PARENT_AURI = '%s'",TABLE_DELIVERY_BABY,$uri);
+		$result = _mysql_query($sql,$this->DB);
+		if (!$result){
+			writeToLog('error','database',$sql);
+			return;
+		}
+		$babies = array();
+		while($o = mysql_fetch_object($result)){
+			array_push($babies, $o);
+		}
+		return $babies;
 	}
 	function getProtocolsSubmitted($opts=array()){
 		if(array_key_exists('days',$opts)){

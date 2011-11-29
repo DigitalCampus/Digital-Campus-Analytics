@@ -439,6 +439,7 @@ $LANG['SIMID'] = 'SIMID';
 $LANG['START_TIME'] = 'START_TIME';
 $LANG['submitted.chart.bylocation.title'] = 'Protocols submitted by location';
 $LANG['submitted.chart.bytype.title'] = 'Protocols submitted by type';
+$LANG['submitted.chart.dashboard.title'] = 'Protocols submitted';
 $LANG['submitted.nodays'] = '%d days';
 $LANG['submitted.th.date'] = 'Submitted Date';
 $LANG['submitted.th.detail'] = 'Protocol submitted by/at';
