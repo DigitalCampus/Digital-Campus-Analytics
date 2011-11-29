@@ -48,12 +48,12 @@ if ($view == "bylocation"){
 }
 printf("</p><br/>");
 
+$options = Array('height'=>500,'width'=>800,'class'=>'graph');
 if ($view == "list"){
 	include_once("includes/submitted/list.php");
 } else if ($view == "byprotocol"){
 	include_once("includes/submitted/byprotocol.php");
 } else if ($view == "bylocation"){
-	$options = Array('height'=>500,'width'=>800,'class'=>'graph');
 	include_once("includes/submitted/bylocation.php");
 } else {
 	echo getString("warning.viewnotfound");

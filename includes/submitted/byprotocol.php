@@ -8,19 +8,19 @@ printf("<h3>%s</h3>",getstring('submitted.total.count',array($submitted->count,$
 
 foreach($submitted->protocols as $s){
 	$d = date('d M Y',strtotime($s->datestamp));
-
+	$p = getstring($s->protocol);
 	if(array_key_exists($d,$summary)){
-		if(isset($summary[$d][$s->protocol])){
-			$summary[$d][$s->protocol] += 1;
+		if(isset($summary[$d][$p])){
+			$summary[$d][$p] += 1;
 		} else {
-			$summary[$d][$s->protocol] = 1;
+			$summary[$d][$p] = 1;
 		}
 	} else {
-		$summary[$d][$s->protocol] = 1;
+		$summary[$d][$p] = 1;
 	}
 	
-	if (!array_key_exists($s->protocol,$protocols)){
-		$protocols[$s->protocol] = 1;
+	if (!array_key_exists($p,$protocols)){
+		$protocols[$p] = 1;
 	}			
 }	
 ?>
@@ -87,7 +87,15 @@ foreach($submitted->protocols as $s){
         ?>
 
         var chart = new google.visualization.LineChart(document.getElementById('submitted_chart_div'));
-        chart.draw(data, {width: 800, height: 300, title: '<?php echo getString("submitted.chart.bytype.title")?>'});
+
+        chart.draw(data, {	width: <?php echo $options['width'] ?>, 
+    			height: <?php echo $options['height'] ?>,
+    			hAxis: {title: 'Date'},
+    			vAxis: {title: 'Number submitted'},
+    			chartArea:{left:50,top:20,width:"55%",height:"75%"}
+				});
+		
+        /*chart.draw(data, {width: 800, height: 300, title: '<?php echo getString("submitted.chart.bytype.title")?>'});*/
       }
     </script>
 

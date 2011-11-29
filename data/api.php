@@ -262,6 +262,7 @@ class API {
 	    }
 	  	$pat = mysql_fetch_object($result);
 	  	if($pat == null){
+	  		$pat = new stdClass();
 	  		$pat->regcomplete = false;
 	  	} else {
 	  		$pat->regcomplete = true;
@@ -701,6 +702,18 @@ class API {
 			return;
 		}
 		while($o = mysql_fetch_object($result)){
+			// add birth attendants
+			$o->Q_BIRTHATTENDANT = array();
+			// get the Home applicances source
+			$appsql = "SELECT VALUE FROM ".TABLE_DELIVERY_ATTENDED ." WHERE _PARENT_AURI = '".$o->_URI."'";
+			$appresult = _mysql_query($appsql,$this->DB);
+			if (!$appresult){
+				writeToLog('error','database',$appsql);
+				return;
+			}
+			while($app = mysql_fetch_object($appresult)){
+				array_push($o->Q_BIRTHATTENDANT,$app->VALUE);
+			}
 			// TODO add babies
 			return $o;
 		}

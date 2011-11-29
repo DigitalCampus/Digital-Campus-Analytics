@@ -52,4 +52,54 @@
 <tr class='rrow'>
 	<td colspan="2" class="sh"><?php echo getstring('section.deliveryinfo');?></td>
 </tr>
+
+<?php 
+
+	$temp = array();
+	foreach($patient->delivery->Q_BIRTHATTENDANT as $vv){
+		if(getstring("Q_WHOATTENDED.".$vv)){
+			array_push($temp,getstring("Q_WHOATTENDED.".$vv));
+		} else {
+			array_push($temp,$vv);
+		}
+	}
+	$q_birthattendant = implode($temp,", ");
+	$rowArray = array(
+					'Q_DELIVERYOUTCOME' => getstring("Q_DELIVERYOUTCOME.".$patient->delivery->Q_DELIVERYOUTCOME),
+					'Q_REFERRALREASON' => ($patient->delivery->Q_REFERRALREASON != "") ? getstring("Q_REFERRALREASON.".$patient->delivery->Q_REFERRALREASON) : "",
+					'Q_DELIVERYSITE' => getstring("Q_DELIVERYSITE.".$patient->delivery->Q_DELIVERYSITE),
+					'Q_MATERNALDEATH' => $patient->delivery->Q_MATERNALDEATH,
+					'Q_DELIVERYDATE' => displayAsEthioDate(strtotime($patient->delivery->Q_DELIVERYDATE)),
+					'Q_DELIVERYTIME' => date("H:i",strtotime($patient->delivery->Q_DELIVERYTIME)),
+					'Q_BIRTHATTENDANT' => $q_birthattendant,
+					'Q_VAGINALDELIVERY' => $patient->delivery->Q_VAGINALDELIVERY,
+					'Q_PLACENTA' => getstring("Q_PLACENTA.".$patient->delivery->Q_PLACENTA),
+					'Q_VACUUMFORCEPS' => getstring("Q_VACUUMFORCEPS.".$patient->delivery->Q_VACUUMFORCEPS),
+					'Q_CSECTION' => $patient->delivery->Q_CSECTION,
+					'Q_GENITALIAEXTERNAL' => getstring("Q_GENITALIAEXTERNAL.".$patient->delivery->Q_GENITALIAEXTERNAL),
+					'Q_EPISIOTOMY' => $patient->delivery->Q_EPISIOTOMY,
+					'Q_PPH' => $patient->delivery->Q_PPH,
+					'Q_MISOPROSTOL' => getstring("Q_MISOPROSTOL.".$patient->delivery->Q_MISOPROSTOL),
+					'Q_MISOPROSTOLTABLETS' => $patient->delivery->Q_MISOPROSTOLTABLETS,
+					'Q_MISOPROSTOLTIMING' =>($patient->delivery->Q_MISOPROSTOLTIMING != "") ? getstring("Q_MISOPROSTOLTIMING.".$patient->delivery->Q_MISOPROSTOLTIMING) : "",
+					'Q_OXYTOCIN' => $patient->delivery->Q_OXYTOCIN
+					);
+	foreach ($rowArray as $k=>$v){
+		generateDeliveryRow(getstring($k),$v);
+	}
+	
+?>
+
+<tr class='rrow'>
+	<td colspan="2" class="sh"><?php echo getstring('section.motherstatus');?></td>
+</tr>
+<tr class='rrow'>
+	<td colspan="2" class="sh"><?php echo getstring('section.newbornstatus');?></td>
+</tr>
+<tr class='rrow'>
+	<td colspan="2" class="sh"><?php echo getstring('section.babies');?></td>
+</tr>
+<tr class='rrow'>
+	<td colspan="2" class="sh"><?php echo getstring('section.checklist');?></td>
+</tr>
 </table>
