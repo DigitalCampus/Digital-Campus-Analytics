@@ -29,7 +29,7 @@ $sql = "SELECT 	p._URI,
 		WHERE p.TODAY > date_format(curdate() - interval 6 month,'%Y-%m-01 00:00:00')
 		AND p.Q_HEALTHPOINTID != '9999'
 		ORDER BY p.TODAY ASC";
-
+// TODO add permissions
 // if createdate not between ANC2_DUE_BY_START and ANC2_DUE_BY_END then defaulter, group by month/year of createdate
 // otherwise non defaulter
 $results = $API->runSql($sql);
@@ -58,7 +58,7 @@ $sql = "SELECT 	p._URI,
 		AND p.Q_HEALTHPOINTID != '9999'
 		ORDER BY DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) ASC";
 // @TODO add constraint about terminations
-
+// TODO add permissions
 // all those returned by above query are defaulters - as have now Follow up
 $results = $API->runSql($sql);
 while($row = mysql_fetch_array($results)){

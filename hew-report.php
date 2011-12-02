@@ -8,6 +8,8 @@ $days = optional_param("days",31,PARAM_INT);
 $user = optional_param("user","",PARAM_TEXT);
 $submit = optional_param("submit","",PARAM_TEXT);
 
+// TODO check permissions, so can;t alter the url to get record of someone else
+// TODO switch to use 
 $users = $API->getUsers();
 
 printf("<h2 class='printhide'>%s</h2>", getString("hewmanager.title"));
@@ -67,7 +69,7 @@ $submitted = $API->getProtocolsSubmitted($opts);
 					echo $s->patientname;
 				}
 				echo "</td>";
-				echo "<td nowrap>".$s->protocol."</td>";
+				echo "<td nowrap>".getstring($s->protocol)."</td>";
 				echo "</tr>";
 			}
 		}
@@ -84,9 +86,9 @@ $sql .= "SELECT 	A.Q_APPOINTMENTDATE,
 				CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
 				A.Q_HEALTHPOINTID,
 				php.hpname as patientlocation,
-				'".getstring('protocol.ancfollow')."' AS protocol
-		FROM ".ANCFIRST." A
-		LEFT OUTER JOIN ".REGISTRATION." R ON A.Q_USERID = R.Q_USERID AND A.Q_HEALTHPOINTID = R.Q_HEALTHPOINTID
+				'".getstring(PROTOCOL_ANCFOLLOW)."' AS protocol
+		FROM ".TABLE_ANCFIRST." A
+		LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON A.Q_USERID = R.Q_USERID AND A.Q_HEALTHPOINTID = R.Q_HEALTHPOINTID
 		INNER JOIN healthpoint php ON php.hpcode = A.Q_HEALTHPOINTID
 		WHERE A.Q_APPOINTMENTDATE > now()
 		AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +31 DAY)
@@ -99,15 +101,16 @@ $sql .= " UNION
 				CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
 				A.Q_HEALTHPOINTID,
 				php.hpname as patientlocation,
-				'".getstring('protocol.ancfollow')."' AS protocol
-		FROM ".ANCFOLLOW." A
-		LEFT OUTER JOIN ".REGISTRATION." R ON A.Q_USERID = R.Q_USERID AND A.Q_HEALTHPOINTID = R.Q_HEALTHPOINTID
+				'".getstring(PROTOCOL_ANCFOLLOW)."' AS protocol
+		FROM ".TABLE_ANCFOLLOW." A
+		LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON A.Q_USERID = R.Q_USERID AND A.Q_HEALTHPOINTID = R.Q_HEALTHPOINTID
 		INNER JOIN healthpoint php ON php.hpcode = A.Q_HEALTHPOINTID
 		WHERE A.Q_APPOINTMENTDATE > now()
 		AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +31 DAY)
 		AND A._CREATOR_URI_USER ='".$user."'";
 
 $sql .= ") C  ORDER BY Q_APPOINTMENTDATE";
+// TODO add permissions
 
 $result = $API->runSql($sql);
 

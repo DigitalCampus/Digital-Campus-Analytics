@@ -11,6 +11,7 @@ class User {
     public $lastname;
     public $username;
     public $email;
+    public $hpid;
     public $props = array();
     
     /**
@@ -90,7 +91,7 @@ class User {
     }   
     
     function getProp($name){
-    	if ( isset($this->props[$name])){
+    	if (isset($this->props[$name])){
     		return $this->props[$name];
     	} else {
     		return null;

@@ -59,14 +59,22 @@ class API {
 			$user->username = $row['username'];
 			$user->firstname = $row['firstname'];
 			$user->lastname =  $row['lastname'];
+			$user->hpid=  $row['hpid'];
 		}
 		return $user;
 	} 
 	
-	function getUsers(){
-		$sql = "SELECT * FROM user u
-				INNER JOIN healthpoint hp ON hp.hpid = u.hpid
-				ORDER BY u.firstname";
+	function getUsers($getall = false){
+		if($getall){
+			$sql = "SELECT * FROM user u
+					INNER JOIN healthpoint hp ON hp.hpid = u.hpid
+					ORDER BY u.firstname";
+		} else {
+			$sql = sprintf("SELECT * FROM user u
+					INNER JOIN healthpoint hp ON hp.hpid = u.hpid
+					WHERE hp.hpcode IN (%s)
+					ORDER BY u.firstname",$this->getUserPermissions());
+		}
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -140,6 +148,40 @@ class API {
 		}
 	}
 	
+	// returns comma separated list of the hpcodes the current user is allowed to view
+	function getUserPermissions(){
+		global $USER;
+		
+		if($USER->getProp('isadmin') == 'true'){
+			// admin user can view everything
+			$sql = "SELECT hpcode FROM healthpoint";
+		} else if($USER->getProp('permissions.all') == 'true'){
+			// "permissions.all" can view all districts & healthpoints, but aren't admin users (can't view logs, edit users etc)
+			$sql = "SELECT hpcode FROM healthpoint";
+			
+		} else if($USER->getProp('permissions.districts') != null) {
+			// "permissions.districts" can view all the districts listed
+			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE did IN (%s)",$USER->getProp('permissions.districts'));
+		} else if($USER->getProp('permissions.healthpoints')!= null) {
+			// "permissions.healthpoints" can view all the healthpoints listed
+			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid IN (%s)",$USER->getProp('permissions.healthpoints'));
+		} else {
+			//otherwise can only see the date from the hpid in their user table record (hpid) 
+			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid = %d",$USER->hpid);
+		}
+		
+		$result = _mysql_query($sql,$this->DB);
+		if (!$result){
+			writeToLog('error','database',$sql);
+			return;
+		}
+		$temp = array();
+		while($o = mysql_fetch_object($result)){
+			array_push($temp,$o->hpcode);
+		}
+		$hpcodes = implode(",",$temp);
+		return $hpcodes;
+	}
 	/*
 	 * 
 	 */
@@ -149,8 +191,12 @@ class API {
 	}
 	
 	// return list of Health posts
-	function getHealthPoints(){
-		$sql = "SELECT * FROM healthpoint ORDER BY hpname ASC;";
+	function getHealthPoints($getall = false){
+		if($getall){
+			$sql = "SELECT * FROM healthpoint ORDER BY hpname ASC;";
+		} else {
+			$sql = sprintf("SELECT * FROM healthpoint WHERE hpcode IN (%s) ORDER BY hpname ASC;",$this->getUserPermissions());
+		}
 		$healthposts = array();
 	    $result = _mysql_query($sql,$this->DB);
 		if (!$result){
@@ -199,6 +245,7 @@ class API {
 				INNER JOIN patientcurrent pc ON pc.hpcode = r.Q_HEALTHPOINTID AND pc.patid = r.Q_USERID
 				INNER JOIN healthpoint hp ON hp.hpcode = r.Q_HEALTHPOINTID
 				WHERE pc.pcurrent = 1";	
+		// TODO add permissions
 		$patients = array();	
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
@@ -254,7 +301,7 @@ class API {
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
-		
+		// TODO add permissions
 	    $result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -385,6 +432,7 @@ class API {
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
+		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -488,6 +536,7 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'
 				ORDER BY TODAY ASC";
+		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -549,6 +598,7 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'
 				ORDER BY TODAY ASC";
+		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -618,6 +668,7 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'
 				ORDER BY TODAY ASC";
+		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -696,6 +747,7 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'
 				ORDER BY TODAY ASC";
+		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -775,6 +827,8 @@ class API {
 					p.Q_USERID,
 					CONCAT(p.Q_USERNAME,' ',p.Q_USERFATHERSNAME,' ',p.Q_USERGRANDFATHERSNAME) as patientname,
 					p.Q_HEALTHPOINTID,
+					php.hpcode as patienthpcode,
+					hp.hpcode as protocolhpcode,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
 					'".PROTOCOL_REGISTRATION."' as protocol,
@@ -798,6 +852,8 @@ class API {
 					p.Q_USERID,
 					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 					p.Q_HEALTHPOINTID,
+					php.hpcode as patienthpcode,
+					hp.hpcode as protocolhpcode,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCFIRST."' as protocol,
@@ -821,6 +877,8 @@ class API {
 					p.Q_USERID,
 					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 					p.Q_HEALTHPOINTID,
+					php.hpcode as patienthpcode,
+					hp.hpcode as protocolhpcode,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCFOLLOW."' as protocol,
@@ -845,6 +903,8 @@ class API {
 					p.Q_USERID,
 					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 					p.Q_HEALTHPOINTID,
+					php.hpcode as patienthpcode,
+					hp.hpcode as protocolhpcode,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCLABTEST."' as protocol,
@@ -869,6 +929,8 @@ class API {
 					p.Q_USERID,
 					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 					p.Q_HEALTHPOINTID,
+					php.hpcode as patienthpcode,
+					hp.hpcode as protocolhpcode,
 					php.hpname as patientlocation,
 					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCTRANSFER."' as protocol,
@@ -893,6 +955,8 @@ class API {
 						p.Q_USERID,
 						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 						p.Q_HEALTHPOINTID,
+						php.hpcode as patienthpcode,
+						hp.hpcode as protocolhpcode,
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,
 						'".PROTOCOL_DELIVERY."' as protocol,
@@ -910,7 +974,12 @@ class API {
 					INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 					WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
 
-		$sql .= ") a ORDER BY datestamp DESC";
+		$sql .= ") a ";
+		$sql .= "WHERE a.patienthpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= "OR a.protocolhpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= "ORDER BY datestamp DESC";
+		
+		
 		//query to get the total no of records
 		$countsql = "SELECT COUNT(*) AS norecords FROM (".$sql.") a;";
 		
@@ -974,7 +1043,9 @@ class API {
 				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
 				AND p.Q_HEALTHPOINTID != '9999'
 				ORDER BY p.TODAY ASC";
-
+		
+		// TODO add permissions
+		
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = _mysql_query($sql,$this->DB);
@@ -1056,6 +1127,7 @@ class API {
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
 				HAVING count(i._URI)>1";
+		// TODO add permissions
 		$report = array();
 	    $result = _mysql_query($sql,$this->DB);
 		if (!$result){
@@ -1142,7 +1214,7 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE r._URI is null";
-		
+		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -1172,7 +1244,7 @@ class API {
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
 				HAVING count(i._URI)>1";
-		
+		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -1199,7 +1271,7 @@ class API {
 					i.Q_USERID,
 					i.Q_FOLLOWUPNO
 				HAVING count(i._URI)>1";
-		
+		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -1226,7 +1298,7 @@ class API {
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
 				HAVING count(i._URI)>1";
-		
+		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -1237,10 +1309,13 @@ class API {
 		}
 		
 		// TODO duplicate transfer
+		// TODO add permissions
 		
 		// TODO duplicate delivery
+		// TODO add permissions
 		
 		// TODO duplicate PNC
+		// TODO add permissions
 		return $report;
 	}
 	
@@ -1263,6 +1338,7 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE p.Q_FOLLOWUPNO ='2'
 				AND first.Q_USERID is null ";
+		// TODO add permissions
 		
 		//check follow up 2 if follow up 1
 		$sql .= " UNION
@@ -1282,7 +1358,7 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE p.Q_FOLLOWUPNO ='3'
 				AND follow.Q_USERID is null";
-
+		// TODO add permissions
 		
 		//check follow up 3 if follow up 2
 		$sql	.= " UNION
@@ -1302,7 +1378,7 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE p.Q_FOLLOWUPNO ='4'
 				AND follow.Q_USERID is null";
-		
+		// TODO add permissions
 		//labtest but no first visit
 		$sql .= " UNION
 				SELECT p.Q_USERID, 
