@@ -7,7 +7,7 @@ function getstring($name, $args=array()){
 		$sesslang = $CONFIG->defaultlang;
 	}
 	if(!isset($_SESSION["lang_strings"])){
-		include_once 'lang/'.$sesslang.".php";
+		include_once $CONFIG->homePath.'lang/'.$sesslang.".php";
 	 	$_SESSION["lang_strings"] =  $LANG;
 	}
 	

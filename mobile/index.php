@@ -1,9 +1,9 @@
-<html>
-<head>
-    <title>Example</title>
-    <meta name="viewport" content="width=device-width, user-scalable=no" />
-</head>
-<body>
+<?php 
+include_once "../config.php";
+include_once 'includes/header.php';
+?>
+<?php echo getstring("app.name");?>
 Mobile version of the site
-</body>
-</html>
+<?php 
+	include_once 'includes/footer.php';
+?>
