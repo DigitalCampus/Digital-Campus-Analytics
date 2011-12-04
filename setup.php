@@ -14,6 +14,7 @@ require_once $CONFIG->homePath."lib/paramlib.php";
 require_once $CONFIG->homePath."lib/accesslib.php";
 require_once $CONFIG->homePath."lib/i8nlib.php";
 require_once $CONFIG->homePath."lib/loglib.php";
+require_once $CONFIG->homePath."lib/mdetect.php";
 
 require_once $CONFIG->homePath."lib/user.class.php";
 

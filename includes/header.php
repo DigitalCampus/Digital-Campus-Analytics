@@ -1,4 +1,12 @@
 <?php 
+
+//first detect if using mobile device and redirect accordingly
+$uagent_obj = new uagent_info();
+if($uagent_obj->DetectIphone() || $uagent_obj->DetectAndroidPhone()){
+	header('Location: '.$CONFIG->homeAddress.'mobile/');
+	die;
+}
+
 if ($PAGE != "login"){
 	checkLogin();
 }

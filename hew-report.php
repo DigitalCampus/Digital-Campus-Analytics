@@ -9,7 +9,7 @@ $user = optional_param("user","",PARAM_TEXT);
 $submit = optional_param("submit","",PARAM_TEXT);
 
 // TODO check permissions, so can;t alter the url to get record of someone else
-// TODO switch to use 
+// TODO switch to use API instead
 $users = $API->getUsers();
 
 printf("<h2 class='printhide'>%s</h2>", getString("hewmanager.title"));
