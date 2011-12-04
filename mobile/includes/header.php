@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html manifest="DigitalCampusAnalytics.manifest">
 <head>
     <title><?php echo getstring("app.name");?></title>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
