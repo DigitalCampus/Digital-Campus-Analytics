@@ -276,3 +276,10 @@ tr.nav {
 	padding:5px;
 	margin:10px;
 }
+
+div.error {
+	border: 1px solid #ccc;
+	padding:5px;
+	margin:10px;
+	color:red;
+}

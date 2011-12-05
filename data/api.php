@@ -48,7 +48,7 @@ class API {
 	} 
 	
 	function getUser($user){
-		$sql = "SELECT * FROM user WHERE username ='".$user->username."' LIMIT 0,1";
+		$sql = sprintf("SELECT * FROM user WHERE username ='%s' LIMIT 0,1",$user->username);
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -64,14 +64,46 @@ class API {
 		return $user;
 	} 
 	
+	function getUserByID($userid){
+		$sql = sprintf("SELECT * FROM user WHERE userid =%d LIMIT 0,1",$userid);
+		$result = _mysql_query($sql,$this->DB);
+		if (!$result){
+			writeToLog('error','database',$sql);
+			return;
+		}
+		while($o = mysql_fetch_object($result)){
+			return $o;
+		}
+	}
+	
 	function getUsers($getall = false){
 		if($getall){
-			$sql = "SELECT * FROM user u
+			$sql = "SELECT 
+						u.userid,
+						u.firstname,
+						u.username,
+						u.lastname,
+						u.user_uri,
+						hp.hpname,
+						hp.hpcode,
+						d.dname
+			 		FROM user u
 					INNER JOIN healthpoint hp ON hp.hpid = u.hpid
+					LEFT OUTER JOIN district d ON hp.did = d.did
 					ORDER BY u.firstname";
 		} else {
-			$sql = sprintf("SELECT * FROM user u
+			$sql = sprintf("SELECT 
+						u.userid,
+						u.firstname,
+						u.username,
+						u.lastname,
+						u.user_uri,
+						hp.hpname,
+						hp.hpcode,
+						d.dname
+			 		FROM user u
 					INNER JOIN healthpoint hp ON hp.hpid = u.hpid
+					LEFT OUTER JOIN district d ON hp.did = d.did
 					WHERE hp.hpcode IN (%s)
 					ORDER BY u.firstname",$this->getUserPermissions());
 		}
@@ -119,8 +151,18 @@ class API {
 		$insertSql = sprintf("INSERT INTO userprops (propvalue, userid,propname) VALUES ('%s',%d,'%s')",$value,$userid,$name);
 	  	$result = _mysql_query($insertSql,$this->DB);
 	  	if (!$result){
-	  		writeToLog('error','database',$sql);
+	  		writeToLog('error','database',$insertSql);
 	  	}
+	}
+	
+	function updateUser($userid,$firstname,$lastname,$user_uri,$hpid){
+		$sql = sprintf("UPDATE user SET firstname='%s', lastname='%s', user_uri='%s', hpid = %d WHERE userid = %d",$firstname,$lastname,$user_uri,$hpid,$userid);
+		$result = _mysql_query($sql,$this->DB);
+		if (!$result){
+			writeToLog('error','database',$sql);
+			return false;
+		}
+		return true;
 	}
 	
 	function userValidatePassword($username,$password){
@@ -137,9 +179,8 @@ class API {
 		return false;
 	}
 	
-	function userChangePassword($newpass){
-		global $USER;
-		$sql = sprintf("UPDATE user SET password = md5('%s') WHERE userid=%d",$newpass,$USER->userid);
+	function userChangePassword($userid, $newpass){
+		$sql = sprintf("UPDATE user SET password = md5('%s') WHERE userid=%d",$newpass,$userid);
 		$result = _mysql_query($sql,$this->DB);
 		if($result){
 			return true;
@@ -180,6 +221,11 @@ class API {
 			array_push($temp,$o->hpcode);
 		}
 		$hpcodes = implode(",",$temp);
+		
+		// if hpcodes is empty, set it to -1 (this prevents errors where querying "IN ()", so instead it's "IN( -1)"
+		if($hpcodes == ""){
+			$hpcodes = "-1";
+		}
 		return $hpcodes;
 	}
 	/*

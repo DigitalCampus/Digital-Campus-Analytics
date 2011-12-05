@@ -63,7 +63,7 @@ header("Content-Type: text/html; charset=UTF-8");
 				<?php 
 					if ($PAGE != "login"){
 						echo getstring("header.loggedinas");
-						echo "<a href='user.php'>".$USER->getUsername()."</a>";	
+						echo "<a href='".$CONFIG->homeAddress."user.php'>".$USER->getUsername()."</a>";	
 						echo " <a href='".$CONFIG->homeAddress."logout.php'>".getstring("header.logout")."</a>";
 					} else {
 						echo getstring("header.notloggedin");

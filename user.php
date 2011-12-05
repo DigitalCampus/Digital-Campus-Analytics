@@ -12,7 +12,7 @@ if($submit != ""){
 	if($password != $confirmpassword){
 		array_push($MSG,"Passwords don't match");
 	} else {
-		if($API->userChangePassword($password)){
+		if($API->userChangePassword($USER->userid,$password)){
 			array_push($MSG,"Your password has been changed");
 			writeToLog('info','passwordchanged','');
 		} else {
