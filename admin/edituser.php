@@ -10,6 +10,7 @@ if($USER->getProp('isadmin') != "true"){
 }
 $userid = required_param("userid",PARAM_INT);
 $user = $API->getUserByID($userid);
+$API->getUserProperties($user);
 $healthpoints = $API->getHealthPoints(true);
 
 $submit = optional_param('submit','',PARAM_TEXT);
@@ -35,8 +36,19 @@ if($submit != ""){
 	$hpid = optional_param('hpid',$user->hpid ,PARAM_TEXT);
 	if($API->updateUser($userid, $firstname, $lastname, $user_uri, $hpid)){
 		array_push($MSG,"Account details updated");
+		
+		//update the user properties
+		$propnames = optional_param('propname',"",PARAM_TEXT);
+		$propvalues = optional_param('propvalue',"",PARAM_TEXT);
+		for($i =0 ; $i <count($propnames); $i++){
+			if($propnames[$i] != ""){
+				$API->setUserProperty($userid, $propnames[$i], $propvalues[$i]);
+			}
+		}
+		
 		// reload the user
 		$user = $API->getUserByID($userid);
+		$API->getUserProperties($user);
 	}
 }
 
@@ -52,6 +64,7 @@ include_once('../includes/menu-admin.php');
 ?>
 <h2>Edit user</h2>
 <form method="post" action="">
+
 <div class="formblock">
 <div class="formlabel">Username:</div>
 <div class="formfield"><input type="text" name="username" value="<?php echo $user->username;?>" disabled="true"></input></div>
@@ -86,26 +99,46 @@ include_once('../includes/menu-admin.php');
 <div class="formblock">
 <div class="formlabel">Health Point:</div>
 <div class="formfield">
-<select name="hpid">
-<option value="0" selected="selected"/>
-<?php 
-foreach($healthpoints as $hp){
-	if($user->hpid == $hp->hpid){
-		printf("<option value='%d' selected='selected'>%s</option>",$hp->hpid,$hp->hpname);
-	} else {
-		printf("<option value='%d'>%s</option>",$hp->hpid,$hp->hpname);
+	<select name="hpid">
+	<option value="0" selected="selected"/>
+	<?php 
+	foreach($healthpoints as $hp){
+		if($user->hpid == $hp->hpid){
+			printf("<option value='%d' selected='selected'>%s</option>",$hp->hpid,$hp->hpname);
+		} else {
+			printf("<option value='%d'>%s</option>",$hp->hpid,$hp->hpname);
+		}
 	}
-}
-//echo "<pre>";
-///print_r($healthpoints); 
-//echo "</pre>";
-	
-?>
-</select>
-</div></div>
+	//echo "<pre>";
+	///print_r($healthpoints); 
+	//echo "</pre>";
+		
+	?>
+	</select>
+</div>
+</div>
+
 <div class="formblock">
-<div class="formlabel">&nbsp;</div>
-<div class="formfield"><input type="submit" name="submit" value="Save changes"></input></div>
+	<div class="formlabel">User properties:</div>
+	<div class="formfield">
+		<?php  
+		foreach($user->props as $k=>$v){
+			printf("<div class='userformprop'>");
+			printf("<div class='userformpropname'><input type='text' name='propname[]' value='%s'/></div>",$k);
+			printf("<div class='userformpropvalue'><input type='text' name='propvalue[]' value='%s'/></div>",$v);
+			printf("</div>");
+		}
+		printf("<div class='userformprop'>");
+		printf("<div class='userformpropname'><input type='text' name='propname[]' value=''/></div>");
+		printf("<div class='userformpropvalue'><input type='text' name='propvalue[]' value=''/></div>");
+		printf("</div>");
+		?>
+	</div>
+</div>
+
+<div class="formblock">
+	<div class="formlabel">&nbsp;</div>
+	<div class="formfield"><input type="submit" name="submit" value="Save changes"></input></div>
 </div>
 </form>
 

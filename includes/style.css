@@ -98,7 +98,9 @@ div.formblock {
 
 div.formlabel {
 	float:left;
-	width:100px;
+	width:150px;
+	text-align:right;
+	padding-right:10px;
 }
 
 div.formfield {
@@ -282,4 +284,12 @@ div.error {
 	padding:5px;
 	margin:10px;
 	color:red;
+}
+
+div.userformpropvalue, div.userformpropname {
+	float:left;
+}
+
+div.userformprop {
+	clear:both;
 }

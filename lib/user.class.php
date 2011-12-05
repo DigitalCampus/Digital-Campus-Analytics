@@ -12,6 +12,7 @@ class User {
     public $username;
     public $email;
     public $hpid;
+    public $user_uri;
     public $props = array();
     
     /**

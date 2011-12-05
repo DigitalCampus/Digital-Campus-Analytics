@@ -54,12 +54,13 @@ class API {
 	    	writeToLog('error','database',$sql);
 	    	return;
 	    }
-	  	while($row = mysql_fetch_array($result)){
-	  		$user->userid = $row['userid'];
-			$user->username = $row['username'];
-			$user->firstname = $row['firstname'];
-			$user->lastname =  $row['lastname'];
-			$user->hpid=  $row['hpid'];
+	  	while($o = mysql_fetch_object($result)){
+	  		$user->userid = $o->userid;
+			$user->username = $o->username;
+			$user->firstname = $o->firstname;
+			$user->lastname =  $o->lastname;
+			$user->hpid=  $o->hpid;
+			$user->user_uri =  $o->user_uri;
 		}
 		return $user;
 	} 
@@ -72,7 +73,14 @@ class API {
 			return;
 		}
 		while($o = mysql_fetch_object($result)){
-			return $o;
+			$user = new User();
+			$user->userid = $o->userid;
+			$user->username = $o->username;
+			$user->firstname = $o->firstname;
+			$user->lastname =  $o->lastname;
+			$user->hpid=  $o->hpid;
+			$user->user_uri =  $o->user_uri;
+			return $user;
 		}
 	}
 	
