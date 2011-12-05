@@ -489,7 +489,6 @@ $LANG['warning.patientreg'] = 'Patient Not Registered';
 $LANG['warning.regformmissing'] = 'The registration form is missing for this user. <br/>Please ensure that a registration form is completed as soon as possible.<br/>To view the full details please <a href="%s">visit the Data Checker page</a>.';
 $LANG['warning.viewnotfound'] = 'Invalid view type';
 $LANG['_CREATION_DATE'] = 'CREATION_DATE';
-$LANG['_CREATOR_URI_USER'] = 'CREATOR_URI_USER';
 $LANG['_IS_COMPLETE'] = 'IS_COMPLETE';
 $LANG['_LAST_UPDATE_DATE'] = 'LAST_UPDATE_DATE';
 $LANG['_LAST_UPDATE_URI_USER'] = 'LAST_UPDATE_URI_USER';

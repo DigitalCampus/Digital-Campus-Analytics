@@ -45,4 +45,9 @@ header("Content-Type: text/html; charset=UTF-8");
 		</div>
 		<div style="clear:both;"></div>
 	</div> <!-- end #header -->
+	<?php 
+	if($PAGE != 'login'){
+		include_once $CONFIG->homePath.'mobile/includes/menu.php';
+	}
+	?>
 	<div id="content">

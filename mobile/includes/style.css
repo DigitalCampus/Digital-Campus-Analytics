@@ -1,14 +1,5 @@
 @CHARSET "UTF-8";
-
-/* 
-Style sheet for screen
-*/
-
-* {
-	padding:0;
-	margin:0;
-}
-
+* {padding:0; margin:0;}
 body {
 	margin:0 0 5px 0;
 	background:#fff;
@@ -19,8 +10,15 @@ body {
 
 #page {
 	background:#fff;
-	border: 1px solid #9aca3c;
-	
+	border: 1px solid #9aca3c;	
+}
+
+a:hover, a:visited, a {
+    color: #444444;
+}
+
+li {
+	margin-left:15px;	
 }
 
 #header {
@@ -42,9 +40,17 @@ body {
 	vertical-align:center;
 }
 
+#menu {
+	border-top: 1px solid #aaa;
+	width:100%;
+	text-align: center;
+	padding: 5px;
+	background: #9aca3c;
+}
+
 #content {
 	padding:5px 5px;
-	font-size:80%;
+	font-size:100%;
 }
 
 #header-right {
@@ -75,6 +81,20 @@ div.error {
 	color:red;
 }
 
-li {
-	margin-left:15px;	
+div.task {
+	border-bottom:  1px solid #ccc;
+	padding:5px;
+	clear:both;
 }
+
+div.taskdate {
+	float:left;
+	font-weight: bold;
+}
+div.taskprotocol {
+	float:right;
+}
+div.taskpname {
+	clear:both;
+}
+

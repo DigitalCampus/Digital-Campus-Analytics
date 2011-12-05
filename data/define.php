@@ -33,7 +33,7 @@ define('TABLE_DELIVERY_BABY','DELIVERYV1_Q_DELIVERIES');
 
 define('DEFAULT_LIMIT',50);
 define('DEFAULT_START',0);
-define('DEFAULT,DAYS',7);
+define('DEFAULT_DAYS',7);
 
 define("ANC1_DUE_BY_END",119);
 

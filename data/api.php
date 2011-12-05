@@ -904,7 +904,7 @@ class API {
 					hp.hpname as protocollocation,
 					'".PROTOCOL_REGISTRATION."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
-					p._CREATOR_URI_USER,
+					u.userid,
 					p.Q_GPSDATA_LAT,
 					p.Q_GPSDATA_LNG,
 					p.Q_LOCATION,
@@ -929,7 +929,7 @@ class API {
 					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCFIRST."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
-					p._CREATOR_URI_USER,
+					u.userid,
 					p.Q_GPSDATA_LAT,
 					p.Q_GPSDATA_LNG,
 					p.Q_LOCATION,
@@ -954,7 +954,7 @@ class API {
 					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCFOLLOW."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
-					p._CREATOR_URI_USER,
+					u.userid,
 					p.Q_GPSDATA_LAT,
 					p.Q_GPSDATA_LNG,
 					p.Q_LOCATION,
@@ -980,7 +980,7 @@ class API {
 					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCLABTEST."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
-					p._CREATOR_URI_USER,
+					u.userid,
 					'' AS Q_GPSDATA_LAT,
 					'' AS Q_GPSDATA_LNG,
 					'' AS Q_LOCATION,
@@ -1006,7 +1006,7 @@ class API {
 					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCTRANSFER."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
-					p._CREATOR_URI_USER,
+					u.userid,
 					p.Q_GPSDATA_LAT,
 					p.Q_GPSDATA_LNG,
 					p.Q_LOCATION,
@@ -1032,7 +1032,7 @@ class API {
 						hp.hpname as protocollocation,
 						'".PROTOCOL_DELIVERY."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
-						p._CREATOR_URI_USER,
+						u.userid,
 						p.Q_GPSDATA_LAT,
 						p.Q_GPSDATA_LNG,
 						p.Q_LOCATION,
@@ -1087,6 +1087,60 @@ class API {
 		}
 	    return $submitted; 
 	}
+	
+	function getTasksDue($userid, $opts=array()){
+		// TODO check task list
+		if(array_key_exists('days',$opts)){
+			$days = max(0,$opts['days']);
+		} else {
+			$days = DEFAULT_DAYS;
+		}
+		
+		$sql = "SELECT * FROM (";
+		$sql .= "SELECT A.Q_APPOINTMENTDATE as datedue,
+						u.userid,
+						A.Q_USERID,
+						CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
+						A.Q_HEALTHPOINTID,
+						php.hpname as patientlocation,
+						'".getstring(PROTOCOL_ANCFOLLOW)."' AS protocol
+				FROM ".TABLE_ANCFIRST." A
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON A.Q_USERID = R.Q_USERID AND A.Q_HEALTHPOINTID = R.Q_HEALTHPOINTID
+				INNER JOIN healthpoint php ON php.hpcode = A.Q_HEALTHPOINTID
+				INNER JOIN user u ON u.user_uri = A._CREATOR_URI_USER
+				WHERE A.Q_APPOINTMENTDATE > now()
+				AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +".$days." DAY)
+				AND u.userid =".$userid;
+		
+		$sql .= " UNION
+				SELECT 	A.Q_APPOINTMENTDATE as datedue,
+						u.userid,
+						A.Q_USERID,
+						CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
+						A.Q_HEALTHPOINTID,
+						php.hpname as patientlocation,
+						'".getstring(PROTOCOL_ANCFOLLOW)."' AS protocol
+				FROM ".TABLE_ANCFOLLOW." A
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON A.Q_USERID = R.Q_USERID AND A.Q_HEALTHPOINTID = R.Q_HEALTHPOINTID
+				INNER JOIN healthpoint php ON php.hpcode = A.Q_HEALTHPOINTID
+				INNER JOIN user u ON u.user_uri = A._CREATOR_URI_USER
+				WHERE A.Q_APPOINTMENTDATE > now()
+				AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +".$days." DAY)
+				AND u.userid =".$userid;
+		// TODO add delivery
+		
+		// TODO add PNC
+		$sql .= ") C  ORDER BY datedue";
+		// TODO add permissions??
+		
+		$tasks = array();
+		$result = $this->runSql($sql);
+		while($o = mysql_fetch_object($result)){
+			array_push($tasks, $o);
+		}
+		return $tasks;
+	}
+	
 	
 	function getANC1Defaulters($opts=array()){
 		if(array_key_exists('months',$opts)){

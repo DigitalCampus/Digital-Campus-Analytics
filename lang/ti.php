@@ -396,7 +396,6 @@ $LANG['warning.patientreg'] = 'ተ';
 $LANG['warning.regformmissing'] = 'ተ';
 $LANG['warning.viewnotfound'] = 'ተ';
 $LANG['_CREATION_DATE'] = 'ተ';
-$LANG['_CREATOR_URI_USER'] = 'ተ';
 $LANG['_IS_COMPLETE'] = 'ተ';
 $LANG['_LAST_UPDATE_DATE'] = 'ተ';
 $LANG['_LAST_UPDATE_URI_USER'] = 'ተ';
