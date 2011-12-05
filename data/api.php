@@ -96,7 +96,7 @@ class API {
 						hp.hpcode,
 						d.dname
 			 		FROM user u
-					INNER JOIN healthpoint hp ON hp.hpid = u.hpid
+					LEFT OUTER JOIN healthpoint hp ON u.hpid = hp.hpid
 					LEFT OUTER JOIN district d ON hp.did = d.did
 					ORDER BY u.firstname";
 		} else {
@@ -110,7 +110,7 @@ class API {
 						hp.hpcode,
 						d.dname
 			 		FROM user u
-					INNER JOIN healthpoint hp ON hp.hpid = u.hpid
+					LEFT OUTER JOIN healthpoint hp ON u.hpid = hp.hpid
 					LEFT OUTER JOIN district d ON hp.did = d.did
 					WHERE hp.hpcode IN (%s)
 					ORDER BY u.firstname",$this->getUserPermissions());
@@ -207,7 +207,6 @@ class API {
 		} else if($USER->getProp('permissions.all') == 'true'){
 			// "permissions.all" can view all districts & healthpoints, but aren't admin users (can't view logs, edit users etc)
 			$sql = "SELECT hpcode FROM healthpoint";
-			
 		} else if($USER->getProp('permissions.districts') != null) {
 			// "permissions.districts" can view all the districts listed
 			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE did IN (%s)",$USER->getProp('permissions.districts'));
@@ -355,7 +354,10 @@ class API {
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
-		// TODO add permissions
+		// add permissions
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= "OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+
 	    $result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -397,7 +399,7 @@ class API {
 	
 	
 	
-	function getPatientANCFirst($opts=array()){
+	private function getPatientANCFirst($opts=array()){
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
@@ -486,7 +488,10 @@ class API {
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
-		// TODO add permissions
+		// add permissions
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= "OR hp.hpcode IN (".$this->getUserPermissions()."))" ;
+		
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -516,13 +521,11 @@ class API {
 	  		while($app = mysql_fetch_object($appresult)){
 	  			array_push($pat->Q_WHOATTENDED,$app->VALUE);
 	  		}
-	  		
 	  		return $pat;
 	  	}
-		
 	}
 	
-	function getPatientANCFollow($opts=array()){
+	private function getPatientANCFollow($opts=array()){
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
@@ -588,9 +591,12 @@ class API {
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'
-				ORDER BY TODAY ASC";
-		// TODO add permissions
+				WHERE pathp.hpcode = '".$opts['hpcode']."' AND r.Q_USERID='".$opts['patid']."'";
+		// add permissions
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " ORDER BY TODAY ASC";
+		
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -606,7 +612,7 @@ class API {
 	  	return $protocols;
 	}
 	
-	function getPatientANCTransfer($opts=array()){
+	private function getPatientANCTransfer($opts=array()){
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
@@ -650,9 +656,12 @@ class API {
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'
-				ORDER BY TODAY ASC";
-		// TODO add permissions
+				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
+		// add permissions
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " ORDER BY TODAY ASC";
+		
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -692,7 +701,7 @@ class API {
 	  	return $protocols;
 	}
 	
-	function getPatientANCLabTest($opts=array()){
+	private function getPatientANCLabTest($opts=array()){
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
@@ -720,9 +729,12 @@ class API {
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'
-				ORDER BY TODAY ASC";
-		// TODO add permissions
+				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
+		// add permissions
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " ORDER BY TODAY ASC";
+		
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -741,7 +753,7 @@ class API {
 	  	return $protocols;
 	}
 	
-	function getPatientDelivery($opts=array()){
+	private function getPatientDelivery($opts=array()){
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
@@ -799,9 +811,12 @@ class API {
 				INNER JOIN healthpoint pathp ON pathp.hpcode = p.Q_HEALTHPOINTID
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'
-				ORDER BY TODAY ASC";
-		// TODO add permissions
+				WHERE pathp.hpcode = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
+		// add permissions
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " ORDER BY TODAY ASC";
+		
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -826,7 +841,7 @@ class API {
 		}
 	}
 	
-	function getPatientDeliveryBaby($uri){
+	private function getPatientDeliveryBaby($uri){
 		$sql = sprintf("SELECT
 						Q_APGAR1MIN,
 						Q_APGAR5MIN,
@@ -857,6 +872,8 @@ class API {
 		}
 		return $babies;
 	}
+	
+	
 	function getProtocolsSubmitted($opts=array()){
 		if(array_key_exists('days',$opts)){
 			$days = max(0,$opts['days']);
@@ -1096,6 +1113,7 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
 				AND p.Q_HEALTHPOINTID != '9999'
+				AND p.Q_HEALTHPOINTID IN (".$this->getUserPermissions().")
 				ORDER BY p.TODAY ASC";
 		
 		// TODO add permissions
@@ -1158,6 +1176,94 @@ class API {
 		return $summary;
 	}
 	
+	
+	function getANC2Defaulters($opts=array()){
+		if(array_key_exists('months',$opts)){
+			$months = max(0,$opts['months']);
+		} else {
+			$months = 6;
+		}
+		if(array_key_exists('viewby',$opts)){
+			$viewby = $opts['viewby'];
+		} else {
+			$viewby = 'months';
+		}
+		
+		// set up summary/results array/objects
+		$date = new DateTime();
+		$date->sub(new DateInterval('P'.$months.'M'));
+		$summary = array();
+		for ($i=0; $i<7 ;$i++){
+			$summary[$date->format('M-Y')] = new stdClass;
+			$summary[$date->format('M-Y')]->defaulters = 0;
+			$summary[$date->format('M-Y')]->nondefaulters = 0;
+			$date->add(new DateInterval('P1M'));
+		}
+		
+		// all those who had an ANC follow up visit
+		$sql = "SELECT 	p._URI,
+						p.Q_USERID, 
+						p.Q_HEALTHPOINTID, 
+						p.Q_LMP, 
+						p.TODAY as createdate,  
+						DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_START." DAY) AS ANC2_DUE_BY_START,
+						DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) AS ANC2_DUE_BY_END
+				FROM ".TABLE_ANCFOLLOW." p
+				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
+				AND p.Q_HEALTHPOINTID != '9999'
+				ORDER BY p.TODAY ASC";
+		// TODO add permissions
+		// if createdate not between ANC2_DUE_BY_START and ANC2_DUE_BY_END then defaulter, group by month/year of createdate
+		// otherwise non defaulter
+		$results = $this->runSql($sql);
+		while($row = mysql_fetch_array($results)){
+			$date = new DateTime($row['createdate']);
+			$arrayIndex = $date->format('M-Y');
+		
+			if ($row['createdate'] > $row['ANC2_DUE_BY_START'] && $row['createdate'] < $row['ANC2_DUE_BY_END']){
+				$summary[$arrayIndex]->nondefaulters++;
+			} else {
+				$summary[$arrayIndex]->defaulters++;
+			}
+		}
+		
+		// all those who had an ANC1 but not a second visit and didn't have termination protocol entered before ANC was due
+		$sql = "SELECT 	p._URI,
+						p.Q_USERID, 
+						p.Q_HEALTHPOINTID, 
+						p.Q_LMP, 
+						DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) AS ANC2_DUE_BY_END 
+				FROM ".TABLE_ANCFIRST." p
+				LEFT OUTER JOIN ".TABLE_ANCFOLLOW." f ON f.Q_USERID = p.Q_USERID AND f.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID
+				WHERE f.Q_USERID IS NULL
+				AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
+				AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) < curdate()
+				AND p.Q_HEALTHPOINTID != '9999'
+				ORDER BY DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) ASC";
+		// TODO add constraint about terminations
+		// TODO add permissions
+		// all those returned by above query are defaulters - as have now Follow up
+		$results = $this->runSql($sql);
+		while($row = mysql_fetch_array($results)){
+			$date = new DateTime($row['ANC2_DUE_BY_END']);
+			$arrayIndex = $date->format('M-Y');
+			$summary[$arrayIndex]->defaulters++;
+		}
+		
+		// change into a percentage rather than absolute values
+		foreach($summary as $k=>$v){
+			$total = $v->defaulters + $v->nondefaulters;
+			if ($total > 0){
+				$pc_default = ($v->defaulters * 100)/$total;
+				$pc_nondefault = ($v->nondefaulters * 100)/$total;
+				$summary[$k]->defaulters = $pc_default;
+				$summary[$k]->nondefaulters = $pc_nondefault;
+			}
+		}
+		 return $summary;
+	}
+	
+	
 	function datacheckSummary(){
 		$total = 0;
 		$total += count($this->datacheckDuplicateReg());
@@ -1172,32 +1278,39 @@ class API {
 	}
 	
 	function datacheckDuplicateReg(){
-		$sql = "SELECT 	i.Q_HEALTHPOINTID as healthpointcode, 
-				hp.hpname as healthpointname, 
-				i.Q_USERID as patientid
-				FROM ".TABLE_REGISTRATION." i
-				INNER JOIN healthpoint hp ON hp.hpcode = i.Q_HEALTHPOINTID
-				GROUP BY hp.hpname, 
-					i.Q_HEALTHPOINTID, 
-					i.Q_USERID
-				HAVING count(i._URI)>1";
-		// TODO add permissions
 		$report = array();
-	    $result = _mysql_query($sql,$this->DB);
+		//include_once 'datacheck/duplicatereg.php';
+		$sql = "SELECT 	i.Q_HEALTHPOINTID as healthpointcode,
+						hp.hpname as healthpointname, 
+						i.Q_USERID as patientid
+						FROM ".TABLE_REGISTRATION." i
+						INNER JOIN healthpoint hp ON hp.hpcode = i.Q_HEALTHPOINTID";
+		// add permissions
+		$sql .= " WHERE i.Q_HEALTHPOINTID IN (".$this->getUserPermissions().") " ;
+		$sql .= " GROUP BY hp.hpname,
+							i.Q_HEALTHPOINTID, 
+							i.Q_USERID
+						HAVING count(i._URI)>1";
+		
+		
+		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
-	  	while($row = mysql_fetch_object($result)){
-		   	array_push($report,$row);
+			writeToLog('error','database',$sql);
+			return;
 		}
-	    return $report; 
+		while($row = mysql_fetch_object($result)){
+			array_push($report,$row);
+		}
+		return $report;
 	}
 	
 	function datacheckUnregistered(){
 		$report = array();
 		// unregistered from ancfirst
-		$sql = "SELECT p.Q_HEALTHPOINTID, 
+		$sql = "SELECT * FROM (";
+		$sql .= "SELECT p.Q_HEALTHPOINTID, 
+						php.hpcode as patienthpcode,
+ 						hp.hpcode as protocolhpcode,
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,  
 						p.Q_USERID,
@@ -1212,7 +1325,9 @@ class API {
 		
 		//unregistered from ancfollow
 		$sql .= " UNION 
-				SELECT p.Q_HEALTHPOINTID, 
+				SELECT p.Q_HEALTHPOINTID,
+						php.hpcode as patienthpcode,
+ 						hp.hpcode as protocolhpcode, 
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation, 
 						p.Q_USERID,
@@ -1227,6 +1342,8 @@ class API {
 		
 		//unregistered from anclabtest
 		$sql .= " UNION SELECT p.Q_HEALTHPOINTID, 
+						php.hpcode as patienthpcode,
+ 						hp.hpcode as protocolhpcode,
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,   
 						p.Q_USERID,
@@ -1242,6 +1359,8 @@ class API {
 		// unregistered from anctransfer
 		$sql .= " UNION
 				SELECT p.Q_HEALTHPOINTID, 
+						php.hpcode as patienthpcode,
+ 						hp.hpcode as protocolhpcode,
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation, 
 						p.Q_USERID,
@@ -1257,8 +1376,10 @@ class API {
 		// unregistered from delivery
 		$sql .= " UNION
 				SELECT p.Q_HEALTHPOINTID, 
+						php.hpcode as patienthpcode,
+ 						hp.hpcode as protocolhpcode,
 						php.hpname as patientlocation,
-						hp.hpname as protocollocation, 
+ 						hp.hpname as protocollocation, 
 						p.Q_USERID,
 						'".PROTOCOL_DELIVERY."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname
@@ -1268,7 +1389,13 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE r._URI is null";
-		// TODO add permissions
+		
+		// TODO add unregistered from PNC
+		$sql .= ") a";
+		$sql .= " WHERE a.patienthpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= " OR a.protocolhpcode IN (".$this->getUserPermissions().") " ;
+		
+		
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -1293,12 +1420,13 @@ class API {
 				FROM ".TABLE_ANCFIRST." i
 				INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
 				INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				GROUP BY php.hpname, 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
+		$sql .= " WHERE (php.hpcode IN (".$this->getUserPermissions().")" ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " GROUP BY php.hpname, 
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
 				HAVING count(i._URI)>1";
-		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -1319,13 +1447,14 @@ class API {
 				FROM ".TABLE_ANCFOLLOW." i
 				INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
 				INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				GROUP BY php.hpname, 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
+		$sql .= " WHERE  (php.hpcode IN (".$this->getUserPermissions().")" ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " GROUP BY php.hpname, 
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID,
 					i.Q_FOLLOWUPNO
 				HAVING count(i._URI)>1";
-		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -1347,12 +1476,13 @@ class API {
 				FROM ".TABLE_ANCLABTEST." i
 				INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
 				INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				GROUP BY php.hpname, 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
+		$sql .= " WHERE  (php.hpcode IN (".$this->getUserPermissions().")" ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " GROUP BY php.hpname, 
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
 				HAVING count(i._URI)>1";
-		// TODO add permissions
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -1377,8 +1507,11 @@ class API {
 		$missing = array();
 		
 		// check anc first if follow up 1 exists
-		$sql = "SELECT p.Q_USERID, 
+		$sql = "SELECT * FROM (";
+		$sql .= "SELECT p.Q_USERID, 
 						p.Q_HEALTHPOINTID, 
+						php.hpcode as patienthpcode,
+ 						hp.hpcode as protocolhpcode,
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
@@ -1392,12 +1525,14 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE p.Q_FOLLOWUPNO ='2'
 				AND first.Q_USERID is null ";
-		// TODO add permissions
 		
+				
 		//check follow up 2 if follow up 1
 		$sql .= " UNION
 				SELECT p.Q_USERID, 
 						p.Q_HEALTHPOINTID, 
+						php.hpcode as patienthpcode,
+ 						hp.hpcode as protocolhpcode,
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
@@ -1415,9 +1550,11 @@ class API {
 		// TODO add permissions
 		
 		//check follow up 3 if follow up 2
-		$sql	.= " UNION
+		$sql .= " UNION
 				SELECT p.Q_USERID, 
 						p.Q_HEALTHPOINTID, 
+						php.hpcode as patienthpcode,
+ 						hp.hpcode as protocolhpcode,
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
@@ -1437,6 +1574,8 @@ class API {
 		$sql .= " UNION
 				SELECT p.Q_USERID, 
 						p.Q_HEALTHPOINTID, 
+						php.hpcode as patienthpcode,
+ 						hp.hpcode as protocolhpcode,
 						php.hpname as patientlocation,
 						hp.hpname as protocollocation,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
@@ -1454,7 +1593,10 @@ class API {
 		
 		//TODO check labour/dlivery when pnc
 		
-		
+		$sql .= ") a ";
+		$sql .= " WHERE (a.patienthpcode IN (".$this->getUserPermissions().")" ;
+		$sql .= " OR a.protocolhpcode IN (".$this->getUserPermissions().")) " ;
+
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);

@@ -28,9 +28,13 @@ body {
   	padding:5px 10px;
 }
 
+#title {
+	float:left;	
+	width:70%;
+}
 
 #title h1 {
-	font-size:120%;
+	font-size:110%;
 	display:inline;
 }
 
@@ -39,6 +43,38 @@ body {
 }
 
 #content {
-	padding:5px 10px;
+	padding:5px 5px;
 	font-size:80%;
+}
+
+#header-right {
+	float:left;	
+	text-align:right;
+	width:28%;
+}
+
+div.formblock {
+	padding: 5px;
+	font-size:130%;
+}
+
+div.formlabel{
+	padding: 0 5px;
+	font-size:130%;
+}
+
+div.formfield{
+	padding: 0 5px;
+	font-size:140%;
+}
+
+div.error {
+	border: 1px solid #ccc;
+	padding:5px;
+	margin:5px;
+	color:red;
+}
+
+li {
+	margin-left:15px;	
 }

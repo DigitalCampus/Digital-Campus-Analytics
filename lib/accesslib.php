@@ -89,11 +89,11 @@ function validateSession($username) {
  * if not, they get redirected to homepage 
  * 
  */
-function checkLogin(){
+function checkLogin($prefix=""){
     global $USER,$CONFIG;
     $url = "http" . ((!empty($_SERVER["HTTPS"])) ? "s" : "") . "://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
     if(!isset($USER->username)){
-        header('Location: '.$CONFIG->homeAddress.'login.php?ref='.urlencode($url));  
+        header('Location: '.$CONFIG->homeAddress.$prefix.'login.php?ref='.urlencode($url));  
         die; 
     }
 }

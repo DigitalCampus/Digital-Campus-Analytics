@@ -76,6 +76,7 @@ $LANG['menu.risk-manager'] = 'ተ';
 $LANG['menu.submitted'] = 'ተ';
 $LANG['menu.timeline'] = 'ተ';
 $LANG['menu.timeplot'] = 'ተ';
+$LANG['mobile.app.name'] = 'ተ';
 $LANG['name'] = 'ተ';
 $LANG['patientlocation'] = 'ተ';
 $LANG['patientmanager.form.healthpost'] = 'ተ';

@@ -3,9 +3,9 @@
 		printf("<tr class='rrow'><td class='rqcell'>%s</td><td class='rdcell'>%s</td><tr>",$title,$data);
 	}
 	
-	echo "<pre>";
-	print_r($patient->delivery);
-	echo "</pre>";
+	//echo "<pre>";
+	//print_r($patient->delivery);
+	//echo "</pre>";
 ?>
 
 <h3><?php echo getstring(PROTOCOL_DELIVERY);?></h3>
