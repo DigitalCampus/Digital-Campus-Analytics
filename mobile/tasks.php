@@ -17,6 +17,7 @@ foreach($tasks as $task){
 	}
 	printf("<div class='taskpname'>%s</div>",$task->patientname);
 	printf("<div class='taskpid'>%s/%s</div>",$task->patientlocation,$task->Q_USERID);
+	printf("<div class='taskprisk'>%s</div>","high risk");
 	printf("<div style='clear:both;'></div></div>");
 }
 include_once 'includes/footer.php';

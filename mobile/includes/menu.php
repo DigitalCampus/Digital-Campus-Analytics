@@ -1,5 +1,5 @@
 <div id="menu">
-	<a href="index.php">KPIs</a> 
+	<a href="index.php">Performance Indicators</a> 
 	| 
-	<a href="tasks.php">Tasks</a>
+	<a href="tasks.php">Upcoming Tasks</a>
 </div>
