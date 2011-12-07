@@ -5,7 +5,7 @@ $HEADER .= '<script src="http://maps.googleapis.com/maps/api/js?sensor=false" ty
 require_once "../includes/header.php";
 
 // only allow access by admins
-if($USER->getProp('isadmin') != "true"){
+if($USER->getProp('permissions.admin') != "true"){
 	writeToLog('warning','adminpage','accessdenied');
 	echo getString ("warning.accessdenied");
 	die;

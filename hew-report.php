@@ -8,11 +8,10 @@ $days = optional_param("days",31,PARAM_INT);
 $userid = optional_param("userid","",PARAM_TEXT);
 $submit = optional_param("submit","",PARAM_TEXT);
 
-// TODO check permissions, so can't alter the url to get record of someone else
 $users = $API->getUsers();
 
 printf("<h2 class='printhide'>%s</h2>", getString("hewmanager.title"));
-$currentHEW = "";
+$currentUser = $API->getUserById($userid);
 ?>
 <form action="" method="get" class="printhide">
 	<?php echo getString("hewmanager.form.hew");?>
@@ -33,6 +32,9 @@ $currentHEW = "";
 
 <?php 
 if ($userid == ""){
+	include_once "includes/footer.php";
+	die;
+} else if ($currentUser == null){
 	include_once "includes/footer.php";
 	die;
 }

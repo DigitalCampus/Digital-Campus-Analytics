@@ -66,7 +66,13 @@ class API {
 	} 
 	
 	function getUserByID($userid){
-		$sql = sprintf("SELECT * FROM user WHERE userid =%d LIMIT 0,1",$userid);
+		$sql = sprintf("SELECT * 
+							FROM user u
+						LEFT OUTER JOIN healthpoint hp ON u.hpid = hp.hpid
+						LEFT OUTER JOIN district d ON hp.did = d.did
+						WHERE userid = %d
+						AND hp.hpcode IN (%s) 
+						LIMIT 0,1",$userid, $this->getUserPermissions());
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -82,6 +88,7 @@ class API {
 			$user->user_uri =  $o->user_uri;
 			return $user;
 		}
+		return null;
 	}
 	
 	function getUsers($getall = false){
@@ -201,10 +208,10 @@ class API {
 	function getUserPermissions(){
 		global $USER;
 		
-		if($USER->getProp('isadmin') == 'true'){
+		if($USER->getProp('permissions.admin') == 'true'){
 			// admin user can view everything
 			$sql = "SELECT hpcode FROM healthpoint";
-		} else if($USER->getProp('permissions.all') == 'true'){
+		} else if($USER->getProp('permissions.viewall') == 'true'){
 			// "permissions.all" can view all districts & healthpoints, but aren't admin users (can't view logs, edit users etc)
 			$sql = "SELECT hpcode FROM healthpoint";
 		} else if($USER->getProp('permissions.districts') != null) {

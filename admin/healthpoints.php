@@ -3,7 +3,7 @@ require_once "../config.php";
 require_once "../includes/header.php";
 
 // only allow access by admins
-if($USER->getProp('isadmin') != "true"){
+if($USER->getProp('permissions.admin') != "true"){
 	writeToLog('warning','adminpage','accessdenied');
 	echo getString ("warning.accessdenied");
 	die;
