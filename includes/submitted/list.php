@@ -59,7 +59,7 @@
 			echo "<tr class='l' title='Click to view full details'";
 			printf("onclick=\"document.location.href='%spatient.php?hpcode=%s&patientid=%s&protocol=%s';\">",
 							$CONFIG->homeAddress,
-							$s->Q_HEALTHPOINTID,
+							$s->patienthpcode,
 							$s->Q_USERID,
 							$s->protocol
 							);

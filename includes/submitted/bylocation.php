@@ -4,8 +4,10 @@ $submitted = $API->getProtocolsSubmitted($opts);
 
 printf("<h3>%s</h3>",getstring('submitted.total.count',array(count($submitted->protocols),$days)));
 
+$healthpoints = $API->getHealthPoints();
 
-$locations = $API->getHealthPoints();
+$locations = array();
+
 $summary = array();
 foreach($submitted->protocols as $s){
 	$d = date('d M Y',strtotime($s->datestamp));
@@ -19,7 +21,18 @@ foreach($submitted->protocols as $s){
 	} else {
 		$summary[$d][$s->protocollocation] = 1;
 	}	
+	
+	if(!in_array($s->protocollocation,$locations)){
+		array_push($locations, $s->protocollocation);
+	}
 }	
+
+foreach($healthpoints as $hp){
+	if(!in_array($hp->hpname,$locations)){
+		array_push($locations, $hp->hpname);
+	}
+}
+
 ?>
 
 <script type="text/javascript">
@@ -36,7 +49,7 @@ foreach($submitted->protocols as $s){
         data.addColumn('number', 'Total');
 		<?php 
         foreach($locations as $l){
-        	echo "data.addColumn('number', '".$l->hpname."');";
+        	echo "data.addColumn('number', '".$l."');";
         }
         
         echo "data.addRows(".($days+1).");";
@@ -47,9 +60,9 @@ foreach($submitted->protocols as $s){
         	$tempc =  date('d M Y',$date);
 			$total = 0;
 			if(isset($summary[$tempc])){
-	        	foreach($locations as $l){
-	        		if(isset($summary[$tempc][$l->hpname])){
-	        			$total = $total + $summary[$tempc][$l->hpname];
+	        	foreach($locations as $k=>$v){
+	        		if(isset($summary[$tempc][$v])){
+	        			$total = $total + $summary[$tempc][$v];
 	        		}
 	        	}
 			}
@@ -59,9 +72,9 @@ foreach($submitted->protocols as $s){
         	if(isset($summary[$tempc])){
         		printf("data.setValue(%d,%d,'%s');",$c,0,$tempc);
 	        	$loccount = 2;
-	        	foreach($locations as $l){
-	        		if(isset($summary[$tempc][$l->hpname])){
-	        			printf("data.setValue(%d,%d,%d);", $c, $loccount, $summary[$tempc][$l->hpname]);
+	        	foreach($locations as $k=>$v){
+	        		if(isset($summary[$tempc][$v])){
+	        			printf("data.setValue(%d,%d,%d);", $c, $loccount, $summary[$tempc][$v]);
 	        		} else {
 	        			printf("data.setValue(%d,%d,%d);", $c, $loccount, 0);
 	        		}
@@ -70,7 +83,7 @@ foreach($submitted->protocols as $s){
         	} else {
         		echo "data.setValue(".$c.",0,'".$tempc."');";
 	        	$loccount = 2;
-	        	foreach($locations as $l){
+	        	foreach($locations as $k=>$v){
 	        		printf("data.setValue(%d,%d,%d);", $c, $loccount, 0);
 	        		$loccount++;
 	        	}		
