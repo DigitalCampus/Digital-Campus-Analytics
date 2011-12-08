@@ -25,7 +25,7 @@ $sql = "SELECT 	p._URI,
 				p.Q_TETANUS
 		FROM ".TABLE_ANCFIRST." p 
 		WHERE p.TODAY > date_format(curdate() - interval 6 month,'%Y-%m-01 00:00:00')
-		AND p.Q_HEALTHPOINTID != '9999'
+		AND p.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")
 		ORDER BY p.TODAY ASC";
 
 $results = $API->runSql($sql);

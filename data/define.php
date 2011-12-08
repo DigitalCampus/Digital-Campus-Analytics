@@ -46,4 +46,6 @@ define("ANC3_DUE_BY_END",231);
 define("ANC4_DUE_BY_START",238);
 define("ANC4_DUE_BY_END",259);
 
+define("IGNORE_HEALTHPOINTS","9999");
+
 ?>

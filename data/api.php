@@ -242,6 +242,12 @@ class API {
 		}
 		return $hpcodes;
 	}
+	
+	// get the list of ignored health points
+	function getIgnoredHealthPoints(){
+		return IGNORE_HEALTHPOINTS;
+	}
+	
 	/*
 	 * 
 	 */
@@ -1053,8 +1059,11 @@ class API {
 					WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
 
 		$sql .= ") a ";
-		$sql .= "WHERE a.patienthpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= "OR a.protocolhpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= "WHERE (a.patienthpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= "OR a.protocolhpcode IN (".$this->getUserPermissions().")) " ;
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		$sql .= "ORDER BY datestamp DESC";
 		
 		
@@ -1172,12 +1181,13 @@ class API {
 				FROM ".TABLE_ANCFIRST." p 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
-				AND p.Q_HEALTHPOINTID != '9999'
-				AND p.Q_HEALTHPOINTID IN (".$this->getUserPermissions().")
+				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
+		$sql .= " AND p.Q_HEALTHPOINTID IN (".$this->getUserPermissions().")
 				ORDER BY p.TODAY ASC";
-		
-		// TODO add permissions
+
 		
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
@@ -1270,10 +1280,14 @@ class API {
 						DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_START." DAY) AS ANC2_DUE_BY_START,
 						DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) AS ANC2_DUE_BY_END
 				FROM ".TABLE_ANCFOLLOW." p
-				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
-				AND p.Q_HEALTHPOINTID != '9999'
-				ORDER BY p.TODAY ASC";
+				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
+		$sql .= " ORDER BY p.TODAY ASC";
+		
 		// TODO add permissions
+		
 		// if createdate not between ANC2_DUE_BY_START and ANC2_DUE_BY_END then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = $this->runSql($sql);
@@ -1298,9 +1312,11 @@ class API {
 				LEFT OUTER JOIN ".TABLE_ANCFOLLOW." f ON f.Q_USERID = p.Q_USERID AND f.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID
 				WHERE f.Q_USERID IS NULL
 				AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
-				AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) < curdate()
-				AND p.Q_HEALTHPOINTID != '9999'
-				ORDER BY DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) ASC";
+				AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) < curdate()";
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
+		$sql .= " ORDER BY DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) ASC";
 		// TODO add constraint about terminations
 		// TODO add permissions
 		// all those returned by above query are defaulters - as have now Follow up
@@ -1348,6 +1364,9 @@ class API {
 						INNER JOIN healthpoint hp ON hp.hpcode = i.Q_HEALTHPOINTID";
 		// add permissions
 		$sql .= " WHERE i.Q_HEALTHPOINTID IN (".$this->getUserPermissions().") " ;
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		$sql .= " GROUP BY hp.hpname,
 							i.Q_HEALTHPOINTID, 
 							i.Q_USERID
@@ -1453,14 +1472,17 @@ class API {
 		
 		// TODO add unregistered from PNC
 		$sql .= ") a";
-		$sql .= " WHERE a.patienthpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= " OR a.protocolhpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= " WHERE (a.patienthpcode IN (".$this->getUserPermissions().") " ;
+		$sql .= " OR a.protocolhpcode IN (".$this->getUserPermissions().")) " ;
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		
 		
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
-	    	return;
+	    	return false;
 	    }
 	  	while($row = mysql_fetch_object($result)){
 		   	array_push($report,$row);
@@ -1484,6 +1506,9 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE (php.hpcode IN (".$this->getUserPermissions().")" ;
 		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND php.hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		$sql .= " GROUP BY php.hpname, 
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
@@ -1511,6 +1536,9 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE  (php.hpcode IN (".$this->getUserPermissions().")" ;
 		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND php.hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		$sql .= " GROUP BY php.hpname, 
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID,
@@ -1540,6 +1568,9 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE  (php.hpcode IN (".$this->getUserPermissions().")" ;
 		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND php.hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		$sql .= " GROUP BY php.hpname, 
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
@@ -1657,6 +1688,9 @@ class API {
 		$sql .= ") a ";
 		$sql .= " WHERE (a.patienthpcode IN (".$this->getUserPermissions().")" ;
 		$sql .= " OR a.protocolhpcode IN (".$this->getUserPermissions().")) " ;
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
