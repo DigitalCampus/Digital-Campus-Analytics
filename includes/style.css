@@ -197,11 +197,13 @@ div.summarygraph {
 	padding:5px;
 	margin:10px;
 	border:1px solid #ccc;
+	float:left;
 }
 
 div.graph {
 	padding:5px;
 	margin:10px;
+	float:left;
 }
 
 div.risk {
@@ -292,4 +294,12 @@ div.userformpropvalue, div.userformpropname {
 
 div.userformprop {
 	clear:both;
+}
+
+div.comparison {
+	border: 1px solid #ccc;
+	padding:5px;
+	margin:10px;
+	float:left;
+	width: 20%;
 }

@@ -72,7 +72,7 @@ class API {
 						LEFT OUTER JOIN district d ON hp.did = d.did
 						WHERE userid = %d
 						AND hp.hpcode IN (%s) 
-						LIMIT 0,1",$userid, $this->getUserPermissions());
+						LIMIT 0,1",$userid, $this->getUserHealthPointPermissions());
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 			writeToLog('error','database',$sql);
@@ -120,7 +120,7 @@ class API {
 					LEFT OUTER JOIN healthpoint hp ON u.hpid = hp.hpid
 					LEFT OUTER JOIN district d ON hp.did = d.did
 					WHERE hp.hpcode IN (%s)
-					ORDER BY u.firstname",$this->getUserPermissions());
+					ORDER BY u.firstname",$this->getUserHealthPointPermissions());
 		}
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
@@ -205,7 +205,7 @@ class API {
 	}
 	
 	// returns comma separated list of the hpcodes the current user is allowed to view
-	function getUserPermissions(){
+	function getUserHealthPointPermissions(){
 		global $USER;
 		
 		if($USER->getProp('permissions.admin') == 'true'){
@@ -243,6 +243,7 @@ class API {
 		return $hpcodes;
 	}
 	
+	
 	// get the list of ignored health points
 	function getIgnoredHealthPoints(){
 		return IGNORE_HEALTHPOINTS;
@@ -261,7 +262,7 @@ class API {
 		if($getall){
 			$sql = "SELECT * FROM healthpoint ORDER BY hpname ASC;";
 		} else {
-			$sql = sprintf("SELECT * FROM healthpoint WHERE hpcode IN (%s) ORDER BY hpname ASC;",$this->getUserPermissions());
+			$sql = sprintf("SELECT * FROM healthpoint WHERE hpcode IN (%s) ORDER BY hpname ASC;",$this->getUserHealthPointPermissions());
 		}
 		$healthposts = array();
 	    $result = _mysql_query($sql,$this->DB);
@@ -273,6 +274,26 @@ class API {
 		   	$healthposts[$row->hpcode] = $row;
 		}
 	    return $healthposts;
+	}
+	
+	function getCohortHealthPoints(){
+		$sql = sprintf("SELECT * FROM healthpoint hp
+						INNER JOIN district d ON d.did = hp.did
+						WHERE d.did IN (SELECT did 
+										FROM healthpoint 
+										WHERE hpcode IN (%s));",
+						$this->getUserHealthPointPermissions());
+		
+		$healthposts = array();
+		$result = _mysql_query($sql,$this->DB);
+		if (!$result){
+			writeToLog('error','database',$sql);
+			return;
+		}
+		while($row = mysql_fetch_object($result)){
+			$healthposts[$row->hpcode] = $row;
+		}
+		return $healthposts;
 	}
 	
 	
@@ -368,8 +389,8 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= "OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 
 	    $result = _mysql_query($sql,$this->DB);
 		if (!$result){
@@ -502,8 +523,8 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= "OR hp.hpcode IN (".$this->getUserPermissions()."))" ;
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions()."))" ;
 		
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
@@ -606,8 +627,8 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' AND r.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
 		$result = _mysql_query($sql,$this->DB);
@@ -671,8 +692,8 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
 		$result = _mysql_query($sql,$this->DB);
@@ -744,8 +765,8 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
 		$result = _mysql_query($sql,$this->DB);
@@ -826,8 +847,8 @@ class API {
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 				WHERE pathp.hpcode = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
 		$result = _mysql_query($sql,$this->DB);
@@ -1059,8 +1080,8 @@ class API {
 					WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
 
 		$sql .= ") a ";
-		$sql .= "WHERE (a.patienthpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= "OR a.protocolhpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= "WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= "OR a.protocolhpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
@@ -1164,10 +1185,10 @@ class API {
 		} else {
 			$months = 6;
 		}
-		if(array_key_exists('viewby',$opts)){
-			$viewby = $opts['viewby'];
+		if(array_key_exists('hps',$opts)){
+			$hps = $opts['hps'];
 		} else {
-			$viewby = 'months';
+			$hps = $this->getUserHealthPointPermissions();
 		}
 		
 		// get all the submitted ANC1 protocols from first day of the month 6 months ago
@@ -1185,61 +1206,51 @@ class API {
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
-		$sql .= " AND p.Q_HEALTHPOINTID IN (".$this->getUserPermissions().")
+		$sql .= " AND p.Q_HEALTHPOINTID IN (".$hps.")
 				ORDER BY p.TODAY ASC";
 
 		
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = _mysql_query($sql,$this->DB);
+		if (!$results){
+			writeToLog('error','database',$sql);
+			return;
+		}
+		
 		$summary = array();
 		
-		if($viewby == 'months'){
-			$date = new DateTime();
-			$date->sub(new DateInterval('P'.$months.'M'));
-			
-			for ($i=0; $i<$months+1 ;$i++){
-				$summary[$date->format('M-Y')] = new stdClass;
-				$summary[$date->format('M-Y')]->defaulters = 0;
-				$summary[$date->format('M-Y')]->nondefaulters = 0;
-				$date->add(new DateInterval('P1M'));
-			}
-			
-			while($row = mysql_fetch_array($results)){
-				$date = new DateTime($row['createdate']);
-				$arrayIndex = $date->format('M-Y');
-			
-				if ($row['createdate'] > $row['ANC1DUEBY'] ){
-					$summary[$arrayIndex]->defaulters++;
-				} else {
-					$summary[$arrayIndex]->nondefaulters++;
-				}
-			}
-		} else if($viewby == 'healthpoints'){
-			$hps = $this->getHealthPoints();
-			
-			foreach ($hps as $hp){
-				$summary[$hp->hpname] = new stdClass;
-				$summary[$hp->hpname]->defaulters = 0;
-				$summary[$hp->hpname]->nondefaulters = 0;
-			}
-			while($row = mysql_fetch_array($results)){
-				$arrayIndex = $row['healthpoint'];
-					
-				if ($row['createdate'] > $row['ANC1DUEBY'] ){
-					$summary[$arrayIndex]->defaulters++;
-				} else {
-					$summary[$arrayIndex]->nondefaulters++;
-				}
+		
+		$date = new DateTime();
+		$date->sub(new DateInterval('P'.$months.'M'));
+		
+		for ($i=0; $i<$months+1 ;$i++){
+			$summary[$date->format('M-Y')] = new stdClass;
+			$summary[$date->format('M-Y')]->defaulters = 0;
+			$summary[$date->format('M-Y')]->nondefaulters = 0;
+			$date->add(new DateInterval('P1M'));
+		}
+		
+		while($row = mysql_fetch_array($results)){
+			$date = new DateTime($row['createdate']);
+			$arrayIndex = $date->format('M-Y');
+		
+			if ($row['createdate'] > $row['ANC1DUEBY'] ){
+				$summary[$arrayIndex]->defaulters++;
+			} else {
+				$summary[$arrayIndex]->nondefaulters++;
 			}
 		}
 		
+		// if more than one HP then divide to get the average
+		$hpcount = count(explode(",",$hps));
+		echo "<hr/>".$hpcount."<hr/>";
 		// change into a percentage rather than absolute values
 		foreach($summary as $k=>$v){
 			$total = $v->defaulters + $v->nondefaulters;
 			if ($total > 0){
-				$pc_default = ($v->defaulters * 100)/$total;
-				$pc_nondefault = ($v->nondefaulters * 100)/$total;
+				$pc_default = ($v->defaulters * 100)/$total/$hpcount;
+				$pc_nondefault = ($v->nondefaulters * 100)/$total/$hpcount;
 				$summary[$k]->defaulters = $pc_default;
 				$summary[$k]->nondefaulters = $pc_nondefault;
 			}
@@ -1363,7 +1374,7 @@ class API {
 						FROM ".TABLE_REGISTRATION." i
 						INNER JOIN healthpoint hp ON hp.hpcode = i.Q_HEALTHPOINTID";
 		// add permissions
-		$sql .= " WHERE i.Q_HEALTHPOINTID IN (".$this->getUserPermissions().") " ;
+		$sql .= " WHERE i.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
@@ -1472,8 +1483,8 @@ class API {
 		
 		// TODO add unregistered from PNC
 		$sql .= ") a";
-		$sql .= " WHERE (a.patienthpcode IN (".$this->getUserPermissions().") " ;
-		$sql .= " OR a.protocolhpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " OR a.protocolhpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
@@ -1504,8 +1515,8 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
 				INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE (php.hpcode IN (".$this->getUserPermissions().")" ;
-		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " WHERE (php.hpcode IN (".$this->getUserHealthPointPermissions().")" ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND php.hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
@@ -1534,8 +1545,8 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
 				INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE  (php.hpcode IN (".$this->getUserPermissions().")" ;
-		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " WHERE  (php.hpcode IN (".$this->getUserHealthPointPermissions().")" ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND php.hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
@@ -1566,8 +1577,8 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
 				INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE  (php.hpcode IN (".$this->getUserPermissions().")" ;
-		$sql .= " OR hp.hpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " WHERE  (php.hpcode IN (".$this->getUserHealthPointPermissions().")" ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND php.hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
@@ -1686,8 +1697,8 @@ class API {
 		//TODO check labour/dlivery when pnc
 		
 		$sql .= ") a ";
-		$sql .= " WHERE (a.patienthpcode IN (".$this->getUserPermissions().")" ;
-		$sql .= " OR a.protocolhpcode IN (".$this->getUserPermissions().")) " ;
+		$sql .= " WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().")" ;
+		$sql .= " OR a.protocolhpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}

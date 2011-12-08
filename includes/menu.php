@@ -18,6 +18,12 @@
 		echo "<a href='".$CONFIG->homeAddress."kpi.php'>".getString("menu.kpi")."</a>";
 	}?>
 	|
+	<?php if($PAGE == "assessment") {
+		echo getString("menu.assessment");
+	} else {
+		echo "<a href='".$CONFIG->homeAddress."assessment.php'>".getString("menu.assessment")."</a>";
+	}?>
+	|
 	<?php if($PAGE == "map") {
 		echo getString("menu.map");
 	} else {

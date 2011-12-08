@@ -30,8 +30,8 @@ foreach ($views as $v){
 }
 
 if ($kpi == "anc1defaulters"){
-	$viewopts = array('height'=>500,'width'=>1000,'class'=>'graph');
-	$opts = array('months'=>6, 'viewby'=>$view);
+	$viewopts = array('height'=>500,'width'=>800,'class'=>'graph');
+	$opts = array('months'=>6);
 	include_once "includes/kpi/anc1defaulters.php";	
 }
 include_once "includes/footer.php";
