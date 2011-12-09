@@ -203,7 +203,6 @@ div.summarygraph {
 div.graph {
 	padding:5px;
 	margin:10px;
-	float:left;
 }
 
 div.risk {
@@ -300,6 +299,4 @@ div.comparison {
 	border: 1px solid #ccc;
 	padding:5px;
 	margin:10px;
-	float:left;
-	width: 20%;
 }

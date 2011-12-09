@@ -249,6 +249,7 @@ class API {
 		return IGNORE_HEALTHPOINTS;
 	}
 	
+	
 	/*
 	 * 
 	 */
@@ -271,17 +272,19 @@ class API {
 	    	return;
 	    }
 	  	while($row = mysql_fetch_object($result)){
-		   	$healthposts[$row->hpcode] = $row;
+		   	$healthposts[$row->hpid] = $row;
 		}
 	    return $healthposts;
 	}
+	
 	
 	function getCohortHealthPoints(){
 		$sql = sprintf("SELECT * FROM healthpoint hp
 						INNER JOIN district d ON d.did = hp.did
 						WHERE d.did IN (SELECT did 
 										FROM healthpoint 
-										WHERE hpcode IN (%s));",
+										WHERE hpcode IN (%s))
+						ORDER BY hp.hpname ASC",
 						$this->getUserHealthPointPermissions());
 		
 		$healthposts = array();
@@ -296,6 +299,37 @@ class API {
 		return $healthposts;
 	}
 	
+	// get list of the distrcits for the current user
+	function getDistricts(){
+		$sql = sprintf("SELECT DISTINCT d.* FROM district d
+						INNER JOIN healthpoint hp ON hp.did = d.did
+						WHERE hp.hpcode IN (%s) ORDER BY d.dname ASC", $this->getUserHealthPointPermissions());
+		$districts = array();
+		$result = _mysql_query($sql,$this->DB);
+		if (!$result){
+			writeToLog('error','database',$sql);
+			return;
+		}
+		while($o = mysql_fetch_object($result)){
+			array_push($districts,$o);
+		}
+		return $districts;
+	}
+	
+	function getHealthPointsForDistict($did){
+		$sql = sprintf("SELECT * FROM healthpoint hp 
+						WHERE hp.did=%d ORDER BY hp.hpname ASC", $did);
+		$healthposts = array();
+		$result = _mysql_query($sql,$this->DB);
+		if (!$result){
+			writeToLog('error','database',$sql);
+			return;
+		}
+		while($o = mysql_fetch_object($result)){
+			array_push($healthposts,$o);
+		}
+		return $healthposts;
+	}
 	
 	function updatePatients(){
 		//add any new patients to the patientcurrent table
@@ -1220,7 +1254,6 @@ class API {
 		
 		$summary = array();
 		
-		
 		$date = new DateTime();
 		$date->sub(new DateInterval('P'.$months.'M'));
 		
@@ -1244,7 +1277,7 @@ class API {
 		
 		// if more than one HP then divide to get the average
 		$hpcount = count(explode(",",$hps));
-		echo "<hr/>".$hpcount."<hr/>";
+		
 		// change into a percentage rather than absolute values
 		foreach($summary as $k=>$v){
 			$total = $v->defaulters + $v->nondefaulters;
@@ -1258,6 +1291,81 @@ class API {
 		return $summary;
 	}
 	
+	function getANC1DefaultersBestPerformer($opts=array()){
+		if(array_key_exists('months',$opts)){
+			$months = max(0,$opts['months']);
+		} else {
+			$months = 6;
+		}
+		if(array_key_exists('hps',$opts)){
+			$hps = $opts['hps'];
+		} else {
+			$hps = $this->getUserHealthPointPermissions();
+		}
+	
+		// get all the submitted ANC1 protocols from first day of the month 6 months ago
+		$sql = "SELECT 	p._URI,
+							p.Q_USERID, 
+							p.Q_HEALTHPOINTID, 
+							p.Q_LMP, 
+							p.TODAY as createdate, 
+							DATE_ADD(p.Q_LMP, INTERVAL ".ANC1_DUE_BY_END." DAY) AS ANC1DUEBY ,
+							hp.hpname as healthpoint
+					FROM ".TABLE_ANCFIRST." p 
+					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
+					WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
+		$sql .= " AND p.Q_HEALTHPOINTID IN (".$hps.")
+					ORDER BY p.TODAY ASC";
+	
+	
+		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
+		// otherwise non defaulter
+		$results = _mysql_query($sql,$this->DB);
+		if (!$results){
+			writeToLog('error','database',$sql);
+			return;
+		}
+	
+		$summary = array();
+
+		while($row = mysql_fetch_array($results)){
+			$arrayIndex = $row['Q_HEALTHPOINTID'];
+			if(!array_key_exists($arrayIndex, $summary)){
+				$summary[$arrayIndex] = new stdClass();
+				$summary[$arrayIndex]->defaulters = 0;
+				$summary[$arrayIndex]->nondefaulters = 0;
+			}
+			if ($row['createdate'] > $row['ANC1DUEBY'] ){
+				$summary[$arrayIndex]->defaulters++;
+			} else {
+				$summary[$arrayIndex]->nondefaulters++;
+			}
+		}
+
+		// change into a percentage rather than absolute values
+		$besthp = 0;
+		$previousbest = 0;
+		foreach($summary as $k=>$v){
+			$total = $v->defaulters + $v->nondefaulters;
+			if ($total > 0){
+				$pc_default = ($v->defaulters * 100)/$total;
+				$pc_nondefault = ($v->nondefaulters * 100)/$total;
+				$summary[$k]->defaulters = $pc_default;
+				$summary[$k]->nondefaulters = $pc_nondefault;
+				if($pc_nondefault>$previousbest){
+					$previousbest = $pc_nondefault;
+					$besthp = $k;
+				}
+			}
+		}
+		$opts['hps'] = $besthp;
+		
+		return $this->getANC1Defaulters($opts);
+	}
 	
 	function getANC2Defaulters($opts=array()){
 		if(array_key_exists('months',$opts)){
