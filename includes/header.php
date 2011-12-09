@@ -67,7 +67,10 @@ header("Content-Type: text/html; charset=UTF-8");
 						echo " <a href='".$CONFIG->homeAddress."logout.php'>".getstring("header.logout")."</a>";
 					} else {
 						echo getstring("header.notloggedin");
-					}		
+					}	
+					if($USER->getProp('permissions.admin') == "true"){
+						echo " <a href='".$CONFIG->homeAddress."admin/'>admin</a>";
+					}	
 				?>
 			</div>
 			<div id="langchange">
