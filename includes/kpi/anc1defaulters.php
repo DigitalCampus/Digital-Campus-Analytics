@@ -111,12 +111,13 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
                           	vAxis: {title: 'Percentage', maxValue: 100, minValue: 0},
                           	chartArea:{left:50,top:20,width:"90%",height:"75%"},
                           	legend:{position:'in'},
-                          	colors:['blue','grey','green','yellow'],
+                          	colors:['#FACC2E','#A4A4A4','#04B431','#5882FA'],
                           	pointSize:5
                           });
       }
     </script>
 
+<?php if ($viewopts['comparison'] == true){?>
 <div class="comparison">
 <form action="" name="compareHealthPoint" method="get">
 	<p>Compare:
@@ -134,6 +135,7 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
 	<input type="submit" name="submit" value="compare"/></p>
 </form>
 </div>
+<?php } ?>
 
 <div id="chart_anc1defaulters" class="graph"><?php echo getstring('warning.graph.unavailable');?></div>
 <?php 
