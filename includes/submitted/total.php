@@ -47,14 +47,15 @@ foreach($submitted->protocols as $s){
         
         ?>
 
-        var chart = new google.visualization.LineChart(document.getElementById('submitted_location_chart_div'));
+        var chart = new google.visualization.AreaChart(document.getElementById('submitted_location_chart_div'));
         chart.draw(data, {	width: <?php echo $options['width'] ?>, 
                 			height: <?php echo $options['height'] ?>,
                 			hAxis: {title: 'Date'},
                 			vAxis: {title: 'Number submitted'},
                 			legend: 'none',
                 			chartArea:{left:50,top:20,width:"90%",height:"75%"},
-                			pointSize:5
+                			pointSize:3,
+                			series:[{areaOpacity:0.2}]
 							});
       }
     </script>

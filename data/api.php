@@ -949,8 +949,12 @@ class API {
 	function getProtocolsSubmitted($opts=array()){
 		if(array_key_exists('days',$opts)){
 			$days = max(0,$opts['days']);
+		} else if(array_key_exists('startdate',$opts) && array_key_exists('enddate',$opts)) {
+			$startdate = $opts['startdate'];
+			$enddate = $opts['enddate'];
 		} else {
-			$days = DEFAULT_DAYS;
+			array_push($ERROR,"You must specify either no days or start/end dates for this function");
+			return false; 
 		}
 		if(array_key_exists('limit',$opts)){
 			$limit = max(0,$opts['limit']);
@@ -985,8 +989,14 @@ class API {
 				FROM ".TABLE_REGISTRATION." p 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
+				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
+	
 		
 		// anc first
 		$sql .= " UNION
@@ -1011,8 +1021,13 @@ class API {
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
+				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
 		// follow ups
 		$sql .= " UNION
 				SELECT 
@@ -1036,8 +1051,13 @@ class API {
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
+				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
 		
 		// lab test
 		$sql .= " UNION
@@ -1062,9 +1082,13 @@ class API {
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
-		
+				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
 		// transfer
 		$sql .= " UNION
 				SELECT
@@ -1088,8 +1112,13 @@ class API {
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
+				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
 		
 		//delivery
 		$sql .= " UNION
@@ -1114,8 +1143,13 @@ class API {
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-					INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-					WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -".$days." DAY)";
+					INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
 
 		$sql .= ") a ";
 		$sql .= "WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().") " ;

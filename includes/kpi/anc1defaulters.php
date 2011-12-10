@@ -101,7 +101,7 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
 			}
 		?>
 
-        var chart = new google.visualization.LineChart(document.getElementById('chart_anc1defaulters'));
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_anc1defaulters'));
         chart.draw(data, {width: <?php echo $viewopts['width']; ?>, 
             				height:<?php echo $viewopts['height']; ?>,
                           	hAxis: {title: 'Month-Year'}, 
@@ -109,7 +109,8 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
                           	chartArea:{left:50,top:20,width:"90%",height:"75%"},
                           	legend:{position:'in'},
                           	colors:['#FACC2E','#A4A4A4','#04B431','#5882FA'],
-                          	pointSize:5
+                          	pointSize:5,
+                          	series:[{lineWidth:3, areaOpacity:0},{lineWidth:3, areaOpacity:0},{areaOpacity:0.1,pointSize:0},{areaOpacity:0}]
                           });
       }
     </script>
