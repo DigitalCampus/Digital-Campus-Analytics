@@ -48,7 +48,10 @@ class API {
 	} 
 	
 	function getUser($user){
-		$sql = sprintf("SELECT * FROM user WHERE username ='%s' LIMIT 0,1",$user->username);
+		$sql = sprintf("SELECT u.*, hp.hpcode 
+						FROM user u
+						INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
+						WHERE username ='%s' LIMIT 0,1",$user->username);
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
@@ -60,6 +63,7 @@ class API {
 			$user->firstname = $o->firstname;
 			$user->lastname =  $o->lastname;
 			$user->hpid=  $o->hpid;
+			$user->hpcode=  $o->hpcode;
 			$user->user_uri =  $o->user_uri;
 		}
 		return $user;
@@ -1214,11 +1218,17 @@ class API {
 	
 	
 	function getANC1Defaulters($opts=array()){
+		global $ERROR;
 		if(array_key_exists('months',$opts)){
 			$months = max(0,$opts['months']);
+		} else if(array_key_exists('startdate',$opts) && array_key_exists('enddate',$opts)) {
+			$startdate = $opts['startdate'];
+			$enddate = $opts['enddate'];
 		} else {
-			$months = 6;
+			array_push($ERROR,"You must specify either months or start/end dates for this function");
+			return false; 
 		}
+		
 		if(array_key_exists('hps',$opts)){
 			$hps = $opts['hps'];
 		} else {
@@ -1226,24 +1236,27 @@ class API {
 		}
 		
 		// get all the submitted ANC1 protocols from first day of the month 6 months ago
-		$sql = "SELECT 	p._URI,
+		$sql = sprintf("SELECT 	p._URI,
 						p.Q_USERID, 
 						p.Q_HEALTHPOINTID, 
 						p.Q_LMP, 
 						p.TODAY as createdate, 
-						DATE_ADD(p.Q_LMP, INTERVAL ".ANC1_DUE_BY_END." DAY) AS ANC1DUEBY ,
+						DATE_ADD(p.Q_LMP, INTERVAL %s DAY) AS ANC1DUEBY ,
 						hp.hpname as healthpoint
-				FROM ".TABLE_ANCFIRST." p 
+				FROM %s p 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
-		if($this->getIgnoredHealthPoints() != ""){
-			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid",ANC1_DUE_BY_END,TABLE_ANCFIRST);
+		if(isset($months)){
+			$sql .= " WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+		} else {
+			$sql .= sprintf(" WHERE p.TODAY > '%s'",$startdate);
+			$sql .= sprintf(" AND  p.TODAY <= '%s'",$enddate);
 		}
-		$sql .= " AND p.Q_HEALTHPOINTID IN (".$hps.")
-				ORDER BY p.TODAY ASC";
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= sprintf(" AND p.Q_HEALTHPOINTID NOT IN (%s)",$this->getIgnoredHealthPoints());
+		}
+		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p.TODAY ASC",$hps);
 
-		
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = _mysql_query($sql,$this->DB);
@@ -1253,25 +1266,39 @@ class API {
 		}
 		
 		$summary = array();
-		
-		$date = new DateTime();
-		$date->sub(new DateInterval('P'.$months.'M'));
-		
-		for ($i=0; $i<$months+1 ;$i++){
-			$summary[$date->format('M-Y')] = new stdClass;
-			$summary[$date->format('M-Y')]->defaulters = 0;
-			$summary[$date->format('M-Y')]->nondefaulters = 0;
-			$date->add(new DateInterval('P1M'));
-		}
-		
-		while($row = mysql_fetch_array($results)){
-			$date = new DateTime($row['createdate']);
-			$arrayIndex = $date->format('M-Y');
-		
-			if ($row['createdate'] > $row['ANC1DUEBY'] ){
-				$summary[$arrayIndex]->defaulters++;
-			} else {
-				$summary[$arrayIndex]->nondefaulters++;
+		// if months is set we need to divide up into months
+		if(isset($months)){
+			$date = new DateTime();
+			$date->sub(new DateInterval('P'.$months.'M'));
+			
+			for ($i=0; $i<$months+1 ;$i++){
+				$summary[$date->format('M-Y')] = new stdClass;
+				$summary[$date->format('M-Y')]->defaulters = 0;
+				$summary[$date->format('M-Y')]->nondefaulters = 0;
+				$date->add(new DateInterval('P1M'));
+			}
+			
+			while($row = mysql_fetch_array($results)){
+				$date = new DateTime($row['createdate']);
+				$arrayIndex = $date->format('M-Y');
+			
+				if ($row['createdate'] > $row['ANC1DUEBY'] ){
+					$summary[$arrayIndex]->defaulters++;
+				} else {
+					$summary[$arrayIndex]->nondefaulters++;
+				}
+			}
+		} else {
+			$summary[0] = new stdClass();
+			$summary[0]->defaulters = 0;
+			$summary[0]->nondefaulters = 0;
+			// otherwise we're only interested in the total over the dates given
+			while($row = mysql_fetch_array($results)){
+				if ($row['createdate'] > $row['ANC1DUEBY'] ){
+					$summary[0]->defaulters++;
+				} else {
+					$summary[0]->nondefaulters++;
+				}
 			}
 		}
 		
@@ -1282,8 +1309,8 @@ class API {
 		foreach($summary as $k=>$v){
 			$total = $v->defaulters + $v->nondefaulters;
 			if ($total > 0){
-				$pc_default = ($v->defaulters * 100)/$total/$hpcount;
-				$pc_nondefault = ($v->nondefaulters * 100)/$total/$hpcount;
+				$pc_default = round(($v->defaulters * 100)/$total/$hpcount);
+				$pc_nondefault = round(($v->nondefaulters * 100)/$total/$hpcount);
 				$summary[$k]->defaulters = $pc_default;
 				$summary[$k]->nondefaulters = $pc_nondefault;
 			}
@@ -1352,8 +1379,8 @@ class API {
 		foreach($summary as $k=>$v){
 			$total = $v->defaulters + $v->nondefaulters;
 			if ($total > 0){
-				$pc_default = ($v->defaulters * 100)/$total;
-				$pc_nondefault = ($v->nondefaulters * 100)/$total;
+				$pc_default = round(($v->defaulters * 100)/$total);
+				$pc_nondefault = round(($v->nondefaulters * 100)/$total);
 				$summary[$k]->defaulters = $pc_default;
 				$summary[$k]->nondefaulters = $pc_nondefault;
 				if($pc_nondefault>$previousbest){

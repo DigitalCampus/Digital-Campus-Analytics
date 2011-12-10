@@ -22,5 +22,21 @@ if ($kpi == "anc1defaulters"){
 	$opts = array('months'=>6);
 	include_once "includes/kpi/anc1defaulters.php";	
 }
+if ($kpi == "anc2defaulters"){
+	$viewopts = array('height'=>500,'width'=>800,'class'=>'graph','comparison'=>true);
+	$opts = array('months'=>6);
+	include_once "includes/kpi/anc2defaulters.php";
+}
+if ($kpi == "tt1defaulters"){
+	$viewopts = array('height'=>500,'width'=>800,'class'=>'graph','comparison'=>true);
+	$opts = array('months'=>6);
+	include_once "includes/kpi/tt1defaulters.php";
+}
+if ($kpi == "tt2defaulters"){
+	$viewopts = array('height'=>500,'width'=>800,'class'=>'graph','comparison'=>true);
+	$opts = array('months'=>6);
+	include_once "includes/kpi/tt2defaulters.php";
+}
+
 include_once "includes/footer.php";
 ?>

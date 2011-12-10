@@ -1,7 +1,4 @@
-<?php 
-include_once "../config.php";
-$PAGE="index";
-include_once 'includes/header.php';
+<?php
 
 $datetoday = new DateTime();
 
@@ -12,7 +9,6 @@ $date2monthago = new DateTime();
 $date2monthago->sub(new DateInterval('P2M'));
 
 $opts = array();
-//$opts['hps'] = $USER->hpcode;
 $opts['hps'] = $API->getUserHealthPointPermissions();
 $opts['startdate'] = $datemonthago->format('Y-m-d');
 $opts['enddate'] = $datetoday->format('Y-m-d');
@@ -25,9 +21,10 @@ $opts['enddate'] = $datemonthago->format('Y-m-d');
 $anc1previousmonth = $API->getANC1Defaulters($opts);
 ?>
 <div class="kpiheader">
-	<div class="kpiscore">Your score<br/><small>for last month</small></div>
-	<div class="kpichange">Change<br/><small>+/-</small></div>
-	<div class="kpitarget">Target</div>
+	<div class="kpiheadertitle">&nbsp;</div>
+	<div class="kpiheadertitle">Your score<br/><small>for last month</small></div>
+	<div class="kpiheadertitle">Change<br/><small>+/-</small></div>
+	<div class="kpiheadertitle">Target</div>
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
@@ -62,6 +59,3 @@ $anc1previousmonth = $API->getANC1Defaulters($opts);
 <div class="kpitarget">--</div>
 <div style="clear:both;"></div>
 </div>
-<?php 
-include_once 'includes/footer.php';
-?>

@@ -2,17 +2,19 @@
 
 include_once "includes/dashboard/submitted.php"; 
 
-include_once "includes/dashboard/anc1defaulters.php"; 
+include_once "includes/dashboard/kpioverview.php"; 
 
-include_once "includes/kpi/anc2defaulters.php";
+include_once "includes/dashboard/assessment.php";
+
+/*include_once "includes/kpi/anc2defaulters.php";
 
 include_once "includes/kpi/tt1defaulters.php";
 
 include_once "includes/kpi/tt2defaulters.php";
 
-include_once "includes/dashboard/assessment.php";
 
-/*include_once "includes/dashboard/appts.php";
+
+include_once "includes/dashboard/appts.php";
 
 include_once "includes/dashboard/labtest.php";
 

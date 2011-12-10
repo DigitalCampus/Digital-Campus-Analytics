@@ -115,17 +115,34 @@ div.kpiscore {
 	width:35%;
 	text-align:center;
 	float:left;
+	font-size: 120%;
 }
 
 div.kpichange {
 	width:35%;
 	text-align:center;
 	float:left;
+	font-size: 120%;
 }
 
 div.kpitarget {
 	width:30%;
 	text-align:center;
 	float:left;
+	font-size: 120%;
 }
 
+.increase {
+	color: green;
+}
+
+.equal {
+}
+
+.decrease {
+	color: red;
+}
+
+img.kpichange {
+	vertical-align:middle;
+}

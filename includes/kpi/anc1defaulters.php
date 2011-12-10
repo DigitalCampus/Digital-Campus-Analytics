@@ -16,13 +16,10 @@ $districts = $API->getDistricts();
 $cohorthps = array();
 foreach ($cohorthealthpoints as $k=>$v){
 	array_push($cohorthps, $k);
-	if($v->hpid == $USER->hpid){
-		$defaulthpcode = $k;
-	}
 }
 $cohorthps = implode(',',$cohorthps);
 
-$hpcode = optional_param("hpcode",$defaulthpcode,PARAM_TEXT);
+$hpcode = optional_param("hpcode",$USER->hpcode,PARAM_TEXT);
 $hpcomparecode = optional_param("hpcomparecode","average",PARAM_TEXT);
 
 $AverageArray = array();

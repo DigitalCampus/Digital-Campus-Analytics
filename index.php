@@ -8,7 +8,7 @@ $HEADER .= '<script src="http://maps.googleapis.com/maps/api/js?sensor=false" ty
 $BODY_ATT = 'onunload="GUnload()" onload="initialize()"';
 
 include_once "includes/header.php";
-$days = optional_param("days",7,PARAM_INT);
+$days = optional_param("days",31,PARAM_INT);
 
 //get user profile and display dashboard accordingly
 $profile = 'default';

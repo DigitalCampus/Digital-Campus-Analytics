@@ -38,6 +38,10 @@ unset($MSG);
 global $MSG;
 $MSG = array();
 
+unset($ERROR);
+global $ERROR;
+$ERROR = array();
+
 if (isset($_SESSION["session_username"])){
 	$USER = new User($_SESSION["session_username"]);
 } else {

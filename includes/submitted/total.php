@@ -53,7 +53,7 @@ foreach($submitted->protocols as $s){
                 			hAxis: {title: 'Date'},
                 			vAxis: {title: 'Number submitted'},
                 			legend: 'none',
-                			chartArea:{left:50,top:20,width:"80%",height:"70%"},
+                			chartArea:{left:50,top:20,width:"90%",height:"75%"},
                 			pointSize:5
 							});
       }

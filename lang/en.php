@@ -26,6 +26,7 @@ $LANG['dash.social.summary.header'] = 'Social Factors Summary';
 $LANG['dash.tasks.summary.header'] = 'Protocols due in next: %s %s %s';
 $LANG['dashboard.anc1defaulters.title'] = 'ANC 1 Defaulters';
 $LANG['dashboard.anc2defaulters.title'] = 'ANC 2 Defaulters';
+$LANG['dashboard.kpioverview.title'] = 'Performance Indicators Overview';
 $LANG['dashboard.submitted.nodays'] = '%s days';
 $LANG['dashboard.submitted.title'] = 'Protocols submitted in last:';
 $LANG['dashboard.tt1defaulters.title'] = 'TT 1 Defaulters';
