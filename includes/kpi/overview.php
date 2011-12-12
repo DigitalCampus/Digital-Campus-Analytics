@@ -47,7 +47,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
 	 	}
 	?>
 	</div>
-	<div class="kpitarget">50</div>
+	<div class="kpitarget">--</div>
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">

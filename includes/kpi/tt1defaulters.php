@@ -1,5 +1,3 @@
-<div id="tt1defaulters" class="summary">
-<h2><?php echo getstring('dashboard.tt1defaulters.title');?></h2>
 <?php 
 /*
 * TT1 defaulters
@@ -72,8 +70,8 @@ foreach($summary as $k=>$v){
 		?>
 
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_tt1defaulters'));
-        chart.draw(data, {width: 450, 
-            				height: 300,
+        chart.draw(data, {width: <?php echo $viewopts['width']; ?>, 
+							height:<?php echo $viewopts['height']; ?>,
                           	hAxis: {title: 'Month-Year'}, 
                           	vAxis: {title: 'Percentage', maxValue: 100, minValue: 0},
                           	chartArea:{left:50,top:5,width:"60%",height:"75%"}
@@ -82,4 +80,3 @@ foreach($summary as $k=>$v){
     </script>
 	<div id="chart_tt1defaulters" class="graph"><?php echo getstring('warning.graph.unavailable');?></div>
 	
-</div>

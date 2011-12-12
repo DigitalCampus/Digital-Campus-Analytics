@@ -115,6 +115,7 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
       }
     </script>
 
+<h2>ANC</h2>
 <?php if ($viewopts['comparison'] == true){?>
 <div class="comparison">
 <form action="" name="compareHealthPoint" method="get">

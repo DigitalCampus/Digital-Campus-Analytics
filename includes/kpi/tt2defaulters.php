@@ -1,5 +1,4 @@
-<div id="tt2defaulters" class="summary">
-<h2><?php echo getstring('dashboard.tt2defaulters.title');?></h2>
+
 <?php 
 /*
 * TT1 defaulters
@@ -8,4 +7,3 @@
 
 
 ?>
-</div>

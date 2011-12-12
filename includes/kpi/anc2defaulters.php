@@ -1,5 +1,4 @@
-<div id="anc2defaulters" class="summary">
-<h2><?php echo getstring('dashboard.anc2defaulters.title');?></h2>
+
 <?php 
 
 /*
@@ -29,14 +28,13 @@ $summary = $API->getANC2Defaulters($opts);
 		?>
 
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_anc2defaulters'));
-        chart.draw(data, {width: 450, 
-            				height: 300,
+        chart.draw(data, {width: <?php echo $viewopts['width']; ?>, 
+							height:<?php echo $viewopts['height']; ?>,
                           	hAxis: {title: 'Month-Year'}, 
                           	vAxis: {title: 'Percentage', maxValue: 100, minValue: 0},
-                          	chartArea:{left:50,top:5,width:"60%",height:"75%"}
+                          	chartArea:{left:50,top:20,width:"90%",height:"75%"}
                           });
       }
     </script>
 	<div id="chart_anc2defaulters" class="graph"><?php echo getstring('warning.graph.unavailable');?></div>
 	
-</div>
