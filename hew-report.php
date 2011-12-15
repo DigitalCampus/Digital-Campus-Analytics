@@ -82,7 +82,7 @@ $submitted = $API->getProtocolsSubmitted($opts);
 <?php 
 
 $opts = array("days"=>$days);
-$tasks = $API->getTasksDue($userid,$opts);
+$tasks = $API->getTasksDue($opts);
 
 printf("<h2>%s</h2>", getString("hewmanager.tasks",array($days)));
 ?>

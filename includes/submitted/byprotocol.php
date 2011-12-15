@@ -92,7 +92,8 @@ foreach($submitted->protocols as $s){
     			height: <?php echo $options['height'] ?>,
     			hAxis: {title: 'Date'},
     			vAxis: {title: 'Number submitted'},
-    			chartArea:{left:50,top:20,width:"55%",height:"75%"},
+    			chartArea:{left:50,top:20,width:"75%",height:"75%"},
+              	legend:{position:'right'},
     			pointSize:5
 				});
 		

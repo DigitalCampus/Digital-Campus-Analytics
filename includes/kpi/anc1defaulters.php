@@ -20,7 +20,7 @@ foreach ($cohorthealthpoints as $k=>$v){
 $cohorthps = implode(',',$cohorthps);
 
 $hpcode = optional_param("hpcode",$USER->hpcode,PARAM_TEXT);
-$hpcomparecode = optional_param("hpcomparecode","average",PARAM_TEXT);
+$hpcomparecode = optional_param("hpcomparecode","overall",PARAM_TEXT);
 
 $AverageArray = array();
 $ComparisonHPArray = array();
@@ -52,17 +52,17 @@ foreach($cohorthealthpoints as $hp){
 	
 	
 $currentopts = $opts;
-if($hpcode === 'average'){
+if($hpcode === 'overall'){
 	$currentopts['hps'] = $cohorthps;
-	$currentHPname = "Average";
+	$currentHPname = "Overall";
 } else {
 	$currentopts['hps'] = $hpcode;
 }
 
 $compareopts = $opts;
-if($hpcomparecode == 'average'){
+if($hpcomparecode == 'overall'){
 	$compareopts['hps'] = $cohorthps;
-	$compareHPname = "Average";
+	$compareHPname = "Overall";
 } else {
 	$compareopts['hps'] = $hpcomparecode;
 }
@@ -115,7 +115,7 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
       }
     </script>
 
-<h2>ANC</h2>
+
 <?php if ($viewopts['comparison'] == true){?>
 <div class="comparison">
 <form action="" name="compareHealthPoint" method="get">
@@ -136,24 +136,25 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
 </div>
 <?php } ?>
 
+<h2>ANC1 Non-defaulters</h2>
 <div id="chart_anc1defaulters" class="graph"><?php echo getstring('warning.graph.unavailable');?></div>
 <?php 
 
 function outputSelectList($districts,$AverageArray,$ComparisonHPArray,$selected){
 	if(count($districts) > 1){
 		if($selected == 'average'){
-			printf("<option value='average' selected='selected'>Average for all</option>");
+			printf("<option value='overall' selected='selected'>Overall</option>");
 		} else {
-			printf("<option value='average'>Average for all</option>");
+			printf("<option value='overall'>Overall</option>");
 		}
 		
 		printf("<option value='' disabled='disabled'>---</option>");
 	}
 	foreach($AverageArray as $k=>$v){
 		if(strcasecmp($selected,$k) == 0){
-			printf("<option value='%s' selected='selected'>Average for %s</option>", $k,$v);
+			printf("<option value='%s' selected='selected'>%s</option>", $k,$v);
 		} else {
-			printf("<option value='%s'>Average for %s</option>", $k,$v);
+			printf("<option value='%s'>%s</option>", $k,$v);
 		}
 	}
 	printf("<option value='' disabled='disabled'>---</option>");

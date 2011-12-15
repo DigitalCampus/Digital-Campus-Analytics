@@ -14,6 +14,7 @@ $opts['startdate'] = $datemonthago->format('Y-m-d');
 $opts['enddate'] = $datetoday->format('Y-m-d');
 
 $anc1thismonth = $API->getANC1Defaulters($opts);
+$anc2thismonth = $API->getANC2Defaulters($opts);
 $nosubmittedthismonth = $API->getProtocolsSubmitted($opts);
 
 $opts = array();
@@ -22,6 +23,7 @@ $opts['startdate'] = $date2monthago->format('Y-m-d');
 $opts['enddate'] = $datemonthago->format('Y-m-d');
 
 $anc1previousmonth = $API->getANC1Defaulters($opts);
+$anc2previousmonth= $API->getANC2Defaulters($opts);
 $nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
 
 ?>
@@ -56,6 +58,24 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
 	<div class="kpichange">
 	<?php 
 		$change = $anc1thismonth[0]->nondefaulters - $anc1previousmonth[0]->nondefaulters;
+	 	if ($change > 0){
+	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d%%</span>",'images/increase.png',$change);
+	 	} else if ($change == 0){
+	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0%%</span>",'images/equal.png',$change);
+	 	} else if ($change < 0){
+	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d%%</span>",'images/decrease.png',$change);
+	 	}
+	?>
+	</div>
+	<div class="kpitarget">60%</div>
+	<div style="clear:both;"></div>
+</div>
+<div class="kpi">
+	<div class="kpititle">ANC2 on time</div>
+	<div class="kpiscore"><?php echo $anc2thismonth[0]->nondefaulters; ?>%</div>
+	<div class="kpichange">
+	<?php 
+		$change = $anc2thismonth[0]->nondefaulters - $anc2previousmonth[0]->nondefaulters;
 	 	if ($change > 0){
 	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d%%</span>",'images/increase.png',$change);
 	 	} else if ($change == 0){

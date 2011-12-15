@@ -1,5 +1,6 @@
 <?php
 include_once($CONFIG->homePath.'data/riskassess.php');
+include_once($CONFIG->homePath.'data/datacheck.php');
 /*
  * Comparison functions
  */
@@ -52,11 +53,7 @@ class API {
 						FROM user u
 						INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 						WHERE username ='%s' LIMIT 0,1",$user->username);
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
 	  	while($o = mysql_fetch_object($result)){
 	  		$user->userid = $o->userid;
 			$user->username = $o->username;
@@ -77,11 +74,7 @@ class API {
 						WHERE userid = %d
 						AND hp.hpcode IN (%s) 
 						LIMIT 0,1",$userid, $this->getUserHealthPointPermissions());
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
 		while($o = mysql_fetch_object($result)){
 			$user = new User();
 			$user->userid = $o->userid;
@@ -126,11 +119,7 @@ class API {
 					WHERE hp.hpcode IN (%s)
 					ORDER BY u.firstname",$this->getUserHealthPointPermissions());
 		}
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
 		$users = array();
 		while($row = mysql_fetch_object($result)){
 			array_push($users,$row);
@@ -140,11 +129,7 @@ class API {
 	
 	function getUserProperties(&$user){
 		$sql = "SELECT * FROM userprops WHERE userid=".$user->userid;
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
 	  	while($row = mysql_fetch_array($result, MYSQL_ASSOC)){
 	  		$user->props[$row['propname']] = $row['propvalue'];
 		}
@@ -153,45 +138,29 @@ class API {
 	function setUserProperty($userid,$name,$value){
 		// first check to see if it exists already
 		$sql = sprintf("SELECT * FROM userprops WHERE userid= %d AND propname='%s'",$userid,$name);
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
+		
 		while($row = mysql_fetch_array($result, MYSQL_ASSOC)){
 	  		$updateSql = sprintf("UPDATE userprops SET propvalue='%s' WHERE userid= %d AND propname='%s'",$value,$userid,$name);
-	  		$result = _mysql_query($updateSql,$this->DB);
-	  		if (!$result){
-	  			writeToLog('error','database',$sql);
-	  		}
+	  		$result = $this->runSql($updateSql);
 	  		return;
 		}
 		
 		$insertSql = sprintf("INSERT INTO userprops (propvalue, userid,propname) VALUES ('%s',%d,'%s')",$value,$userid,$name);
-	  	$result = _mysql_query($insertSql,$this->DB);
-	  	if (!$result){
-	  		writeToLog('error','database',$insertSql);
-	  	}
+	  	$result = $this->runSql($insertSql);
 	}
 	
 	function updateUser($userid,$firstname,$lastname,$user_uri,$hpid){
 		$sql = sprintf("UPDATE user SET firstname='%s', lastname='%s', user_uri='%s', hpid = %d WHERE userid = %d",$firstname,$lastname,$user_uri,$hpid,$userid);
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return false;
-		}
+		$result = $this->runSql($sql);
 		return true;
 	}
 	
 	function userValidatePassword($username,$password){
 		global $USER;
 		$sql = sprintf("SELECT userid FROM user WHERE username='%s' AND password=md5('%s')",$username,$password);
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return false;
-	    }
+		$result = $this->runSql($sql);
+
 	  	while($row = mysql_fetch_array($result, MYSQL_ASSOC)){
 	  		return true;
 		}
@@ -200,7 +169,7 @@ class API {
 	
 	function userChangePassword($userid, $newpass){
 		$sql = sprintf("UPDATE user SET password = md5('%s') WHERE userid=%d",$newpass,$userid);
-		$result = _mysql_query($sql,$this->DB);
+		$result = $this->runSql($sql);
 		if($result){
 			return true;
 		} else {
@@ -229,11 +198,8 @@ class API {
 			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid = %d",$USER->hpid);
 		}
 		
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
+
 		$temp = array();
 		while($o = mysql_fetch_object($result)){
 			array_push($temp,$o->hpcode);
@@ -259,7 +225,7 @@ class API {
 	 */
 	function writeLog($loglevel,$userid,$logtype,$logmsg,$ip,$logpagephptime,$logpagemysqltime,$logpagequeries){
 		$sql = sprintf("INSERT INTO log (loglevel,userid,logtype,logmsg,logip,logpagephptime,logpagemysqltime,logpagequeries) VALUES ('%s',%d,'%s','%s','%s',%f,%f,%d)", $loglevel,$userid,$logtype,mysql_real_escape_string($logmsg),$ip,$logpagephptime,$logpagemysqltime,$logpagequeries);
-		_mysql_query($sql,$this->DB);
+		$this->runSql($sql);
 	}
 	
 	// return list of Health posts
@@ -270,11 +236,7 @@ class API {
 			$sql = sprintf("SELECT * FROM healthpoint WHERE hpcode IN (%s) ORDER BY hpname ASC;",$this->getUserHealthPointPermissions());
 		}
 		$healthposts = array();
-	    $result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+	    $result = $this->runSql($sql);
 	  	while($row = mysql_fetch_object($result)){
 		   	$healthposts[$row->hpid] = $row;
 		}
@@ -292,11 +254,7 @@ class API {
 						$this->getUserHealthPointPermissions());
 		
 		$healthposts = array();
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
 		while($row = mysql_fetch_object($result)){
 			$healthposts[$row->hpcode] = $row;
 		}
@@ -309,11 +267,8 @@ class API {
 						INNER JOIN healthpoint hp ON hp.did = d.did
 						WHERE hp.hpcode IN (%s) ORDER BY d.dname ASC", $this->getUserHealthPointPermissions());
 		$districts = array();
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
+
 		while($o = mysql_fetch_object($result)){
 			array_push($districts,$o);
 		}
@@ -324,11 +279,8 @@ class API {
 		$sql = sprintf("SELECT * FROM healthpoint hp 
 						WHERE hp.did=%d ORDER BY hp.hpname ASC", $did);
 		$healthposts = array();
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
+
 		while($o = mysql_fetch_object($result)){
 			array_push($healthposts,$o);
 		}
@@ -341,11 +293,7 @@ class API {
 				SELECT DISTINCT i.Q_HEALTHPOINTID, i.Q_USERID FROM ".TABLE_REGISTRATION." i
 				LEFT OUTER JOIN patientcurrent pc ON i.Q_HEALTHPOINTID = pc.hpcode AND i.Q_USERID = pc.patid
 				WHERE pc.pcid is NULL";
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
 	    
 		//archive old patients
 		// TODO update for real PNC protocol
@@ -372,11 +320,8 @@ class API {
 				WHERE pc.pcurrent = 1";	
 		// TODO add permissions
 		$patients = array();	
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
+
 	  	while($pat = mysql_fetch_object($result)){
 	  		$patient = $this->getPatient(array('hpcode'=>$pat->hpcode,'patid'=>$pat->patientid));
 	  		array_push($patients,$patient);
@@ -430,11 +375,8 @@ class API {
 		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 
-	    $result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+	    $result = $this->runSql($sql);
+
 	  	$pat = mysql_fetch_object($result);
 	  	if($pat == null){
 	  		$pat = new stdClass();
@@ -444,11 +386,8 @@ class API {
 	  		$pat->Q_HOMEAPPLIANCES = array();
 	  		// get the Home applicances source
 	  		$appsql = "SELECT VALUE FROM ".TABLE_REG_HOMEAPPLIANCES." WHERE _PARENT_AURI = '".$pat->_URI."'";
-	  		$appresult = _mysql_query($appsql,$this->DB);
-	  		if (!$appresult){
-	  			writeToLog('error','database',$appsql);
-	  			return;
-	  		}
+	  		$appresult = $this->runSql($appsql); 
+
 	  		while($app = mysql_fetch_object($appresult)){
 	  			array_push($pat->Q_HOMEAPPLIANCES,$app->VALUE);
 	  		}
@@ -564,20 +503,14 @@ class API {
 		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions()."))" ;
 		
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
+
 	  	while($pat = mysql_fetch_object($result)){
 	  		$pat->Q_FPMETHOD = array();
 	  		// get the Home applicances source
 	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCFIRST_FPMETHOD." WHERE _PARENT_AURI = '".$pat->_URI."'";
-	  		$appresult = _mysql_query($appsql,$this->DB);
-		  	if (!$appresult){
-		    	writeToLog('error','database',$appsql);
-		    	return;
-		    }
+	  		$appresult = $this->runSql($appsql);
+
 	  		while($app = mysql_fetch_object($appresult)){
 	  			array_push($pat->Q_FPMETHOD,$app->VALUE);
 	  		}
@@ -585,11 +518,8 @@ class API {
 	  		$pat->Q_WHOATTENDED = array();
 	  		// get the Home applicances source
 	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCFIRST_ATTENDED ." WHERE _PARENT_AURI = '".$pat->_URI."'";
-	  		$appresult = _mysql_query($appsql,$this->DB);
-		  	if (!$appresult){
-		    	writeToLog('error','database',$appsql);
-		    	return;
-		    }
+	  		$appresult = $this->runSql($appsql);
+
 	  		while($app = mysql_fetch_object($appresult)){
 	  			array_push($pat->Q_WHOATTENDED,$app->VALUE);
 	  		}
@@ -669,11 +599,7 @@ class API {
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
 	    $protocols = array();
 	    $count=0;
 	  	while($pat = mysql_fetch_object($result)){
@@ -734,11 +660,8 @@ class API {
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
+
 	    $protocols = array();
 	    $count=0;
 	  	while($pat = mysql_fetch_object($result)){
@@ -746,11 +669,8 @@ class API {
 	  		$pat->Q_FPMETHOD = array();
 	  		// get the Home applicances source
 	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCTRANSFER_FPMETHOD." WHERE _PARENT_AURI = '".$pat->_URI."'";
-	  		$appresult = _mysql_query($appsql,$this->DB);
-		  	if (!$appresult){
-		    	writeToLog('error','database',$appsql);
-		    	return;
-		    }
+	  		$appresult = $this->runSql($appsql); 
+
 	  		while($app = mysql_fetch_object($appresult)){
 	  			array_push($pat->Q_FPMETHOD,$app->VALUE);
 	  		}
@@ -758,11 +678,7 @@ class API {
 	  		$pat->Q_WHOATTENDED = array();
 	  		// get the Home applicances source
 	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCTRANSFER_ATTENDED ." WHERE _PARENT_AURI = '".$pat->_URI."'";
-	  		$appresult = _mysql_query($appsql,$this->DB);
-		  	if (!$appresult){
-		    	writeToLog('error','database',$appsql);
-		    	return;
-		    }
+	  		$appresult = $this->runSql($appsql); 
 	  		while($app = mysql_fetch_object($appresult)){
 	  			array_push($pat->Q_WHOATTENDED,$app->VALUE);
 	  		}
@@ -807,18 +723,12 @@ class API {
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
+
 	    $protocols = array();
 	    $count=0;
 	  	while($pat = mysql_fetch_object($result)){
 	  		$protocols[$count] = $pat;
-	  		/*
-	  		 * TODO add fpmethod and whoattended
-	  		 */
 	  		$count++;
 	  	}
 		
@@ -889,25 +799,19 @@ class API {
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
+
 		while($o = mysql_fetch_object($result)){
 			// add birth attendants
 			$o->Q_BIRTHATTENDANT = array();
 			// get the Home applicances source
 			$appsql = "SELECT VALUE FROM ".TABLE_DELIVERY_ATTENDED ." WHERE _PARENT_AURI = '".$o->_URI."'";
-			$appresult = _mysql_query($appsql,$this->DB);
-			if (!$appresult){
-				writeToLog('error','database',$appsql);
-				return;
-			}
+			$appresult = $this->runSql($appsql);
+
 			while($app = mysql_fetch_object($appresult)){
 				array_push($o->Q_BIRTHATTENDANT,$app->VALUE);
 			}
-			// TODO add babies
+			// add babies
 			$o->Q_BABY = $this->getPatientDeliveryBaby($o->_URI);
 			return $o;
 		}
@@ -933,11 +837,8 @@ class API {
 						Q_VITAMINK
 				FROM %s
 				WHERE _PARENT_AURI = '%s'",TABLE_DELIVERY_BABY,$uri);
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
+
 		$babies = array();
 		while($o = mysql_fetch_object($result)){
 			array_push($babies, $o);
@@ -1163,11 +1064,7 @@ class API {
 		//query to get the total no of records
 		$countsql = "SELECT COUNT(*) AS norecords FROM (".$sql.") a;";
 		
-		$countres = _mysql_query($countsql,$this->DB);
-		if (!$countres){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$countres = $this->runSql($countsql);
 		
 		$submitted = new stdClass();
 		
@@ -1186,18 +1083,15 @@ class API {
 		}
 		
 		$submitted->protocols = array();
-	    $result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+	    $result = $this->runSql($sql);
+
 	  	while($row = mysql_fetch_object($result)){
 		   	array_push($submitted->protocols,$row);
 		}
 	    return $submitted; 
 	}
 	
-	function getTasksDue($userid, $opts=array()){
+	function getTasksDue($opts=array()){
 		// TODO check task list
 		if(array_key_exists('days',$opts)){
 			$days = max(0,$opts['days']);
@@ -1218,8 +1112,7 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = A.Q_HEALTHPOINTID
 				INNER JOIN user u ON u.user_uri = A._CREATOR_URI_USER
 				WHERE A.Q_APPOINTMENTDATE > now()
-				AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +".$days." DAY)
-				AND u.userid =".$userid;
+				AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +".$days." DAY)";
 		
 		$sql .= " UNION
 				SELECT 	A.Q_APPOINTMENTDATE as datedue,
@@ -1234,13 +1127,19 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = A.Q_HEALTHPOINTID
 				INNER JOIN user u ON u.user_uri = A._CREATOR_URI_USER
 				WHERE A.Q_APPOINTMENTDATE > now()
-				AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +".$days." DAY)
-				AND u.userid =".$userid;
+				AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +".$days." DAY)";
 		// TODO add delivery
 		
 		// TODO add PNC
-		$sql .= ") C  ORDER BY datedue";
+		$sql .= ") C ";
+		$sql .= "WHERE Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
+		$sql .= " ORDER BY datedue";
 		// TODO add permissions??
+
+		// TODO add overdue tasks
 		
 		$tasks = array();
 		$result = $this->runSql($sql);
@@ -1269,13 +1168,13 @@ class API {
 			$hps = $this->getUserHealthPointPermissions();
 		}
 		
-		// get all the submitted ANC1 protocols from first day of the month 6 months ago
+		// get all the submitted ANC1 protocols between the dates or months specified
 		$sql = sprintf("SELECT 	p._URI,
 						p.Q_USERID, 
 						p.Q_HEALTHPOINTID, 
 						p.Q_LMP, 
 						p.TODAY as createdate, 
-						DATE_ADD(p.Q_LMP, INTERVAL %s DAY) AS ANC1DUEBY ,
+						DATE_ADD(p.Q_LMP, INTERVAL %d DAY) AS ANC1DUEBY ,
 						hp.hpname as healthpoint
 				FROM %s p 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
@@ -1293,11 +1192,7 @@ class API {
 
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
-		$results = _mysql_query($sql,$this->DB);
-		if (!$results){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$results = $this->runSql($sql);
 		
 		$summary = array();
 		// if months is set we need to divide up into months
@@ -1336,15 +1231,12 @@ class API {
 			}
 		}
 		
-		// if more than one HP then divide to get the average
-		$hpcount = count(explode(",",$hps));
-		
 		// change into a percentage rather than absolute values
 		foreach($summary as $k=>$v){
 			$total = $v->defaulters + $v->nondefaulters;
 			if ($total > 0){
-				$pc_default = round(($v->defaulters * 100)/$total/$hpcount);
-				$pc_nondefault = round(($v->nondefaulters * 100)/$total/$hpcount);
+				$pc_default = round(($v->defaulters * 100)/$total);
+				$pc_nondefault = round(($v->nondefaulters * 100)/$total);
 				$summary[$k]->defaulters = $pc_default;
 				$summary[$k]->nondefaulters = $pc_nondefault;
 			}
@@ -1385,11 +1277,7 @@ class API {
 	
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
-		$results = _mysql_query($sql,$this->DB);
-		if (!$results){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$results = $this->runSql($sql);
 	
 		$summary = array();
 
@@ -1431,24 +1319,18 @@ class API {
 	function getANC2Defaulters($opts=array()){
 		if(array_key_exists('months',$opts)){
 			$months = max(0,$opts['months']);
+		} else if(array_key_exists('startdate',$opts) && array_key_exists('enddate',$opts)) {
+			$startdate = $opts['startdate'];
+			$enddate = $opts['enddate'];
 		} else {
-			$months = 6;
-		}
-		if(array_key_exists('viewby',$opts)){
-			$viewby = $opts['viewby'];
-		} else {
-			$viewby = 'months';
+			array_push($ERROR,"You must specify either months or start/end dates for this function");
+			return false; 
 		}
 		
-		// set up summary/results array/objects
-		$date = new DateTime();
-		$date->sub(new DateInterval('P'.$months.'M'));
-		$summary = array();
-		for ($i=0; $i<7 ;$i++){
-			$summary[$date->format('M-Y')] = new stdClass;
-			$summary[$date->format('M-Y')]->defaulters = 0;
-			$summary[$date->format('M-Y')]->nondefaulters = 0;
-			$date->add(new DateInterval('P1M'));
+		if(array_key_exists('hps',$opts)){
+			$hps = $opts['hps'];
+		} else {
+			$hps = $this->getUserHealthPointPermissions();
 		}
 		
 		// all those who had an ANC follow up visit
@@ -1459,29 +1341,57 @@ class API {
 						p.TODAY as createdate,  
 						DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_START." DAY) AS ANC2_DUE_BY_START,
 						DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) AS ANC2_DUE_BY_END
-				FROM ".TABLE_ANCFOLLOW." p
-				WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
-		if($this->getIgnoredHealthPoints() != ""){
-			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
+				FROM ".TABLE_ANCFOLLOW." p";
+		if(isset($months)){
+			$sql .= " WHERE p.TODAY > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+		} else {
+			$sql .= sprintf(" WHERE p.TODAY > '%s'",$startdate);
+			$sql .= sprintf(" AND  p.TODAY <= '%s'",$enddate);
 		}
-		$sql .= " ORDER BY p.TODAY ASC";
-		
-		// TODO add permissions
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= sprintf(" AND p.Q_HEALTHPOINTID NOT IN (%s)",$this->getIgnoredHealthPoints());
+		}
+		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p.TODAY ASC",$hps);
 		
 		// if createdate not between ANC2_DUE_BY_START and ANC2_DUE_BY_END then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = $this->runSql($sql);
-		while($row = mysql_fetch_array($results)){
-			$date = new DateTime($row['createdate']);
-			$arrayIndex = $date->format('M-Y');
-		
-			if ($row['createdate'] > $row['ANC2_DUE_BY_START'] && $row['createdate'] < $row['ANC2_DUE_BY_END']){
-				$summary[$arrayIndex]->nondefaulters++;
-			} else {
-				$summary[$arrayIndex]->defaulters++;
+		$summary = array();
+		// if months is set we need to divide up into months
+		if(isset($months)){
+			$date = new DateTime();
+			$date->sub(new DateInterval('P'.$months.'M'));
+				
+			for ($i=0; $i<$months+1 ;$i++){
+				$summary[$date->format('M-Y')] = new stdClass;
+				$summary[$date->format('M-Y')]->defaulters = 0;
+				$summary[$date->format('M-Y')]->nondefaulters = 0;
+				$date->add(new DateInterval('P1M'));
+			}
+				
+			while($row = mysql_fetch_array($results)){
+				$date = new DateTime($row['createdate']);
+				$arrayIndex = $date->format('M-Y');
+					
+				if ($row['createdate'] > $row['ANC2_DUE_BY_START'] && $row['createdate'] < $row['ANC2_DUE_BY_END']){
+					$summary[$arrayIndex]->nondefaulters++;
+				} else {
+					$summary[$arrayIndex]->defaulters++;
+				}
+			}
+		} else {
+			$summary[0] = new stdClass();
+			$summary[0]->defaulters = 0;
+			$summary[0]->nondefaulters = 0;
+			// otherwise we're only interested in the total over the dates given
+			while($row = mysql_fetch_array($results)){
+				if ($row['createdate'] > $row['ANC2_DUE_BY_START'] && $row['createdate'] < $row['ANC2_DUE_BY_END']){
+					$summary[0]->nondefaulters++;
+				} else {
+					$summary[0]->defaulters++;
+				}
 			}
 		}
-		
 		// all those who had an ANC1 but not a second visit and didn't have termination protocol entered before ANC was due
 		$sql = "SELECT 	p._URI,
 						p.Q_USERID, 
@@ -1490,185 +1400,60 @@ class API {
 						DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) AS ANC2_DUE_BY_END 
 				FROM ".TABLE_ANCFIRST." p
 				LEFT OUTER JOIN ".TABLE_ANCFOLLOW." f ON f.Q_USERID = p.Q_USERID AND f.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID
-				WHERE f.Q_USERID IS NULL
-				AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
-				AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) < curdate()";
+				WHERE f.Q_USERID IS NULL";
+		if(isset($months)){
+			$sql .= " AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
+						AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) < curdate()";
+		} else {
+			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) > '%s'",$startdate);
+			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) <= '%s'",$enddate);
+		}
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
+		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s)",$hps);
 		$sql .= " ORDER BY DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) ASC";
 		// TODO add constraint about terminations
-		// TODO add permissions
+
 		// all those returned by above query are defaulters - as have now Follow up
 		$results = $this->runSql($sql);
-		while($row = mysql_fetch_array($results)){
-			$date = new DateTime($row['ANC2_DUE_BY_END']);
-			$arrayIndex = $date->format('M-Y');
-			$summary[$arrayIndex]->defaulters++;
+		if(isset($months)){		
+			while($row = mysql_fetch_array($results)){
+				$date = new DateTime($row['ANC2_DUE_BY_END']);
+				$arrayIndex = $date->format('M-Y');
+				$summary[$arrayIndex]->defaulters++;
+			}
+		} else {
+			
 		}
 		
 		// change into a percentage rather than absolute values
 		foreach($summary as $k=>$v){
 			$total = $v->defaulters + $v->nondefaulters;
 			if ($total > 0){
-				$pc_default = ($v->defaulters * 100)/$total;
-				$pc_nondefault = ($v->nondefaulters * 100)/$total;
+				$pc_default = round(($v->defaulters * 100)/$total);
+				$pc_nondefault = round(($v->nondefaulters * 100)/$total);
 				$summary[$k]->defaulters = $pc_default;
 				$summary[$k]->nondefaulters = $pc_nondefault;
 			}
 		}
-		 return $summary;
+		return $summary;
 	}
 	
 	
 	function datacheckSummary(){
-		$total = 0;
-		$total += count($this->datacheckDuplicateReg());
-		$total += count($this->datacheckUnregistered());
-		$total += count($this->datacheckMissingProtocols());
-		$total += count($this->datacheckDuplicateProtocols());
-		if($total >0){
-			return true;
-		} else {
-			return false;
-		}
+		$dc = new DataCheck();
+		return $dc->summary();
 	}
 	
 	function datacheckDuplicateReg(){
-		$report = array();
-		//include_once 'datacheck/duplicatereg.php';
-		$sql = "SELECT 	i.Q_HEALTHPOINTID as healthpointcode,
-						hp.hpname as healthpointname, 
-						i.Q_USERID as patientid
-						FROM ".TABLE_REGISTRATION." i
-						INNER JOIN healthpoint hp ON hp.hpcode = i.Q_HEALTHPOINTID";
-		// add permissions
-		$sql .= " WHERE i.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
-		if($this->getIgnoredHealthPoints() != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
-		}
-		$sql .= " GROUP BY hp.hpname,
-							i.Q_HEALTHPOINTID, 
-							i.Q_USERID
-						HAVING count(i._URI)>1";
-		
-		
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
-		while($row = mysql_fetch_object($result)){
-			array_push($report,$row);
-		}
-		return $report;
+		$dc = new DataCheck();
+		return $dc->duplicateReg();
 	}
 	
 	function datacheckUnregistered(){
-		$report = array();
-		// unregistered from ancfirst
-		$sql = "SELECT * FROM (";
-		$sql .= "SELECT p.Q_HEALTHPOINTID, 
-						php.hpcode as patienthpcode,
- 						hp.hpcode as protocolhpcode,
-						php.hpname as patientlocation,
-						hp.hpname as protocollocation,  
-						p.Q_USERID,
-						'".PROTOCOL_ANCFIRST."' as protocol,
-						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".TABLE_ANCFIRST." p
-				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE r._URI is null ";
-		
-		//unregistered from ancfollow
-		$sql .= " UNION 
-				SELECT p.Q_HEALTHPOINTID,
-						php.hpcode as patienthpcode,
- 						hp.hpcode as protocolhpcode, 
-						php.hpname as patientlocation,
-						hp.hpname as protocollocation, 
-						p.Q_USERID,
-						'".PROTOCOL_ANCFOLLOW."' as protocol,
-						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".TABLE_ANCFOLLOW." p
-				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE r._URI is null";
-		
-		//unregistered from anclabtest
-		$sql .= " UNION SELECT p.Q_HEALTHPOINTID, 
-						php.hpcode as patienthpcode,
- 						hp.hpcode as protocolhpcode,
-						php.hpname as patientlocation,
-						hp.hpname as protocollocation,   
-						p.Q_USERID,
-						'".PROTOCOL_ANCLABTEST."' as protocol,
-						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".TABLE_ANCLABTEST." p
-				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE r._URI is null";
-		
-		// unregistered from anctransfer
-		$sql .= " UNION
-				SELECT p.Q_HEALTHPOINTID, 
-						php.hpcode as patienthpcode,
- 						hp.hpcode as protocolhpcode,
-						php.hpname as patientlocation,
-						hp.hpname as protocollocation, 
-						p.Q_USERID,
-						'".PROTOCOL_ANCTRANSFER."' as protocol,
-						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".TABLE_ANCTRANSFER." p
-				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE r._URI is null";
-
-		// unregistered from delivery
-		$sql .= " UNION
-				SELECT p.Q_HEALTHPOINTID, 
-						php.hpcode as patienthpcode,
- 						hp.hpcode as protocolhpcode,
-						php.hpname as patientlocation,
- 						hp.hpname as protocollocation, 
-						p.Q_USERID,
-						'".PROTOCOL_DELIVERY."' as protocol,
-						CONCAT(u.firstname,' ',u.lastname) as submittedname
-				FROM ".TABLE_DELIVERY." p
-				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
-				WHERE r._URI is null";
-		
-		// TODO add unregistered from PNC
-		$sql .= ") a";
-		$sql .= " WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().") " ;
-		$sql .= " OR a.protocolhpcode IN (".$this->getUserHealthPointPermissions().")) " ;
-		if($this->getIgnoredHealthPoints() != ""){
-			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
-		}
-		
-		
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return false;
-	    }
-	  	while($row = mysql_fetch_object($result)){
-		   	array_push($report,$row);
-		}
-		
-		return $report;
+		$dc = new DataCheck();
+		return $dc->unregistered();
 	}
 	
 	function datacheckDuplicateProtocols(){
@@ -1693,11 +1478,7 @@ class API {
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
 				HAVING count(i._URI)>1";
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
 		while($row = mysql_fetch_object($result)){
 			array_push($report,$row);
 		}
@@ -1724,11 +1505,8 @@ class API {
 					i.Q_USERID,
 					i.Q_FOLLOWUPNO
 				HAVING count(i._URI)>1";
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result =$this->runSql($sql);
+
 		while($row = mysql_fetch_object($result)){
 			array_push($report,$row);
 		}
@@ -1755,11 +1533,8 @@ class API {
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
 				HAVING count(i._URI)>1";
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-			writeToLog('error','database',$sql);
-			return;
-		}
+		$result = $this->runSql($sql);
+
 		while($row = mysql_fetch_object($result)){
 			array_push($report,$row);
 		}
@@ -1819,7 +1594,6 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE p.Q_FOLLOWUPNO ='3'
 				AND follow.Q_USERID is null";
-		// TODO add permissions
 		
 		//check follow up 3 if follow up 2
 		$sql .= " UNION
@@ -1841,7 +1615,6 @@ class API {
 				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID
 				WHERE p.Q_FOLLOWUPNO ='4'
 				AND follow.Q_USERID is null";
-		// TODO add permissions
 		//labtest but no first visit
 		$sql .= " UNION
 				SELECT p.Q_USERID, 
@@ -1872,11 +1645,8 @@ class API {
 			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
 
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+		$result = $this->runSql($sql);
+
 	  	while($row = mysql_fetch_object($result)){
 		   	array_push($missing,$row);
 		}
@@ -1892,11 +1662,8 @@ class API {
 				WHERE propname='lastlogin'
 				ORDER BY propvalue";
 		$stats = array();
-	    $result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+	    $result = $this->runSql($sql);
+
 		while($row = mysql_fetch_object($result)){
 		   	array_push($stats,$row);
 		}
@@ -1910,11 +1677,8 @@ class API {
 						WHERE propname='lastlogin' 
 						AND CAST(propvalue AS DATETIME) > DATE_ADD(NOW(),INTERVAL -".$nodays." DAY))";
 		$stats = array();
-	    $result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+	    $result = $this->runSql($sql);
+
 		while($row = mysql_fetch_object($result)){
 		   	array_push($stats,$row);
 		}
@@ -1929,11 +1693,8 @@ class API {
 				GROUP BY u.userid, u.firstname, u.lastname
 				ORDER BY hits DESC";
 		$stats = array();
-	    $result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+	    $result = $this->runSql($sql);
+	    
 		while($row = mysql_fetch_object($result)){
 		   	array_push($stats,$row);
 		}
@@ -1947,11 +1708,8 @@ class API {
 				GROUP BY logday, logmonth, logyear
 				ORDER BY logyear ASC, logmonth ASC, logday ASC";
 		$stats = array();
-	    $result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+	    $result = $this->runSql($sql);
+
 		while($row = mysql_fetch_object($result)){
 		   	array_push($stats,$row);
 		}
@@ -1966,11 +1724,8 @@ class API {
 				ORDER BY hits DESC
 				LIMIT 0,".$limit;
 		$stats = array();
-	    $result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+	    $result = $this->runSql($sql);
+
 		while($row = mysql_fetch_object($result)){
 		   	array_push($stats,$row);
 		}
@@ -1985,11 +1740,8 @@ class API {
 		}
 		$sql .=	"ORDER By logtime DESC LIMIT 0,".$limit;
 		$stats = array();
-	    $result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }
+	    $result = $this->runSql($sql);
+
 		while($row = mysql_fetch_object($result)){
 		   	array_push($stats,$row);
 		}
