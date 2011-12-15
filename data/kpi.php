@@ -47,6 +47,9 @@ class KPI {
 		}
 		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p.TODAY ASC",$hps);
 	
+		//echo "<br/>";
+		//echo $sql;
+		//echo "<br/>";
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = $API->runSql($sql);
@@ -88,6 +91,9 @@ class KPI {
 			}
 		}
 	
+		//echo "<pre>";
+		//print_r($summary);
+		//echo "</pre>";
 		// change into a percentage rather than absolute values
 		foreach($summary as $k=>$v){
 			$total = $v->defaulters + $v->nondefaulters;
@@ -152,7 +158,7 @@ class KPI {
 				$summary[$arrayIndex]->nondefaulters++;
 			}
 		}
-	
+		
 		// change into a percentage rather than absolute values
 		$besthp = 0;
 		$previousbest = 0;
