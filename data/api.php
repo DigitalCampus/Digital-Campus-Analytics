@@ -1,15 +1,8 @@
 <?php
 include_once($CONFIG->homePath.'data/riskassess.php');
 include_once($CONFIG->homePath.'data/datacheck.php');
-/*
- * Comparison functions
- */
-function cmpPatients($a,$b){
-	if ($a == $b) {
-        return 0;
-    }
-    return ($a->risks['count'] < $b->risks['count']) ? 1 : -1;
-}
+include_once($CONFIG->homePath.'data/admin.php');
+include_once($CONFIG->homePath.'data/kpi.php');
 
 /*
  * API Class
@@ -311,24 +304,6 @@ class API {
 	    }*/
 	}
 	
-	function getCurrentPatients(){
-		$sql = "SELECT 	hp.hpcode,
-						Q_USERID as patientid
-				FROM ".TABLE_REGISTRATION." r
-				INNER JOIN patientcurrent pc ON pc.hpcode = r.Q_HEALTHPOINTID AND pc.patid = r.Q_USERID
-				INNER JOIN healthpoint hp ON hp.hpcode = r.Q_HEALTHPOINTID
-				WHERE pc.pcurrent = 1";	
-		// TODO add permissions
-		$patients = array();	
-		$result = $this->runSql($sql);
-
-	  	while($pat = mysql_fetch_object($result)){
-	  		$patient = $this->getPatient(array('hpcode'=>$pat->hpcode,'patid'=>$pat->patientid));
-	  		array_push($patients,$patient);
-	  	}
-	  	usort($patients,"cmpPatients");
-	  	return $patients;
-	}
 	
 	
 	function getPatient($opts=array()){
