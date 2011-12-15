@@ -7,7 +7,6 @@ class DataCheck {
 	
 	function summary() {
 		$total = 0;
-		$total += count($this->duplicateReg());
 		$total += count($this->unregistered());
 		$total += count($this->missingProtocols());
 		$total += count($this->duplicates());
@@ -17,32 +16,7 @@ class DataCheck {
 			return false;
 		}
 	}
-	
-	function duplicateReg(){
-		global $API;
-		$report = array();
 
-		$sql = "SELECT 	i.Q_HEALTHPOINTID as healthpointcode,
-							hp.hpname as healthpointname, 
-							i.Q_USERID as patientid
-							FROM ".TABLE_REGISTRATION." i
-							INNER JOIN healthpoint hp ON hp.hpcode = i.Q_HEALTHPOINTID";
-		// add permissions
-		$sql .= " WHERE i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().") " ;
-		if($API->getIgnoredHealthPoints() != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
-		}
-		$sql .= " GROUP BY hp.hpname,
-								i.Q_HEALTHPOINTID, 
-								i.Q_USERID
-							HAVING count(i._URI)>1";
-
-		$result = $API->runSql($sql);
-		while($row = mysql_fetch_object($result)){
-			array_push($report,$row);
-		}
-		return $report;
-	}
 	
 	function unregistered(){
 		global $API;
@@ -151,6 +125,32 @@ class DataCheck {
 	function duplicates(){
 		global $API;
 		$report = array();
+		//duplicate Registration
+		$sql = "SELECT 	i.Q_HEALTHPOINTID,
+						php.hpname as patientlocation, 
+						hp.hpname as protocollocation, 
+						i.Q_USERID,
+						'".PROTOCOL_REGISTRATION."' as protocol,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname
+						FROM ".TABLE_REGISTRATION." i
+						INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
+						INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
+						INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
+		// add permissions
+		$sql .= " WHERE i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().") " ;
+		if($API->getIgnoredHealthPoints() != ""){
+			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
+		}
+		$sql .= " GROUP BY hp.hpname,
+					i.Q_HEALTHPOINTID, 
+					i.Q_USERID
+				HAVING count(i._URI)>1";
+
+		$result = $API->runSql($sql);
+		while($row = mysql_fetch_object($result)){
+			array_push($report,$row);
+		}
+		
 		// duplicate ancfirst
 		$sql = "SELECT 	i.Q_HEALTHPOINTID,
 							php.hpname as patientlocation, 
