@@ -3,6 +3,7 @@ require_once "config.php";
 $PAGE = "datacheck";
 require_once "includes/header.php";
 
+$dc = new DataCheck();
 include_once('includes/datacheck/duplicate-reg.php');
 include_once('includes/datacheck/unregistered.php');
 include_once('includes/datacheck/missing-protocols.php');

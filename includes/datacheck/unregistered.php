@@ -2,7 +2,7 @@
 <p><?php echo getString("datacheck.unregistered.info")?></p>
 <?php 
 
-	$unregistered = $API->datacheckUnregistered();
+	$unregistered = $dc->unregistered();
 	if(count($unregistered)>0){
 ?>
 	

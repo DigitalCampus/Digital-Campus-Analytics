@@ -99,8 +99,10 @@ header("Content-Type: text/html; charset=UTF-8");
 	?>
 	<div id="content">
 <?php 	
+
+$dc = new DataCheck();
 // display warning message about invalid data
-if($API->datacheckSummary() && $PAGE != 'login'){
+if($dc->summary() && $PAGE != 'login'){
 ?>
 <div id="datacheckwarning" class="datawarning printhide">
 	<img src="<?php echo $CONFIG->homeAddress; ?>images/warning.png" align="left"></img><?php echo getString('warning.datacheck', array($CONFIG->homeAddress.'data-check.php'));?>

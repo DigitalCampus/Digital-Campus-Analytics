@@ -1,7 +1,7 @@
 <h2><?php echo getString("datacheck.duplicate.reg.title")?></h2>
 <p><?php echo getString("datacheck.duplicate.reg.info")?></p>
-<?php 
-	$duplicateReg = $API->datacheckDuplicateReg();
+<?php
+	$duplicateReg = $dc->duplicateReg();
 	if(count($duplicateReg)>0){
 ?>
 	

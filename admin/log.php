@@ -12,8 +12,8 @@ if($USER->getProp('permissions.admin') != "true"){
 $nodays = optional_param("nodays",31,PARAM_INT);
 $limit = optional_param("limit",50,PARAM_INT);
 $type = optional_param("type",'all',PARAM_TEXT);
-
-$errors = $API->adminLog($type,$nodays,$limit);
+$admin  = new Admin();
+$errors = $admin->log($type,$nodays,$limit);
 
 include_once('../includes/menu-admin.php');
 

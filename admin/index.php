@@ -13,11 +13,12 @@ if($USER->getProp('permissions.admin') != "true"){
 
 $nodays = optional_param("nodays",31,PARAM_INT);
 $limit = optional_param("limit",20,PARAM_INT);
-$lastlogin = $API->adminLastLogin();
-$neverlogin = $API->adminNeverLogin($nodays);
-$userhits = $API->adminUserHits($nodays);
-$dailyhits = $API->adminDailyHits($nodays);
-$popular = $API->adminPopularPages($nodays,$limit);
+$admin  = new Admin();
+$lastlogin = $admin->lastLogin();
+$neverlogin = $admin->neverLogin($nodays);
+$userhits = $admin->userHits($nodays);
+$dailyhits = $admin->dailyHits($nodays);
+$popular = $admin->popularPages($nodays,$limit);
 
 include_once('../includes/menu-admin.php');
 ?>

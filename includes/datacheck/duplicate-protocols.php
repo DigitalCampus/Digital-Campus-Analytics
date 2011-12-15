@@ -2,7 +2,7 @@
 <p><?php echo getString("datacheck.duplicate.protocol.info")?></p>
 <?php 
 
-	$dup = $API->datacheckDuplicateProtocols();
+	$dup = $dc->duplicates();
 	if(count($dup)>0){
 ?>
 	
