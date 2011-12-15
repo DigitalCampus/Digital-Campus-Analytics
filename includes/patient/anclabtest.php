@@ -14,7 +14,11 @@
 		for($i=0;$i <count($anclabtest); $i++ ){
 			echo "<td class='rdcell'>";
 			if (isset($anclabtest[$i])){
-				printf('on %s by %s (%s)',displayAsEthioDate(strtotime($anclabtest[$i]->CREATEDON)), $anclabtest[$i]->submittedname, $anclabtest[$i]->protocollocation);
+				printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',	date('H:i',strtotime($anclabtest[$i]->CREATEDON)),
+															date('D d M Y',strtotime($anclabtest[$i]->CREATEDON)),
+															displayAsEthioDate(strtotime($anclabtest[$i]->CREATEDON)),
+															$anclabtest[$i]->submittedname,
+															$anclabtest[$i]->protocollocation);
 			}
 			echo "</td>";
 			echo "<td class='rrcell'></td>";

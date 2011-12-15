@@ -27,7 +27,11 @@
 		for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
-				printf('on %s by %s (%s)',displayAsEthioDate(strtotime($ancfollow[$x]->CREATEDON)), $ancfollow[$x]->submittedname, $ancfollow[$x]->protocollocation);
+				printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',date('H:i',strtotime($ancfollow[$x]->CREATEDON)), 
+														date('D d M Y',strtotime($ancfollow[$x]->CREATEDON)), 
+														displayAsEthioDate(strtotime($ancfollow[$x]->CREATEDON)), 
+														$ancfollow[$x]->submittedname, 
+														$ancfollow[$x]->protocollocation);
 			}
 			echo "</td>";
 		}
@@ -90,8 +94,8 @@
 							'Q_HEADACHE'  => $ancfollow[$x]->Q_HEADACHE,
 							'Q_OTHERHEALTHPROBLEMS'  => $patient->ancfollow[$x]->Q_OTHERHEALTHPROBLEMS,
 							'Q_DELIVERYPLAN'  => $ancfollow[$x]->Q_DELIVERYPLAN,
-							'Q_LMP'  => displayAsEthioDate(strtotime($ancfollow[$x]->Q_LMP)),
-							'Q_EDD'  => displayAsEthioDate(strtotime($ancfollow[$x]->Q_EDD)),
+							'Q_LMP'  => displayAsEthioDate(strtotime($ancfollow[$x]->Q_LMP))."<br/>".date('D d M Y',strtotime($ancfollow[$x]->Q_LMP)),
+							'Q_EDD'  => displayAsEthioDate(strtotime($ancfollow[$x]->Q_EDD))."<br/>".date('D d M Y',strtotime($ancfollow[$x]->Q_EDD)),
 							'Q_SOCIALSUPPORT'  => getstring("Q_SOCIALSUPPORT.".$ancfollow[$x]->Q_SOCIALSUPPORT),
 							'Q_ECONOMICS' => $ancfollow[$x]->Q_ECONOMICS,	
 							'Q_TRANSPORTATION' => $ancfollow[$x]->Q_TRANSPORTATION
@@ -185,7 +189,7 @@
 		for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
-				echo ($ancfollow[$x]->Q_TT1 != "") ? displayAsEthioDate(strtotime($ancfollow[$x]->Q_TT1)) : "";
+				echo ($ancfollow[$x]->Q_TT1 != "") ? displayAsEthioDate(strtotime($ancfollow[$x]->Q_TT1))."<br/>".date('D d M Y',strtotime($ancfollow[$x]->Q_TT1)) : "";
 			}
 			echo "</td>";
 		}
@@ -197,7 +201,7 @@
 		for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
-				echo ($ancfollow[$x]->Q_TT2 != "") ? displayAsEthioDate(strtotime($ancfollow[$x]->Q_TT2)) : "";
+				echo ($ancfollow[$x]->Q_TT2 != "") ? displayAsEthioDate(strtotime($ancfollow[$x]->Q_TT2))."<br/>".date('D d M Y',strtotime($ancfollow[$x]->Q_TT2)) : "";
 			}
 			echo "</td>";
 		}
@@ -479,7 +483,7 @@
 		foreach($i as $x){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
-				echo displayAsEthioDate(strtotime($ancfollow[$x]->Q_APPOINTMENTDATE));
+				echo displayAsEthioDate(strtotime($ancfollow[$x]->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($ancfollow[$x]->Q_APPOINTMENTDATE));
 			}
 			echo "</td>";
 		}

@@ -13,7 +13,11 @@
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('protocolsubmitted');?></td>
-	<td class="rdcell"><?php printf('on %s by %s (%s)',displayAsEthioDate(strtotime($patient->ancfirst->CREATEDON)), $patient->ancfirst->submittedname, $patient->ancfirst->protocollocation);?></td>
+	<td class="rdcell"><?php printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',date('H:i',strtotime($patient->ancfirst->CREATEDON)), 
+																		date('D d M Y',strtotime($patient->ancfirst->CREATEDON)), 
+																		displayAsEthioDate(strtotime($patient->ancfirst->CREATEDON)), 
+																		$patient->ancfirst->submittedname, 
+																		$patient->ancfirst->protocollocation);?></td>
 </tr>
 <?php 
 	$rowArray = array(
@@ -94,8 +98,8 @@
 					'Q_OTHERPREVPREG' => $patient->ancfirst->Q_OTHERPREVPREG,
 					'Q_FAMILYPLAN' => $patient->ancfirst->Q_FAMILYPLAN,
 					'Q_FPMETHOD' => $q_fpmethod,
-					'Q_LMP' => displayAsEthioDate(strtotime($patient->ancfirst->Q_LMP)),
-					'Q_EDD' => displayAsEthioDate(strtotime($patient->ancfirst->Q_EDD)),
+					'Q_LMP' => displayAsEthioDate(strtotime($patient->ancfirst->Q_LMP))."<br/>".date('D d M Y',strtotime($patient->ancfirst->Q_LMP)),
+					'Q_EDD' => displayAsEthioDate(strtotime($patient->ancfirst->Q_EDD))."<br/>".date('D d M Y',strtotime($patient->ancfirst->Q_EDD)),
 					'Q_DELIVERYPLACE' => $patient->ancfirst->Q_DELIVERYPLACE,
 					'Q_WHOATTENDED' => $q_whoattended,
 					'Q_DELIVERYPLAN' => $patient->ancfirst->Q_DELIVERYPLAN,
@@ -120,8 +124,8 @@
 					'Q_MALARIA' => $patient->ancfirst->Q_MALARIA,
 					'Q_BEDNETS' => $patient->ancfirst->Q_BEDNETS,
 					'Q_TETANUS' => getstring("Q_TETANUS.".$patient->ancfirst->Q_TETANUS),
-					'Q_TT1' => ($patient->ancfirst->Q_TT1 != "") ? displayAsEthioDate(strtotime($patient->ancfirst->Q_TT1)) : "",
-					'Q_TT2' => ($patient->ancfirst->Q_TT2 != "") ? displayAsEthioDate(strtotime($patient->ancfirst->Q_TT2)) : "",
+					'Q_TT1' => ($patient->ancfirst->Q_TT1 != "") ? displayAsEthioDate(strtotime($patient->ancfirst->Q_TT1))."<br/>".date('D d M Y',strtotime($patient->ancfirst->Q_TT1)) : "",
+					'Q_TT2' => ($patient->ancfirst->Q_TT2 != "") ? displayAsEthioDate(strtotime($patient->ancfirst->Q_TT2))."<br/>".date('D d M Y',strtotime($patient->ancfirst->Q_TT2)) : "",
 					'Q_TETANUS' => getstring("Q_TETANUS.".$patient->ancfirst->Q_TETANUS),
 					'Q_IRONTABLETS' => $patient->ancfirst->Q_IRONTABLETS,
 					'Q_IRONGIVEN' => $patient->ancfirst->Q_IRONGIVEN,
@@ -197,7 +201,7 @@
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_APPOINTMENTDATE');?></td>
-	<td class="rdcell"><?php echo displayAsEthioDate(strtotime($patient->ancfirst->Q_APPOINTMENTDATE)); ?></td>
+	<td class="rdcell"><?php echo displayAsEthioDate(strtotime($patient->ancfirst->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($patient->ancfirst->Q_APPOINTMENTDATE)); ?></td>
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_IDCARD');?></td>

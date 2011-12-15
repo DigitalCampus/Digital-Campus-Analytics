@@ -7,7 +7,11 @@
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('protocolsubmitted');?></td>
-	<td class="rdcell"><?php printf('on %s by %s (%s)',displayAsEthioDate(strtotime($patient->CREATEDON)), $patient->submittedname, $patient->protocollocation);?></td>
+	<td class="rdcell"><?php printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',date('H:i',strtotime($patient->CREATEDON)), 
+																		date('D d M Y',strtotime($patient->CREATEDON)), 
+																		displayAsEthioDate(strtotime($patient->CREATEDON)), 
+																		$patient->submittedname, 
+																		$patient->protocollocation);?></td>
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_NAME');?></td>

@@ -30,7 +30,7 @@ class KPI {
 							p.Q_USERID, 
 							p.Q_HEALTHPOINTID, 
 							p.Q_LMP, 
-							p.TODAY as createdate, 
+							p._CREATION_DATE as createdate, 
 							DATE_ADD(p.Q_LMP, INTERVAL %d DAY) AS ANC1DUEBY ,
 							hp.hpname as healthpoint
 					FROM %s p 
@@ -125,7 +125,7 @@ class KPI {
 								p.Q_USERID, 
 								p.Q_HEALTHPOINTID, 
 								p.Q_LMP, 
-								p.TODAY as createdate, 
+								p._CREATION_DATE as createdate, 
 								DATE_ADD(p.Q_LMP, INTERVAL ".ANC1_DUE_BY_END." DAY) AS ANC1DUEBY ,
 								hp.hpname as healthpoint
 						FROM ".TABLE_ANCFIRST." p 
@@ -203,7 +203,7 @@ class KPI {
 							p.Q_USERID, 
 							p.Q_HEALTHPOINTID, 
 							p.Q_LMP, 
-							p.TODAY as createdate,  
+							p._CREATION_DATE as createdate,  
 							DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_START." DAY) AS ANC2_DUE_BY_START,
 							DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) AS ANC2_DUE_BY_END
 					FROM ".TABLE_ANCFOLLOW." p";

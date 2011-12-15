@@ -17,7 +17,13 @@
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('protocolsubmitted');?></td>
-	<td class="rdcell"><?php printf('on %s by %s (%s)',displayAsEthioDate(strtotime($patient->delivery->CREATEDON)), $patient->delivery->submittedname, $patient->delivery->protocollocation);?></td>
+	<td class="rdcell"><?php 
+							printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',	date('H:i',strtotime($patient->delivery->CREATEDON)),
+																		date('D d M Y',strtotime($patient->delivery->CREATEDON)),
+																		displayAsEthioDate(strtotime($patient->delivery->CREATEDON)),
+																		$patient->delivery->submittedname,
+																		$patient->delivery->protocollocation);
+	?></td>
 </tr>
 <?php 
 	$rowArray = array(
@@ -69,7 +75,7 @@
 					'Q_REFERRALREASON' => ($patient->delivery->Q_REFERRALREASON != "") ? getstring("Q_REFERRALREASON.".$patient->delivery->Q_REFERRALREASON) : "",
 					'Q_DELIVERYSITE' => getstring("Q_DELIVERYSITE.".$patient->delivery->Q_DELIVERYSITE),
 					'Q_MATERNALDEATH' => $patient->delivery->Q_MATERNALDEATH,
-					'Q_DELIVERYDATE' => displayAsEthioDate(strtotime($patient->delivery->Q_DELIVERYDATE)),
+					'Q_DELIVERYDATE' => displayAsEthioDate(strtotime($patient->delivery->Q_DELIVERYDATE))."<br/>".date('D d M Y',strtotime($patient->delivery->Q_DELIVERYDATE)),
 					'Q_DELIVERYTIME' => date("H:i",strtotime($patient->delivery->Q_DELIVERYTIME)),
 					'Q_BIRTHATTENDANT' => $q_birthattendant,
 					'Q_VAGINALDELIVERY' => $patient->delivery->Q_VAGINALDELIVERY,

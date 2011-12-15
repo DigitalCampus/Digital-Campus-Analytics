@@ -14,7 +14,11 @@
 		for($i=0;$i <count($anctransfer); $i++ ){
 			echo "<td class='rdcell'>";
 			if (isset($anctransfer[$i])){
-				printf('on %s by %s (%s)',displayAsEthioDate(strtotime($anctransfer[$i]->CREATEDON)), $anctransfer[$i]->submittedname, $anctransfer[$i]->protocollocation);
+				printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',date('H:i',strtotime($anctransfer[$i]->CREATEDON)), 
+														date('D d M Y',strtotime($anctransfer[$i]->CREATEDON)), 
+														displayAsEthioDate(strtotime($anctransfer[$i]->CREATEDON)), 
+														$anctransfer[$i]->submittedname, 
+														$anctransfer[$i]->protocollocation);
 			}
 			echo "</td>";
 			echo "<td class='rrcell'></td>";

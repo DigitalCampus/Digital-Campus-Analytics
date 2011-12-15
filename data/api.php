@@ -340,7 +340,7 @@ class API {
 						Q_USERNAME,
 						Q_YEAROFBIRTH,
 						_URI,
-						TODAY AS CREATEDON
+						_CREATION_DATE AS CREATEDON
 				FROM ".TABLE_REGISTRATION." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
@@ -468,7 +468,7 @@ class API {
 						Q_WEIGHT,
 						Q_YEAROFBIRTH,
 						Q_YOUNGESTCHILD,
-						TODAY AS CREATEDON
+						_CREATION_DATE AS CREATEDON
 				FROM ".TABLE_ANCFIRST." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
@@ -563,7 +563,7 @@ class API {
 						Q_USERID,
 						Q_WEIGHT,
 						Q_YEAROFBIRTH,
-						TODAY AS CREATEDON
+						_CREATION_DATE AS CREATEDON
 				FROM ".TABLE_ANCFOLLOW." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
@@ -624,7 +624,7 @@ class API {
 						Q_VACUUMDELIVERY,
 						Q_YEAROFBIRTH,
 						Q_YOUNGESTCHILD,
-						TODAY AS CREATEDON
+						_CREATION_DATE AS CREATEDON
 				FROM ".TABLE_ANCTRANSFER." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
@@ -687,7 +687,7 @@ class API {
 						Q_URINEPROTEIN,
 						Q_USERID,
 						Q_YEAROFBIRTH,
-						TODAY AS CREATEDON
+						_CREATION_DATE AS CREATEDON
 				FROM ".TABLE_ANCLABTEST." r
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
@@ -763,7 +763,7 @@ class API {
 						Q_VAGINALDELIVERY,
 						Q_VITASUPPL,
 						Q_YEAROFBIRTH,
-						TODAY AS CREATEDON
+						_CREATION_DATE AS CREATEDON
 				FROM ".TABLE_DELIVERY." p
 				INNER JOIN healthpoint pathp ON pathp.hpcode = p.Q_HEALTHPOINTID
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
