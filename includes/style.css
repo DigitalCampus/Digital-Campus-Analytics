@@ -333,7 +333,7 @@ div.kpititle, div.kpiscore, div.kpichange, div.kpitarget {
 .equal {
 }
 
-.decrease {
+.decrease, .error {
 	color: red;
 }
 

@@ -65,7 +65,13 @@
 							);
 			echo "<td nowrap>".date('H:i D d M Y',$s->datestamp)."<br/>".displayAsEthioDate($s->datestamp)."</td>";
 			echo "<td nowrap>".$s->patientlocation."/".$s->Q_USERID."</td>";
-			echo "<td nowrap>".$s->patientname."</td>";
+			echo "<td nowrap>";
+			if (trim($s->patientname) == ""){
+				printf("<span class='error'>%s</span>",getstring("warning.patientreg"));
+			} else {
+				echo $s->patientname;
+			}
+			echo "</td>";
 			echo "<td nowrap>".getString($s->protocol)."</td>";
 			echo "<td nowrap>".$s->submittedname." at ".$s->protocollocation."</td>";
 			echo "</tr>";

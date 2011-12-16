@@ -8,13 +8,17 @@ $kpi = optional_param('kpi','anc1defaulters',PARAM_TEXT);
 
 
 //select KPI....
+$counter = 1;
 foreach ($kpis as $k=>$v){
 	if ($k == $kpi){
 		printf("<span class='selected'>%s</span>",$v);
 	} else {
 		printf("<a href='?kpi=%s'>%s</a>",$k,$v);
 	}
-	echo " | ";
+	if($counter < count($kpis)){
+		echo " | ";
+	}
+	$counter++;
 }
 
 if ($kpi == "submitted"){
