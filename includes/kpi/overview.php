@@ -16,6 +16,7 @@ $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 $anc1thismonth = $API->getANC1Defaulters($opts);
 $anc2thismonth = $API->getANC2Defaulters($opts);
 $nosubmittedthismonth = $API->getProtocolsSubmitted($opts);
+$tt1thismonth = $API->getTT1Defaulters($opts);
 
 $opts = array();
 $opts['hps'] = $API->getUserHealthPointPermissions();
@@ -25,12 +26,13 @@ $opts['enddate'] = $datemonthago->format('Y-m-d');
 $anc1previousmonth = $API->getANC1Defaulters($opts);
 $anc2previousmonth= $API->getANC2Defaulters($opts);
 $nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
+$tt1previousmonth = $API->getTT1Defaulters($opts);
 
 ?>
 <div class="kpiheader">
 	<div class="kpiheadertitle">&nbsp;</div>
 	<div class="kpiheadertitle">For the last month</div>
-	<div class="kpiheadertitle">Change<br/><small>+/-</small></div>
+	<div class="kpiheadertitle">Change from previous month</div>
 	<div class="kpiheadertitle">Target</div>
 	<div style="clear:both;"></div>
 </div>
@@ -89,16 +91,20 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-<div class="kpititle">TT on time</div>
-<div class="kpiscore">--</div>
-<div class="kpichange">--</div>
-<div class="kpitarget">--</div>
-<div style="clear:both;"></div>
-</div>
-<div class="kpi">
-<div class="kpititle">PNC on time</div>
-<div class="kpiscore">--</div>
-<div class="kpichange">--</div>
-<div class="kpitarget">--</div>
-<div style="clear:both;"></div>
+	<div class="kpititle"><a href="kpi.php?kpi=tt1defaulters">TT1 on time</div>
+	<div class="kpiscore"><?php echo $tt1thismonth[0]->nondefaulters; ?>%</div>
+	<div class="kpichange">
+	<?php 
+		$change = $tt1thismonth[0]->nondefaulters - $tt1previousmonth[0]->nondefaulters;
+	 	if ($change > 0){
+	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d%%</span>",'images/increase.png',$change);
+	 	} else if ($change == 0){
+	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0%%</span>",'images/equal.png',$change);
+	 	} else if ($change < 0){
+	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d%%</span>",'images/decrease.png',$change);
+	 	}
+	?>
+	</div>
+	<div class="kpitarget">60%</div>
+	<div style="clear:both;"></div>
 </div>

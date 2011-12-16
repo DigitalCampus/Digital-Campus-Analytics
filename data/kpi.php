@@ -385,8 +385,8 @@ class KPI {
 		foreach($summary as $k=>$v){
 			$total = $v->defaulters + $v->nondefaulters;
 			if ($total > 0){
-				$pc_default = ($v->defaulters * 100)/$total;
-				$pc_nondefault = ($v->nondefaulters * 100)/$total;
+				$pc_default = round(($v->defaulters * 100)/$total);
+				$pc_nondefault = round(($v->nondefaulters * 100)/$total);
 				$summary[$k]->defaulters = $pc_default;
 				$summary[$k]->nondefaulters = $pc_nondefault;
 			}
