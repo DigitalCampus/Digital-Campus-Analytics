@@ -2,7 +2,7 @@
 include_once "config.php";
 $PAGE="kpi";
 include_once "includes/header.php";
-$kpis = array ('anc1defaulters'=>"ANC 1 Non Defaulters",'anc2defaulters'=>"ANC 2 Defaulters",'tt1defaulters'=>"TT 1 Defaulters",'tt2defaulters'=>"TT 2 Defaulters");
+$kpis = array ('submitted' =>'Submitted', 'anc1defaulters'=>"ANC 1 Non Defaulters",'anc2defaulters'=>"ANC 2 Defaulters",'tt1defaulters'=>"TT 1 Defaulters",'tt2defaulters'=>"TT 2 Defaulters");
 
 $kpi = optional_param('kpi','anc1defaulters',PARAM_TEXT);
 
@@ -17,6 +17,11 @@ foreach ($kpis as $k=>$v){
 	echo " | ";
 }
 
+if ($kpi == "submitted"){
+	$viewopts = array('height'=>500,'width'=>800,'class'=>'graph','comparison'=>true);
+	$opts = array('months'=>6);
+	include_once "includes/kpi/submitted.php";
+}
 if ($kpi == "anc1defaulters"){
 	$viewopts = array('height'=>500,'width'=>800,'class'=>'graph','comparison'=>true);
 	$opts = array('months'=>6);

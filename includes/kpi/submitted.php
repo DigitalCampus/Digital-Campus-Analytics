@@ -1,9 +1,6 @@
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
 <?php
-include_once "config.php";
-$PAGE = "submitted";
-$HEADER = "<script type='text/javascript' src='https://www.google.com/jsapi'></script>";
-$HEADER .= '<script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>';
-include_once "includes/header.php";
  
 $days = optional_param("days",7,PARAM_INT);
 $view = optional_param('view','list',PARAM_TEXT);
@@ -19,7 +16,7 @@ for($i=0; $i<count($dayopts);$i++){
 	if($days == $dayopts[$i]){
 		printf("<span class='selected'>%s</span>",getstring("submitted.nodays",array($dayopts[$i])));
 	} else {
-		printf("<a href='?days=%d&view=%s'>%s</a>",$dayopts[$i],$view,getstring("submitted.nodays",array($dayopts[$i])));
+		printf("<a href='?kpi=submitted&days=%d&view=%s'>%s</a>",$dayopts[$i],$view,getstring("submitted.nodays",array($dayopts[$i])));
 	}
 	if($i != count($dayopts)-1){
 		printf(" | ");
@@ -32,19 +29,19 @@ printf("<p>%s", getString("submitted.view.viewas"));
 if ($view == "list"){
 	printf("<span class='selected'>%s</span>",getString('submitted.view.detail'));
 } else {
-	printf("<a href='?view=list&days=%d'>%s</a>",$days,getString('submitted.view.detail'));
+	printf("<a href='?kpi=submitted&view=list&days=%d'>%s</a>",$days,getString('submitted.view.detail'));
 }
 printf(" | ");
 if ($view == "byprotocol"){
 	printf("<span class='selected'>%s</span>",getString('submitted.view.byprotocol'));
 } else {
-	printf("<a href='?view=byprotocol&days=%d'>%s</a>",$days,getString('submitted.view.byprotocol'));
+	printf("<a href='?kpi=submitted&view=byprotocol&days=%d'>%s</a>",$days,getString('submitted.view.byprotocol'));
 }
 printf(" | ");
 if ($view == "bylocation"){
 	printf("<span class='selected'>%s</span>",getString('submitted.view.location'));
 } else {
-	printf("<a href='?view=bylocation&days=%d'>%s</a>",$days,getString('submitted.view.location'));
+	printf("<a href='?kpi=submitted&view=bylocation&days=%d'>%s</a>",$days,getString('submitted.view.location'));
 }
 printf("</p><br/>");
 
@@ -58,5 +55,4 @@ if ($view == "list"){
 } else {
 	echo getString("warning.viewnotfound");
 } 
-include_once "includes/footer.php";
 ?>

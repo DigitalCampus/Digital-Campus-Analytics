@@ -29,13 +29,13 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
 ?>
 <div class="kpiheader">
 	<div class="kpiheadertitle">&nbsp;</div>
-	<div class="kpiheadertitle">Your score<br/><small>for last month</small></div>
+	<div class="kpiheadertitle">For the last month</div>
 	<div class="kpiheadertitle">Change<br/><small>+/-</small></div>
 	<div class="kpiheadertitle">Target</div>
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle">Protocols Submitted</div>
+	<div class="kpititle"><a href="kpi.php?kpi=submitted">Protocols Submitted</a></div>
 	<div class="kpiscore"><?php echo $nosubmittedthismonth->count; ?></div>
 	<div class="kpichange">
 	<?php 
@@ -53,7 +53,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle">ANC1 on time</div>
+	<div class="kpititle"><a href="kpi.php?kpi=anc1defaulters">ANC1 on time</a></div>
 	<div class="kpiscore"><?php echo $anc1thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 
@@ -71,7 +71,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle">ANC2 on time</div>
+	<div class="kpititle"><a href="kpi.php?kpi=anc1defaulters">ANC2 on time</a></div>
 	<div class="kpiscore"><?php echo $anc2thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 

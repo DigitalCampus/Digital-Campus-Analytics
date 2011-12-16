@@ -11,7 +11,6 @@ function writeToLog($loglevel,$logtype,$logmsg,$logpagephptime=0,$logpagemysqlti
 	} 
 	
 	$uagent = new uagent_info();
-	echo $uagent->useragent;
 	$API->writeLog($loglevel,$USER->userid,$logtype,$logmsg,$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$uagent->useragent);
 }
 
