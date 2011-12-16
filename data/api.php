@@ -1141,5 +1141,10 @@ class API {
 		$kpi = new KPI();
 		return $kpi->getANC2Defaulters($opts);
 	}
+	
+	function getTT1Defaulters($opts=array()){
+		$kpi = new KPI();
+		return $kpi->getTT1Defaulters($opts);
+	}
 
 }
