@@ -138,7 +138,7 @@ function outputSelectList($districts,$AverageArray,$ComparisonHPArray,$selected)
 		if($selected == 'overall'){
 			printf("<option value='overall' selected='selected'>Overall</option>");
 		} else {
-			printf("<option value='average'>Overall</option>");
+			printf("<option value='overall'>Overall</option>");
 		}
 		
 		printf("<option value='' disabled='disabled'>---</option>");

@@ -91,7 +91,7 @@ $tt1previousmonth = $API->getTT1Defaulters($opts);
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle"><a href="kpi.php?kpi=tt1defaulters">TT1 on time</div>
+	<div class="kpititle"><a href="kpi.php?kpi=tt1defaulters">TT1 on time</a></div>
 	<div class="kpiscore"><?php echo $tt1thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 

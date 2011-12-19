@@ -4,7 +4,7 @@ $PAGE="kpi";
 include_once "includes/header.php";
 $kpis = array ('submitted' =>'Submitted', 'anc1defaulters'=>"ANC 1 Non Defaulters",'anc2defaulters'=>"ANC 2 Non Defaulters",'tt1defaulters'=>"TT 1 Non Defaulters");
 
-$kpi = optional_param('kpi','anc1defaulters',PARAM_TEXT);
+$kpi = optional_param('kpi','submitted',PARAM_TEXT);
 
 
 //select KPI....
