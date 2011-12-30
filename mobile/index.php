@@ -33,13 +33,13 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
 $tt1previousmonth = $API->getTT1Defaulters($opts);
 ?>
 <div class="kpiheader">
-	<div class="kpiscore">For last month</div>
-	<div class="kpichange">Change from previous month</div>
+	<div class="kpiscore">Last month</div>
+	<div class="kpichange">Previous month</div>
 	<div class="kpitarget">Target</div>
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle"><a href="kpi.php?kpi=submitted">Protocols Submitted</a></div>
+	<div class="kpititle">Protocols Submitted</div>
 	<div class="kpiscore"><?php echo $nosubmittedthismonth->count; ?></div>
 	<div class="kpichange">
 	<?php 
@@ -57,7 +57,7 @@ $tt1previousmonth = $API->getTT1Defaulters($opts);
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle"><a href="kpi.php?kpi=anc1defaulters">ANC1 on time</a></div>
+	<div class="kpititle">ANC1 on time</div>
 	<div class="kpiscore"><?php echo $anc1thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 
@@ -75,7 +75,7 @@ $tt1previousmonth = $API->getTT1Defaulters($opts);
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle"><a href="kpi.php?kpi=anc1defaulters">ANC2 on time</a></div>
+	<div class="kpititle">ANC2 on time</div>
 	<div class="kpiscore"><?php echo $anc2thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 
@@ -93,7 +93,7 @@ $tt1previousmonth = $API->getTT1Defaulters($opts);
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle"><a href="kpi.php?kpi=tt1defaulters">TT1 on time</a></div>
+	<div class="kpititle">TT1 on time</div>
 	<div class="kpiscore"><?php echo $tt1thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 

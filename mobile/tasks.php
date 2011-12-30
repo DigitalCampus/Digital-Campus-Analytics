@@ -3,7 +3,7 @@ include_once "../config.php";
 $PAGE="tasks";
 include_once 'includes/header.php';
 
-$opts = array("days"=>31);
+$opts = array("days"=>14);
 $tasks = $API->getTasksDue($opts);
 //print_r($tasks);
 

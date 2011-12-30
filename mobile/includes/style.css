@@ -146,3 +146,8 @@ div.kpitarget {
 img.kpichange {
 	vertical-align:middle;
 }
+
+input {
+	width:100%;
+	font-size:120%;
+}

@@ -1,9 +1,10 @@
 <?php 
 include_once('../config.php');
+writeToLog("info","pagehit","challenge-task");
 
 //header('Cache-Control: no-cache, must-revalidate');
 //header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-header('Content-type:text/plain;charset:utf-8');
+header('Content-type:application/json;charset:utf-8');
 
 $username = optional_param('username','',PARAM_TEXT);
 $password = optional_param('password','',PARAM_TEXT);

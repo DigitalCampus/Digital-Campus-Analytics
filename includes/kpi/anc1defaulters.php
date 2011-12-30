@@ -131,6 +131,7 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
 			outputSelectList($districts,$AverageArray,$ComparisonHPArray,$compareopts['hps']);
 		?>
 	</select>
+	<input type="hidden" name="kpi" value="anc1defaulters">
 	<input type="submit" name="submit" value="compare"/></p>
 </form>
 </div>
