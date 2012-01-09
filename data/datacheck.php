@@ -112,6 +112,7 @@ class DataCheck {
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= " AND a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints().")";
 		}
+		$sql .= " ORDER BY submittedname ASC, patientlocation ASC, Q_USERID ASC"; 
 
 		$result = $API->runSql($sql);
 		
@@ -338,7 +339,8 @@ class DataCheck {
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= " AND a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints().")";
 		}
-	
+		$sql .= " ORDER BY submittedname ASC, patientlocation ASC, Q_USERID ASC";
+		
 		$result = $API->runSql($sql);
 	
 		while($row = mysql_fetch_object($result)){
