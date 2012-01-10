@@ -88,7 +88,7 @@ if(count($missing)>0){
 				echo "<td nowrap>".$d->patientlocation."/".$d->Q_USERID."</td>";
 				echo "<td nowrap>".getstring($d->protocol);
 				if(isset($d->Q_FOLLOWUPNO)){
-					echo " - ".$d->Q_FOLLOWUPNO;
+					echo " ".$d->Q_FOLLOWUPNO;
 				}
 				echo "</td>";
 				echo "</tr>";

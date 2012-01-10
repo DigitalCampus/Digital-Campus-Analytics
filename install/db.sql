@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `user_uri` varchar(255) NOT NULL,
   `hpid` bigint(20) NOT NULL,
   PRIMARY KEY (`userid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -116,6 +116,43 @@ CREATE TABLE IF NOT EXISTS `userprops` (
   `propvalue` text NOT NULL,
   PRIMARY KEY (`propid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
+
+--
+-- Dumping data for table `district`
+--
+
+INSERT INTO `district` (`did`, `dname`) VALUES
+(1, 'Hinatalo wajerat District'),
+(2, 'Kilteawelaelo District'),
+(3, 'Testing');
+
+--
+-- Dumping data for table `healthpoint`
+--
+
+INSERT INTO `healthpoint` (`hpid`, `hpcode`, `hpname`, `did`, `locationlat`, `locationlng`) VALUES
+(1, 1000, 'Mesanu - Kilteawelaelo health post', 2, 13.701, 39.6452),
+(2, 1001, 'Ayanlem health post', 2, 13.7542, 39.5513),
+(3, 1002, 'Gemad health post ', 2, 13.8767, 39.563),
+(4, 1003, 'Negash health post', 2, 13.876, 39.5984),
+(5, 1004, 'Tsadanaele health post', 2, 13.9101, 39.5814),
+(10, 1009, 'Frewoyni health post', 1, 0, 0),
+(9, 1008, 'Mesanu - Hintalowajerat health post', 1, 0, 0),
+(8, 1007, 'Hagerselam health post', 1, 0, 0),
+(7, 1006, 'Ara Alemsegeda health post', 1, 0, 0),
+(6, 1005, 'Maynebri health post', 1, 0, 0),
+(11, 50005, 'Negash health centre', 2, 0, 0),
+(12, 50004, 'Hiwane health centre', 1, 0, 0),
+(13, 50003, 'Agulae health centre ', 2, 0, 0),
+(14, 50002, 'Adigudom health centre', 1, 0, 0),
+(15, 50001, 'Abraha Atsbha health centre', 2, 0, 0),
+(16, 0, 'Digital Campus team', 3, 0, 0),
+(17, 9999, 'For practice', 3, 0, 0);
+
+
+// add user and userprops 
+INSERT INTO `user` (`userid`, `username`, `password`, `email`, `firstname`, `lastname`, `defaultlang`, `user_uri`, `hpid`) VALUES (1, 'admin', MD5('admin'), '', 'Admin', 'User', 'en', '', '16');
+INSERT INTO `dcdash`.`userprops` (`propid`, `userid`, `propname`, `propvalue`) VALUES (NULL, '1', 'permissions.admin', 'true');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
