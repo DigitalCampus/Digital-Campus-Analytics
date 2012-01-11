@@ -2,8 +2,8 @@
 
 To install...
 
-1. Set up an ODK Aggregate server (http://code.google.com/p/opendatakit/downloads/list)
-2. run the /install/db.sql script to add the required tables to your ODK Aggregate database
+1. Set up an ODK Aggregate server (http://code.google.com/p/opendatakit/downloads/list). IT needs to be set up as a self hosted version of ODK (not on Google App Engine) with Tomcat and MySQL.
+2. Run the /install/db.sql script (in mysql) to add the required tables to your ODK Aggregate database
 3. Upload the current versions of the protocols to your ODK Aggregate server 
    (https://github.com/alexlittle/Digital-Campus-Protocols) - this makes sure you have the 
    right database tables set up
