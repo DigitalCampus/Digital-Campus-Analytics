@@ -292,6 +292,8 @@ class API {
 	    
 		//archive old patients
 		// TODO update for real PNC protocol
+		
+		// TODO update for termination protocol
 		/*$sql = "UPDATE patientcurrent pc, 
 					(SELECT hpcode, patid FROM pnc
 						WHERE datestamp <= DATE_ADD(NOW(), INTERVAL -70 DAY)) pnc1

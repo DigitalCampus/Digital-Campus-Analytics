@@ -58,13 +58,11 @@ define('PARAM_ALPHA',    0x0004);
 
 /**
  * PARAM_ACTION - an alias for PARAM_ALPHA, use for various actions in formas and urls
- * @TODO: should we alias it to PARAM_ALPHANUM ?
  */
 define('PARAM_ACTION',   0x0004);
 
 /**
  * PARAM_FORMAT - an alias for PARAM_ALPHA, use for names of plugins, formats, etc.
- * @TODO: should we alias it to PARAM_ALPHANUM ?
  */
 define('PARAM_FORMAT',   0x0004);
 
@@ -150,7 +148,6 @@ define('PARAM_HTML',0x1100);
 /**
  * PARAM_ALPHAEXT the same contents as PARAM_ALPHA plus the chars in quotes: "/-_" allowed,
  * suitable for include() and require()
- * @TODO: should we rename this function to PARAM_SAFEDIRS??
  */
 define('PARAM_ALPHAEXT', 0x2000);
 
