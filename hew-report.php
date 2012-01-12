@@ -39,6 +39,7 @@ To include here:
 <li>Overdue tasks</li>
 <li>Upcoming appointments (next month)</li>
 <li>Upcoming deliveries (next month)</li>
+<li>High risk patients</li>
 </ul>
 <?php 
 if ($userid == ""){

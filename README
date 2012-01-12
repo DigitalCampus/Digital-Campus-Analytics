@@ -1,14 +1,10 @@
 
 
-To install...
+*** Read me first! ***
 
-1. Set up an ODK Aggregate server (http://code.google.com/p/opendatakit/downloads/list). IT needs to be set up as a self hosted version of ODK (not on Google App Engine) with Tomcat and MySQL.
-2. Run the /install/db.sql script (in mysql) to add the required tables to your ODK Aggregate database
-3. Upload the current versions of the protocols to your ODK Aggregate server 
-   (https://github.com/alexlittle/Digital-Campus-Protocols) - this makes sure you have the 
-   right database tables set up
-4. Copy the /config-sample.php file to /config.php and add in the correct values 
-   for the database connection settings and homeAddress/homePath
-5. You should now be able to visit the analytics application at http://localhost/<your-path>/
-6. You can log in with username/password admin/admin - but this password should be changed
-   the first time you log in.
+
+This project is under development.
+
+For more information about this project and how this software can be used effectively please visit http://digital-campus.org or email: alex@digital-campus.org
+
+Although we have provided some installation notes (see the INSTALL file), these are not comprehensive and you may find errors or it may not work/install as expected.
