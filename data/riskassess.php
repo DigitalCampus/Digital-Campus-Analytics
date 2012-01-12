@@ -375,6 +375,7 @@ class RiskAssessment {
 		
 		/*
 		 * Test results
+		 * TODO - add to lang file
 		 */
 		$factor = 'Q_URINEPROTEIN';
 		$risk->risks[$factor] = false;
