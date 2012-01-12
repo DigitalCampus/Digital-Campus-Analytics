@@ -91,10 +91,22 @@ class RiskAssessment {
 			$risk->count++;
 		}
 		
+		// Current pregnancy complaints
+		
+		
+		// Obstetrics/Gynaecology factors
+		
+		// Social factors
+		
+		// General medical factors
+		
+		//  
+		
+		
 		/*
 		 * eclampsia, bleeding, fatigue
 		 */
-		$otherrisks = array ('Q_PREECLAMPSIA', 'Q_BLEEDING', 'Q_FATIGUE');
+		/*$otherrisks = array ('Q_PREECLAMPSIA', 'Q_BLEEDING', 'Q_FATIGUE');
 		foreach ($otherrisks AS $r){
 			$risk->risks[$r] = false;
 			// from ANC First
@@ -110,9 +122,7 @@ class RiskAssessment {
 			if($risk->risks[$r] == true){
 				$risk->count++;
 			}
-		}
-		
-		//abdominal pain
+		}*/
 		
 
 		

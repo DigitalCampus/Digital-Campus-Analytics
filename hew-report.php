@@ -30,6 +30,16 @@ $currentUser = $API->getUserById($userid);
 	<input type="submit" name="submit" value="<?php echo getString("hewmanager.form.searchbtn");?>"></input>
 </form>
 
+
+To include here:
+<ul>
+<li>Overview of KPIs</li>
+<li>Protocols submitted</li>
+<li>Missing protocols/no registrations</li>
+<li>Overdue tasks</li>
+<li>Upcoming appointments (next month)</li>
+<li>Upcoming deliveries (next month)</li>
+</ul>
 <?php 
 if ($userid == ""){
 	include_once "includes/footer.php";

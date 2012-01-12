@@ -308,7 +308,36 @@ class API {
 	    }*/
 	}
 	
-	
+	/*
+	 * returns an array of current patients for given user
+	 */
+	function getCurrentPatients($opts=array()){
+		
+		if(array_key_exists('hps',$opts)){
+			$hps = $opts['hps'];
+		} else {
+			$hps = $API->getUserHealthPointPermissions();
+		}
+		
+		$sql = sprintf("SELECT 	r.Q_HEALTHPOINTID,
+						r.Q_USERID,
+						pc.pcurrent
+				FROM %s r
+				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
+				INNER JOIN patientcurrent pc ON pc.hpcode = r.Q_HEALTHPOINTID AND pc.patid = r.Q_USERID
+				WHERE r.Q_HEALTHPOINTID IN (%s) 
+				AND r.Q_HEALTHPOINTID NOT IN (%s)
+				AND pc.pcurrent = 1",TABLE_REGISTRATION,$hps,$this->getIgnoredHealthPoints()) ;
+		
+		$result = $this->runSql($sql);
+		$patients = array();
+		while($o = mysql_fetch_object($result)){
+			$opts = array('hpcode'=>$o->Q_HEALTHPOINTID,'patid'=>$o->Q_USERID);
+			array_push($patients,$this->getPatient($opts));
+		}
+		
+		return $patients;
+	}
 	
 	function getPatient($opts=array()){
 		$sql = "SELECT 	pathp.hpcode,

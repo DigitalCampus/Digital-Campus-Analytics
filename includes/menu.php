@@ -12,7 +12,12 @@
 		echo "<a href='".$CONFIG->homeAddress."kpi.php'>".getString("menu.kpi")."</a>";
 	}?>
 	|
-	
+	<?php if($PAGE == "stats") {
+		echo getString("menu.stats");
+	} else {
+		echo "<a href='".$CONFIG->homeAddress."statistics.php'>".getString("menu.stats")."</a>";
+	}?>
+	|
 	<?php if($PAGE == "map") {
 		echo getString("menu.map");
 	} else {
