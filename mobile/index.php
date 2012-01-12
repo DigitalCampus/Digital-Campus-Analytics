@@ -15,7 +15,7 @@ $opts = array();
 //$opts['hps'] = $USER->hpcode;
 $opts['hps'] = $API->getUserHealthPointPermissions();
 $opts['startdate'] = $datemonthago->format('Y-m-d');
-$opts['enddate'] = $datetoday->format('Y-m-d');
+$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 
 $anc1thismonth = $API->getANC1Defaulters($opts);
 $anc2thismonth = $API->getANC2Defaulters($opts);
