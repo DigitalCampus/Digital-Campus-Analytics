@@ -50,7 +50,6 @@ printf("<h3>%s</h3>", getString("hewreport.submitted",array($days)));
 include_once('includes/hewreport/submitted.php');
 
 printf("<h3>%s</h3>", getString("hewreport.datacheck.registration"));
-echo "to be added";// TODO 
 include_once('includes/hewreport/datacheck.registration.php');
 
 printf("<h3>%s</h3>", getString("hewreport.datacheck.missing"));
