@@ -43,19 +43,20 @@ if ($userid == ""){
 
 printf("<h2>%s (%s)</h2>", $currentHEW, $currentHP);
 
-printf("<h3>%s</h3>", getString("hewreport.kpioverview",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.kpioverview"));
 include_once('includes/hewreport/kpioverview.php');
 
 printf("<h3>%s</h3>", getString("hewreport.submitted",array($days)));
 include_once('includes/hewreport/submitted.php');
 
-printf("<h3>%s</h3>", getString("hewreport.datacheck.registration",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.datacheck.registration"));
+echo "to be added";// TODO 
+include_once('includes/hewreport/datacheck.registration.php');
+
+printf("<h3>%s</h3>", getString("hewreport.datacheck.missing"));
 echo "to be added";// TODO 
 
-printf("<h3>%s</h3>", getString("hewreport.datacheck.missing",array($days)));
-echo "to be added";// TODO 
-
-printf("<h3>%s</h3>", getString("hewreport.overdue",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.overdue"));
 echo "to be added";// TODO 
 
 printf("<h3>%s</h3>", getString("hewreport.tasksdue",array($days)));
@@ -64,7 +65,7 @@ echo "to be added";// TODO
 printf("<h3>%s</h3>", getString("hewreport.deliveriesdue",array($days)));
 echo "to be added";// TODO 
 
-printf("<h3>%s</h3>", getString("hewreport.highrisk",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.highrisk"));
 echo "to be added";// TODO 
 
 include_once "includes/footer.php";

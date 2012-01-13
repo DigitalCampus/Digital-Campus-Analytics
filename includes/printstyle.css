@@ -243,3 +243,44 @@ td.sh {
 tr.nav {
 	background: #fff;
 }
+
+/* for KPI display */
+div.kpi {
+	border: 1px solid #ccc;	
+	padding:5px;
+	margin:5px;
+}
+
+div.kpiheader {
+	padding:0px 5px;
+	margin:5px;
+}
+
+div.kpiheadertitle {
+	float:left;
+	width:25%;
+	text-align:center;
+}
+
+div.kpititle, div.kpiscore, div.kpichange, div.kpitarget {
+	width:25%;
+	text-align:center;
+	float:left;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+.increase {
+	color: green;
+}
+
+.equal {
+}
+
+.decrease, .error {
+	color: red;
+}
+
+img.kpichange {
+	vertical-align:middle;
+}
