@@ -44,7 +44,7 @@ if ($userid == ""){
 printf("<h2>%s (%s)</h2>", $currentHEW, $currentHP);
 
 printf("<h3>%s</h3>", getString("hewreport.kpioverview",array($days)));
-echo "to be added"; // TODO 
+include_once('includes/hewreport/kpioverview.php');
 
 printf("<h3>%s</h3>", getString("hewreport.submitted",array($days)));
 include_once('includes/hewreport/submitted.php');
