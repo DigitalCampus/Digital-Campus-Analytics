@@ -407,9 +407,7 @@ class API {
 		$pat->anctransfer = $this->getPatientANCTransfer($opts);
 		$pat->anclabtest= $this->getPatientANCLabTest($opts);
 		$pat->delivery = $this->getPatientDelivery($opts);
-		$pat->pnc = null;
-		
-		// TODO add PNC
+		$pat->pnc = $this->getPatientPNC($opts);
 		
 		// risk assessment
 		$ra = new RiskAssessment();
@@ -426,9 +424,7 @@ class API {
 			return false;
 		} else {
 			return $pat;
-		}
-		
-				
+		}		
 	}
 	
 	
@@ -869,6 +865,129 @@ class API {
 		return $babies;
 	}
 	
+	private function getPatientPNC($opts=array()){
+		$sql = "SELECT 	pathp.hpcode,
+							pathp.hpname as patientlocation,
+							hp.hpname as protocollocation,
+							CONCAT(u.firstname,' ',u.lastname) as submittedname,
+							_URI,
+							_CREATOR_URI_USER,
+							Q_AGE,
+							Q_APPOINTMENTDATE,
+							Q_CARDIACPULSE,
+							Q_COMMENTSMOTHER,
+							Q_CONSENT,
+							Q_DELIVERYDATE,
+							Q_DELIVERYMODE,
+							Q_DELIVERYNOBABIES,
+							Q_DELIVERYSITE,
+							Q_DIASTOLICBP,
+							Q_DRUGS,
+							Q_DRUGSDESCRIPTION,
+							Q_FPACCEPTED,
+							Q_FPCOUNSELED,
+							Q_GENITALIAEXTERNA,
+							Q_GPSDATA_ACC,
+							Q_GPSDATA_ALT,
+							Q_GPSDATA_LAT,
+							Q_GPSDATA_LNG,
+							Q_HEALTHPOINTID,
+							Q_HIV,
+							Q_HIVTREATMENT,
+							Q_IDCARD,
+							Q_IRONSUPPL,
+							Q_LEAKINGURINE,
+							Q_LOCATION,
+							Q_LOCHIAAMOUNT,
+							Q_LOCHIACOLOUR,
+							Q_LOCHIAODOUR,
+							Q_MATERNALDEATH,
+							Q_MOTHERCONDITION,
+							Q_PALLORANEMIA,
+							Q_PNCVISITNO,
+							Q_SYSTOLICBP,
+							Q_TEMPERATURE,
+							Q_TETANUS,
+							Q_TT1,
+							Q_TT2,
+							Q_USERID,
+							Q_VITASUPPL,
+							Q_YEAROFBIRTH,
+							_CREATION_DATE AS CREATEDON
+					FROM ".TABLE_PNC." r
+					INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
+					INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid
+					WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
+		// add permissions
+		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions()."))" ;
+	
+		$result = $this->runSql($sql);
+	
+		$protocols = array();
+		$count=0;
+		while($pat = mysql_fetch_object($result)){
+			
+			$pat->Q_BABIES = $this->getPatientPNCBaby($pat->_URI);
+			
+			$pat->Q_BIRTHATTENDANT = array();
+			// get the Home applicances source
+			$appsql = "SELECT VALUE FROM ".TABLE_PNC_ATTENDED." WHERE _PARENT_AURI = '".$pat->_URI."'";
+			$appresult = $this->runSql($appsql);
+	
+			while($app = mysql_fetch_object($appresult)){
+				array_push($pat->Q_BIRTHATTENDANT,$app->VALUE);
+			}
+		  
+			$pat->Q_COMPLICATIONS = array();
+			// get the Home applicances source
+			$appsql = "SELECT VALUE FROM ".TABLE_PNC_COMPLICATIONS ." WHERE _PARENT_AURI = '".$pat->_URI."'";
+			$appresult = $this->runSql($appsql);
+	
+			while($app = mysql_fetch_object($appresult)){
+				array_push($pat->Q_COMPLICATIONS,$app->VALUE);
+			}
+			$protocols[$count] = $pat;
+	  		$count++;
+		}
+		return $protocols;
+	}
+	
+	
+	private function getPatientPNCBaby($uri){
+		$sql = sprintf("SELECT
+							Q_ARV_HIV_BABY,
+							Q_BABYBREASTFEED,
+							Q_BABYBREATHING,
+							Q_BABYCONDITION,
+							Q_BABYMUMBOND,
+							Q_COMMENTSBABY,
+							Q_CORDCONDITION,
+							Q_DEATHCOMMENTS,
+							Q_DEATHDATE,
+							Q_HIV_BABY,
+							Q_IMMUNO_BCG,
+							Q_IMMUNO_BCG_LASTDATE,
+							Q_IMMUNO_IPTI,
+							Q_IMMUNO_IPTI_LASTDATE,
+							Q_IMMUNO_OPV,
+							Q_IMMUNO_OPV_LASTDATE,
+							Q_IMMUNO_PENTA,
+							Q_IMMUNO_PENTA_LASTDATE,
+							Q_NEWBORNHEADCIRCUM,
+							Q_NEWBORNHEIGHT,
+							Q_NEWBORNWEIGHT
+					FROM %s
+					WHERE _PARENT_AURI = '%s'",TABLE_PNC_BABY,$uri);
+		$result = $this->runSql($sql);
+	
+		$babies = array();
+		while($o = mysql_fetch_object($result)){
+			array_push($babies, $o);
+		}
+		return $babies;
+	}
 	
 	function getProtocolsSubmitted($opts=array()){
 		if(array_key_exists('days',$opts)){
@@ -1075,6 +1194,38 @@ class API {
 			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
 		}
 
+		// PNC
+		$sql .= " UNION
+					SELECT
+						p._CREATION_DATE as datestamp,
+						p.Q_USERID,
+						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
+						p.Q_HEALTHPOINTID,
+						php.hpcode as patienthpcode,
+						hp.hpcode as protocolhpcode,
+						php.hpname as patientlocation,
+						hp.hpname as protocollocation,
+						'".PROTOCOL_PNC."' as protocol,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname,
+						u.userid,
+						p.Q_GPSDATA_LAT,
+						p.Q_GPSDATA_LNG,
+						p.Q_LOCATION,
+						hp.locationlat,
+						hp.locationlng
+					FROM ".TABLE_PNC." p 
+					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
+					INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
+		
+		
 		$sql .= ") a ";
 		$sql .= "WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= "OR a.protocolhpcode IN (".$this->getUserHealthPointPermissions().")) " ;

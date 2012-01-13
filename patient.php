@@ -102,6 +102,14 @@ if(!isset($patient->delivery)){
 } else {
 	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_DELIVERY, getstring(PROTOCOL_DELIVERY));
 }
+printf(" | ");
+if(!isset($patient->pnc)){
+	echo getstring(PROTOCOL_PNC);
+} else if ($protocol == PROTOCOL_PNC){
+	echo "<span class='selected'>".getstring(PROTOCOL_PNC)."</span>";
+} else {
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_PNC, getstring(PROTOCOL_PNC));
+}
 echo "</span>";
 
 include_once('includes/patient/risk.php');
@@ -151,6 +159,9 @@ if ($patient->delivery && $protocol==PROTOCOL_DELIVERY){
 /*
  * TODO add PNC
  */
-
+if ($patient->pnc && $protocol==PROTOCOL_PNC){
+	$pnc = $patient->pnc;
+	include('includes/patient/pnc.php');
+}
 include_once "includes/footer.php";
 ?>

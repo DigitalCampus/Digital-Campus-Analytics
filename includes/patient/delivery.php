@@ -94,6 +94,7 @@
 		generateDeliveryRow(getstring($k),$v);
 	}
 	
+	// TODO add other fields
 ?>
 
 <tr class='rrow'>

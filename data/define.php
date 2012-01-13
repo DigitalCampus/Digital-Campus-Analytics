@@ -11,6 +11,7 @@ define('PROTOCOL_ANCLABTEST','protocol.anclabtest');
 define('PROTOCOL_ANCTRANSFER','protocol.anctransfer');
 define('PROTOCOL_DELIVERY','protocol.delivery');
 define('PROTOCOL_REGISTRATION','protocol.registration');
+define('PROTOCOL_PNC','protocol.pnc');
 
 define('TABLE_REGISTRATION','REGISTRATION_FORMV6_CORE');
 define('TABLE_REG_HOMEAPPLIANCES','REGISTRATION_FORMV6_Q_HOMEAPPLIANCES');
