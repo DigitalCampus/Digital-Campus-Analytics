@@ -32,6 +32,11 @@ Show:
 			<th>Level</th>
 			<th>Type</th>
 			<th>Error</th>
+			<th>IP</th>
+			<th>PHP time</th>
+			<th>No queries</th>
+			<th>MySQL time</th>
+			<th>Agent</th>
 		</tr>
 		<?php 
 			foreach ($errors as $e){
@@ -40,6 +45,11 @@ Show:
 				echo "<td nowrap>".$e->loglevel."</td>";
 				echo "<td nowrap>".$e->logtype."</td>";
 				echo "<td>".$e->logmsg."</td>";
+				echo "<td nowrap>".$e->logip."</td>";
+				echo "<td nowrap>".$e->logpagephptime."</td>";
+				echo "<td nowrap>".$e->logpagequeries."</td>";
+				echo "<td nowrap>".$e->logpagemysqltime."</td>";
+				echo "<td>".$e->logagent."</td>";
 				echo "</tr>";
 			}
 		?>
