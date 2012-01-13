@@ -10,11 +10,11 @@ $submit = optional_param("submit","",PARAM_TEXT);
 
 $users = $API->getUsers();
 
-printf("<h2 class='printhide'>%s</h2>", getString("hewmanager.title"));
+printf("<h2 class='printhide'>%s</h2>", getString("hewreport.title"));
 $currentUser = $API->getUserById($userid);
 ?>
 <form action="" method="get" class="printhide">
-	<?php echo getString("hewmanager.form.hew");?>
+	<?php echo getString("hewreport.form.hew");?>
 	<select name="userid">
 		<?php 
 			foreach($users as $u){
@@ -27,7 +27,7 @@ $currentUser = $API->getUserById($userid);
 			}
 		?>
 	</select>
-	<input type="submit" name="submit" value="<?php echo getString("hewmanager.form.searchbtn");?>"></input>
+	<input type="submit" name="submit" value="<?php echo getString("hewreport.form.searchbtn");?>"></input>
 </form>
 
 
@@ -49,10 +49,14 @@ if ($userid == ""){
 	include_once "includes/footer.php";
 	die;
 }
-printf("<h2>%s</h2>", getString("hewmanager.submitted",array($days,$currentHEW)));
+
+printf("<h2>%s</h2>", getString("hewreport.kpioverview",array($days)));
+
+printf("<h2>%s</h2>", getString("hewreport.submitted",array($days)));
 
 $opts=array('days'=>$days);
 $submitted = $API->getProtocolsSubmitted($opts);
+if(count($submitted)>0){
 ?>
 <table class="taskman">
 <tr>
@@ -77,7 +81,7 @@ $submitted = $API->getProtocolsSubmitted($opts);
 				echo "<td nowrap>".$s->patientlocation."/".$s->Q_USERID."</td>";
 				echo "<td nowrap>";
 				if(trim($s->patientname) == ""){
-					echo getString('warning.patientreg');
+					printf("<span class='error'>%s</span>",getstring("warning.patientreg"));
 				} else {
 					echo $s->patientname;
 				}
@@ -91,6 +95,9 @@ $submitted = $API->getProtocolsSubmitted($opts);
 </table>
 
 <?php 
+} else {
+	printf("No protocols submitted in last $1%d days ",$days);
+}
 
 $opts = array("days"=>$days);
 $tasks = $API->getTasksDue($opts);
@@ -113,7 +120,7 @@ printf("<h2>%s</h2>", getString("hewmanager.tasks",array($days)));
 			echo "<td nowrap>".$task->patientlocation."/".$task->Q_USERID."</td>";
 			echo "<td nowrap>";
 			if(trim($task->patientname) == ""){
-				echo getString('warning.patientreg');
+				printf("<span class='error'>%s</span>",getstring("warning.patientreg"));
 			} else {
 				echo $task->patientname;
 			}

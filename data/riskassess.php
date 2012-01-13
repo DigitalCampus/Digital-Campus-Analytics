@@ -269,6 +269,22 @@ class RiskAssessment {
 		/*
 		 * Physical exam factors
 		 */
+		$factor = 'Q_WEIGHT';
+		$risk->risks[$factor] = false;
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && ($p->ancfirst->{$factor} < 40)){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Follow
+		foreach($p->ancfollow as $x){
+			if(isset($x->{$factor}) && ($x->{$factor} < 40)){
+				$risk->risks[$factor] = true;
+			}
+		}
+		if($risk->risks[$factor] == true){
+			$risk->count++;
+		}
+		
 		$factor = 'Q_HEIGHT';
 		$risk->risks[$factor] = false;
 		// from ANC First
@@ -381,9 +397,9 @@ class RiskAssessment {
 		$risk->risks[$factor] = false;
 		// from ANC Lab Test
 		foreach($p->anclabtest as $x){
-			/* TODO if(isset($x->{$factor}) && ($x->{$factor} == 'notaudible')){
+			if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
 				$risk->risks[$factor] = true;
-			}*/
+			}
 		}
 		if($risk->risks[$factor] == true){
 			$risk->count++;
@@ -393,9 +409,9 @@ class RiskAssessment {
 		$risk->risks[$factor] = false;
 		// from ANC Lab Test
 		foreach($p->anclabtest as $x){
-			/* TODO if(isset($x->{$factor}) && ($x->{$factor} == 'notaudible')){
+			if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
 			 $risk->risks[$factor] = true;
-			}*/
+			}
 		}
 		if($risk->risks[$factor] == true){
 			$risk->count++;
