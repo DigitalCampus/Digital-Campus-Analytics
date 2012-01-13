@@ -67,6 +67,16 @@ foreach($patients as $p){
 </form>
 </div>
 
+<?php
+$total = 0; 
+foreach($risks as $k=>$v){
+	$total += $v;
+}
+
+if ($total == 0){
+	echo getstring("warning.norecords");
+} else {
+?>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
@@ -100,7 +110,7 @@ foreach($patients as $p){
 
 
 <?php 
-
+} 
 function outputSelectList($districts,$AverageArray,$ComparisonHPArray,$selected){
 	if(count($districts) > 1){
 		if($selected == 'average'){
