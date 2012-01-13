@@ -1232,6 +1232,10 @@ class API {
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
+		if(array_key_exists('hpcode',$opts)){
+			$sql .= " AND  (a.patienthpcode = ".$opts['hpcode'];
+			$sql .= " OR a.protocolhpcode = ".$opts['hpcode'].")";
+		}
 		$sql .= "ORDER BY datestamp DESC";
 		
 		

@@ -1,11 +1,12 @@
 <?php
-$opts=array('days'=>$days);
+$opts=array('days'=>$days,'hpcode'=>$currentHPcode);
 $submitted = $API->getProtocolsSubmitted($opts);
 if(count($submitted)>0){
 ?>
 <table class="taskman">
 <tr>
 		<th><?php echo getString("submitted.th.date")?></th>
+		<th><?php echo getString("submitted.th.by")?></th>
 		<th><?php echo getString("submitted.th.patientid")?></th>
 		<th><?php echo getString("submitted.th.patient")?></th>
 		<th><?php echo getString("submitted.th.protocol")?></th>
@@ -13,16 +14,17 @@ if(count($submitted)>0){
 	<?php 
 
 		foreach ($submitted->protocols as $s){
-			if ($s->userid== $userid){
+		
 				$d= strtotime($s->datestamp);
 				echo "<tr class='l' title='Click to view full details'";
 				printf("onclick=\"document.location.href='%spatient.php?hpcode=%s&patientid=%s&protocol=%s';\">",
 							$CONFIG->homeAddress,
 							$s->patienthpcode,
 							$s->Q_USERID,
-							preg_replace('([0-9])','',str_replace(' ','',strtolower($s->protocol)))
+							$s->protocol
 							);
-				echo "<td nowrap>".displayAsEthioDate($d)."</td>";
+				echo "<td nowrap>".displayAsEthioDate($d)."<br/>". date('D d M Y',$d)."</td>";
+				echo "<td nowrap>".$s->submittedname."</td>";
 				echo "<td nowrap>".$s->patientlocation."/".$s->Q_USERID."</td>";
 				echo "<td nowrap>";
 				if(trim($s->patientname) == ""){
@@ -33,7 +35,7 @@ if(count($submitted)>0){
 				echo "</td>";
 				echo "<td nowrap>".getstring($s->protocol)."</td>";
 				echo "</tr>";
-			}
+			
 		}
 			
 	?>

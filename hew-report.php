@@ -20,6 +20,8 @@ $currentUser = $API->getUserById($userid);
 			foreach($users as $u){
 				if ($userid == $u->userid){
 					$currentHEW = $u->firstname." ".$u->lastname;
+					$currentHP = $u->hpname;
+					$currentHPcode = $u->hpcode;
 					printf("<option value='%d' selected='selected'>%s (%s)</option>",$u->userid, $currentHEW, $u->hpname);
 				} else {
 					printf("<option value='%d'>%s (%s)</option>",$u->userid, $u->firstname." ".$u->lastname, $u->hpname);
@@ -30,17 +32,6 @@ $currentUser = $API->getUserById($userid);
 	<input type="submit" name="submit" value="<?php echo getString("hewreport.form.searchbtn");?>"></input>
 </form>
 
-
-To include here:
-<ul>
-<li>Overview of KPIs</li>
-<li>Protocols submitted</li>
-<li>Missing protocols/no registrations</li>
-<li>Overdue tasks</li>
-<li>Upcoming appointments (next month)</li>
-<li>Upcoming deliveries (next month)</li>
-<li>High risk patients</li>
-</ul>
 <?php 
 if ($userid == ""){
 	include_once "includes/footer.php";
@@ -50,21 +41,31 @@ if ($userid == ""){
 	die;
 }
 
-printf("<h2>%s</h2>", getString("hewreport.kpioverview",array($days)));
+printf("<h2>%s (%s)</h2>", $currentHEW, $currentHP);
 
-printf("<h2>%s</h2>", getString("hewreport.submitted",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.kpioverview",array($days)));
+echo "to be added"; // TODO 
 
-printf("<h2>%s</h2>", getString("hewreport.datacheck.registration",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.submitted",array($days)));
+include_once('includes/hewreport/submitted.php');
 
-printf("<h2>%s</h2>", getString("hewreport.datacheck.missing",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.datacheck.registration",array($days)));
+echo "to be added";// TODO 
 
-printf("<h2>%s</h2>", getString("hewreport.overdue",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.datacheck.missing",array($days)));
+echo "to be added";// TODO 
 
-printf("<h2>%s</h2>", getString("hewreport.tasksdue",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.overdue",array($days)));
+echo "to be added";// TODO 
 
-printf("<h2>%s</h2>", getString("hewreport.deliveriesdue",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.tasksdue",array($days)));
+echo "to be added";// TODO 
 
-printf("<h2>%s</h2>", getString("hewreport.highrisk",array($days)));
+printf("<h3>%s</h3>", getString("hewreport.deliveriesdue",array($days)));
+echo "to be added";// TODO 
+
+printf("<h3>%s</h3>", getString("hewreport.highrisk",array($days)));
+echo "to be added";// TODO 
 
 include_once "includes/footer.php";
 ?>
