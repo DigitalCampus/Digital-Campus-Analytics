@@ -39,6 +39,7 @@ $dc = new DataCheck();
 
 <h2><?php echo getString("datacheck.missing.title")?></h2>
 <p><?php echo getString("datacheck.missing.info")?></p>
+
 <?php 
 $missing = $dc->missingProtocols();
 if(count($missing)>0){
