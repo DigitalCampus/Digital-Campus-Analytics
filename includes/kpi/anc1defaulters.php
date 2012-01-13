@@ -70,9 +70,6 @@ if($hpcomparecode == 'overall'){
 $summary = $API->getANC1Defaulters($currentopts);
 $compare = $API->getANC1Defaulters($compareopts);
 
-$bestopts = $opts;
-$bestopts['hps'] = $cohorthps;
-$best = $API->getANC1DefaultersBestPerformer($bestopts);
 
 ?>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -85,7 +82,6 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
         data.addColumn('number', '<?php echo $currentHPname; ?>');
         data.addColumn('number', '<?php echo $compareHPname; ?>');
         data.addColumn('number', 'Target');
-        data.addColumn('number', 'Best');
         
         data.addRows(<?php echo count($summary); ?>);
 		<?php 
@@ -95,7 +91,6 @@ $best = $API->getANC1DefaultersBestPerformer($bestopts);
 				printf("data.setValue(%d, 1, %d);\n", $counter, $v->nondefaulters );
 				printf("data.setValue(%d, 2, %d);\n", $counter, $compare[$k]->nondefaulters);
 				printf("data.setValue(%d, 3, %d);\n", $counter, 60);
-				printf("data.setValue(%d, 4, %d);\n", $counter, $best[$k]->nondefaulters);
 				
 				$counter++;
 			}
