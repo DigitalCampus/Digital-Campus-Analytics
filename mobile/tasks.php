@@ -13,7 +13,7 @@ foreach($tasks as $task){
 	printf("<div class='taskdate'>%s (%s)</div>",displayAsEthioDate($d),date('d M Y',$d));
 	printf("<div class='taskprotocol'>%s</div>",$task->protocol);
 	if($task->patientname == ""){
-		$task->patientname = getString('warning.patientreg');
+		$task->patientname = getString('warning.patient.notregistered');
 	}
 	printf("<div class='taskpname'>%s</div>",$task->patientname);
 	printf("<div class='taskpid'>%s/%s</div>",$task->patientlocation,$task->Q_USERID);

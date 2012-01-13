@@ -407,13 +407,28 @@ class API {
 		$pat->anctransfer = $this->getPatientANCTransfer($opts);
 		$pat->anclabtest= $this->getPatientANCLabTest($opts);
 		$pat->delivery = $this->getPatientDelivery($opts);
+		$pat->pnc = null;
 		
 		// TODO add PNC
 		
 		// risk assessment
 		$ra = new RiskAssessment();
 		$pat->risk = $ra->getRisks($pat);
-		return $pat;		
+		
+		// if patient record has no protocols then assume invalid patientid/hpcode 
+		if($pat->regcomplete == false
+			&& $pat->ancfirst == null
+			&& count($pat->ancfollow) == 0
+			&& count($pat->anctransfer) == 0
+			&& count($pat->anclabtest) == 0
+			&& $pat->delivery == null
+			&& count($pat->pnc) == 0){
+			return false;
+		} else {
+			return $pat;
+		}
+		
+				
 	}
 	
 	

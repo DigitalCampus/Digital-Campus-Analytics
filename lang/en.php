@@ -473,7 +473,8 @@ $LANG['warning.login.invalid'] = 'Invalid username/password combination';
 $LANG['warning.login.nopassword'] = 'Please enter your password';
 $LANG['warning.map.unavailable'] = 'Map cannot be generated. Please try later.';
 $LANG['warning.norecords'] = 'There are no records to display.';
-$LANG['warning.patientreg'] = 'Patient Not Registered';
+$LANG['warning.patient.notregistered'] = 'Patient not registered';
+$LANG['warning.patient.notfound'] = 'Patient not found';
 $LANG['warning.regformmissing'] = 'The registration form is missing for this user. <br/>Please ensure that a registration form is completed as soon as possible.<br/>To view the full details please <a href="%s">visit the Data Checker page</a>.';
 $LANG['warning.viewnotfound'] = 'Invalid view type';
 

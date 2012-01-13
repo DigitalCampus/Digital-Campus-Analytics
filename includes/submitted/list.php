@@ -67,7 +67,7 @@
 			echo "<td nowrap>".$s->patientlocation."/".$s->Q_USERID."</td>";
 			echo "<td nowrap>";
 			if (trim($s->patientname) == ""){
-				printf("<span class='error'>%s</span>",getstring("warning.patientreg"));
+				printf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));
 			} else {
 				echo $s->patientname;
 			}

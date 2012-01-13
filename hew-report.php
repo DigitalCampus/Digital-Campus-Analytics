@@ -81,7 +81,7 @@ if(count($submitted)>0){
 				echo "<td nowrap>".$s->patientlocation."/".$s->Q_USERID."</td>";
 				echo "<td nowrap>";
 				if(trim($s->patientname) == ""){
-					printf("<span class='error'>%s</span>",getstring("warning.patientreg"));
+					printf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));
 				} else {
 					echo $s->patientname;
 				}
@@ -120,7 +120,7 @@ printf("<h2>%s</h2>", getString("hewmanager.tasks",array($days)));
 			echo "<td nowrap>".$task->patientlocation."/".$task->Q_USERID."</td>";
 			echo "<td nowrap>";
 			if(trim($task->patientname) == ""){
-				printf("<span class='error'>%s</span>",getstring("warning.patientreg"));
+				printf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));
 			} else {
 				echo $task->patientname;
 			}

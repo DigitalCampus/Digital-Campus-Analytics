@@ -12,10 +12,10 @@ $TITLE = getString("patientmanager.title");
 
 if($hpcode != "" && $patientid != ""){
 	$patient = $API->getPatient(array('hpcode'=>$hpcode,'patid'=>$patientid));	
-	if (isset($patient) && $patient->regcomplete){
+	if (isset($patient) && $patient != false && $patient->regcomplete){
 		$TITLE = sprintf("%s %s - %s",$patient->patientlocation, $patient->Q_USERID, $patient->Q_USERNAME. " ". $patient->Q_USERFATHERSNAME);
-	} else if (!$patient->regcomplete) {
-		$TITLE = getstring("warning.patientreg");
+	} else if ($patient != false && !$patient->regcomplete) {
+		$TITLE = getstring("warning.patient.notregistered");
 	}
 }
 
@@ -47,8 +47,8 @@ printf("<h2 class='printhide'>%s</h2>", getString("patientmanager.title"));
 if (!isset($patient) && $submit == ""){
 	include_once "includes/footer.php";
 	die;
-} else if (!isset($patient)){
-	echo getString('warning.norecords');
+} else if (!isset($patient) || $patient == false){
+	printf("<span class='error'>%s</span>",getString('warning.patient.notfound'));
 	include_once "includes/footer.php";
 	die;
 } 
@@ -147,6 +147,10 @@ if ($patient->anclabtest && $protocol==PROTOCOL_ANCLABTEST){
 if ($patient->delivery && $protocol==PROTOCOL_DELIVERY){
 	include('includes/patient/delivery.php');
 } 
+
+/*
+ * TODO add PNC
+ */
 
 include_once "includes/footer.php";
 ?>
