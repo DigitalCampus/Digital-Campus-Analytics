@@ -10,7 +10,7 @@ class Admin {
 		$sql = "SELECT u.userid, firstname, lastname, propvalue FROM user u
 					INNER JOIN userprops up ON up.userid = u.userid
 					WHERE propname='lastlogin'
-					ORDER BY propvalue";
+					ORDER BY propvalue DESC";
 		$stats = array();
 		$result = $API->runSql($sql);
 	

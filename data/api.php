@@ -133,7 +133,7 @@ class API {
 		// first check to see if it exists already
 		$sql = sprintf("SELECT * FROM properties WHERE propname='%s'",$propname);
 		$result = $this->runSql($sql);
-	
+		
 		while($row = mysql_fetch_array($result, MYSQL_ASSOC)){
 			$updateSql = sprintf("UPDATE properties SET propvalue='%s' WHERE propname='%s'",$propvalue,$propname);
 			$result = $this->runSql($updateSql);
