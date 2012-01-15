@@ -36,9 +36,9 @@
 		echo "<a href='".$CONFIG->homeAddress."patient.php'>".getString("menu.patient")."</a>";
 	}?>
 	|
-	<?php if($PAGE == "hew") {
-		echo getString("menu.hew");
+	<?php if($PAGE == "report") {
+		echo getString("menu.report");
 	} else {
-		echo "<a href='".$CONFIG->homeAddress."hew-report.php'>".getString("menu.hew")."</a>";
+		echo "<a href='".$CONFIG->homeAddress."report.php'>".getString("menu.report")."</a>";
 	}?>
 </div>

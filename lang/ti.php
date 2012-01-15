@@ -54,12 +54,12 @@ $LANG['map.healthpost'] = 'ተ';
 $LANG['map.nodays'] = 'ተ';
 $LANG['map.title'] = 'ተ';
 $LANG['maritalstatus'] = 'ተ';
-$LANG['menu.apptmanager'] = 'ተ';
 $LANG['menu.datacheck'] = 'ተ';
-$LANG['menu.hew'] = 'ተ';
+
 $LANG['menu.home'] = 'ተ';
 $LANG['menu.map'] = 'ተ';
 $LANG['menu.patient'] = 'ተ';
+$LANG['menu.report'] = 'ተ';
 $LANG['menu.risk-manager'] = 'ተ';
 $LANG['menu.submitted'] = 'ተ';
 $LANG['name'] = 'ተ';
