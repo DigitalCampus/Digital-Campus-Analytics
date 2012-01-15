@@ -1,7 +1,5 @@
 <?php
 include_once "config.php";
-// perform checks for patient archiving
-$API->updatePatients();
 $PAGE="index";
 $HEADER = "<script type='text/javascript' src='https://www.google.com/jsapi'></script>";
 $HEADER .= '<script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>';

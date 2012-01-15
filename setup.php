@@ -1,11 +1,12 @@
 <?php
+$LOGGER = new stdClass;
 //set stats for queries
-$CONFIG->mysql_queries_count = 0;
-$CONFIG->mysql_queries_time = 0;
+$LOGGER->mysql_queries_count = 0;
+$LOGGER->mysql_queries_time = 0;
 $time = microtime();
 $time = explode(' ', $time);
 $time = $time[1] + $time[0];
-$start = $time;
+$LOGGER->start = $time;
 
 require_once $CONFIG->homePath."lib/general.php";
 require_once $CONFIG->homePath."data/define.php";

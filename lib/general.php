@@ -51,4 +51,15 @@ class XMLSerializer {
 }
 
 
+function scriptFooter($loglevel, $logtype, $logmsg){
+	global $LOGGER,$API;
+	$time = microtime();
+	$time = explode(' ', $time);
+	$time = $time[1] + $time[0];
+	$finish = $time;
+	$total_time = round(($finish - $LOGGER->start), 4);
+	writeToLog($loglevel, $logtype, $logmsg, $total_time, $LOGGER->mysql_queries_time, $LOGGER->mysql_queries_count);
+	$API->cleanUpDB();
+}
+
 

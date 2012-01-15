@@ -15,12 +15,12 @@ function writeToLog($loglevel,$logtype,$logmsg,$logpagephptime=0,$logpagemysqlti
 }
 
 function _mysql_query($query,$db) {
-    global $CONFIG;
+    global $LOGGER;
 
     $start = microtime(true);
     $result = mysql_query($query,$db);
-    $CONFIG->mysql_queries_time += microtime(true) - $start;
-    $CONFIG->mysql_queries_count++;
+    $LOGGER->mysql_queries_time += microtime(true) - $start;
+    $LOGGER->mysql_queries_count++;
 
     return $result;
 }
