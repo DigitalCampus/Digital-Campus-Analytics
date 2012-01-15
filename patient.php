@@ -103,7 +103,7 @@ if(!isset($patient->delivery)){
 	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_DELIVERY, getstring(PROTOCOL_DELIVERY));
 }
 printf(" | ");
-if(!isset($patient->pnc)){
+if(count($patient->pnc)==0){
 	echo getstring(PROTOCOL_PNC);
 } else if ($protocol == PROTOCOL_PNC){
 	echo "<span class='selected'>".getstring(PROTOCOL_PNC)."</span>";
