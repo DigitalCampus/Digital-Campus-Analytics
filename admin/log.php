@@ -31,7 +31,7 @@ Show:
 			<th>Date</th>
 			<th>Level</th>
 			<th>Type</th>
-			<th>Error</th>
+			<th>Message</th>
 			<th>IP</th>
 			<th>PHP time</th>
 			<th>No queries</th>

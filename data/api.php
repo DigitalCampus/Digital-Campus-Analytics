@@ -120,6 +120,31 @@ class API {
 		return $users;
 	}
 	
+	function getSystemProperty($propname){
+		$sql = sprintf("SELECT * FROM properties WHERE propname='%s'",$propname);
+		$result = $this->runSql($sql);
+		while($o = mysql_fetch_object($result)){
+			return $o->propvalue;
+		}
+		return null;
+	}
+	
+	function setSystemProperty($propname,$propvalue){
+		// first check to see if it exists already
+		$sql = sprintf("SELECT * FROM properties WHERE propname='%s'",$propname);
+		$result = $this->runSql($sql);
+	
+		while($row = mysql_fetch_array($result, MYSQL_ASSOC)){
+			$updateSql = sprintf("UPDATE properties SET propvalue='%s' WHERE propname='%s'",$propvalue,$propname);
+			$result = $this->runSql($updateSql);
+			return;
+		}
+	
+		$insertSql = sprintf("INSERT INTO properties (propvalue, propname) VALUES ('%s','%s')",$propvalue,$propname);
+		$result = $this->runSql($insertSql);
+	}
+	
+	
 	function getUserProperties(&$user){
 		$sql = "SELECT * FROM userprops WHERE userid=".$user->userid;
 		$result = $this->runSql($sql);

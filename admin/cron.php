@@ -22,4 +22,5 @@ $API->updatePatients();
 
 
 scriptFooter('info','cron','cron complete');
+echo "Cron complete.";
 ?>

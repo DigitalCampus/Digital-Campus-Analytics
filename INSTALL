@@ -6,3 +6,4 @@ To install...
 4. Copy the /config-sample.php file to /config.php and add in the correct values for the database connection settings and homeAddress/homePath
 5. You should now be able to visit the analytics application at http://localhost/<your-path>/
 6. You can log in with username/password admin/admin - but this password should be changed the first time you log in.
+7. Set up a cron task to run (http://<your server>/admin/cron.php) regularly (approx once or twice per day should be sufficient). This performs clean up tasks and caches for various functions.

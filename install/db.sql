@@ -1,23 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 3.4.7
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Dec 16, 2011 at 04:02 PM
--- Server version: 5.1.58
--- PHP Version: 5.3.6-13ubuntu3.3
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Database: `dcdash`
 --
 
 -- --------------------------------------------------------
@@ -115,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `userprops` (
   `propname` varchar(100) NOT NULL,
   `propvalue` text NOT NULL,
   PRIMARY KEY (`propid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
 --
 -- Dumping data for table `district`
@@ -152,8 +132,18 @@ INSERT INTO `healthpoint` (`hpid`, `hpcode`, `hpname`, `did`, `locationlat`, `lo
 
 // add user and userprops 
 INSERT INTO `user` (`userid`, `username`, `password`, `email`, `firstname`, `lastname`, `defaultlang`, `user_uri`, `hpid`) VALUES (1, 'admin', MD5('admin'), '', 'Admin', 'User', 'en', '', '16');
-INSERT INTO `dcdash`.`userprops` (`propid`, `userid`, `propname`, `propvalue`) VALUES (NULL, '1', 'permissions.admin', 'true');
+INSERT INTO `userprops` (`propid`, `userid`, `propname`, `propvalue`) VALUES (NULL, '1', 'permissions.admin', 'true');
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+CREATE TABLE IF NOT EXISTS `properties` (
+  `propid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `propname` text COLLATE utf8_unicode_ci NOT NULL,
+  `propvalue` text COLLATE utf8_unicode_ci NOT NULL,
+  `propinfo` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`propid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+// add some default props
+INSERT INTO `properties` (`propid`, `propname`, `propvalue`, `propinfo`) VALUES
+(1, 'cron.lastrun', '0', 'Date/time cron was last run'),
+(2, 'log.archive.months', '365', 'Number of days to keep log entries for, anything older will be auto deleted. Use 0 to set as ''never delete'''),
+(3, 'cron.mininterval', '60', 'Minimum interval, in minutes, at which cron can run. To prevent running too often');
