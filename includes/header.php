@@ -105,7 +105,7 @@ $dc = new DataCheck();
 if($dc->summary() && $PAGE != 'login'){
 ?>
 <div id="datacheckwarning" class="datawarning printhide">
-	<img src="<?php echo $CONFIG->homeAddress; ?>images/warning.png" align="left"></img><?php echo getString('warning.datacheck', array($CONFIG->homeAddress.'data-check.php'));?>
+	<img src="<?php echo $CONFIG->homeAddress; ?>images/warning.png" align="left"></img><?php echo getString('warning.datacheck', array($CONFIG->homeAddress.'datacheck.php'));?>
 </div>
 <?php 
 }

@@ -25,9 +25,9 @@
 	}?>
 	|
 	<?php if($PAGE == "datacheck") {
-		echo getString("menu.data-check");
+		echo getString("menu.datacheck");
 	} else {
-		echo "<a href='".$CONFIG->homeAddress."data-check.php'>".getString("menu.data-check")."</a>";
+		echo "<a href='".$CONFIG->homeAddress."datacheck.php'>".getString("menu.datacheck")."</a>";
 	}?>
 	|
 	<?php if($PAGE == "patient") {
