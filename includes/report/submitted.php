@@ -1,7 +1,7 @@
 <?php
 $opts=array('days'=>$days,'hpcode'=>$currentHPcode);
 $submitted = $API->getProtocolsSubmitted($opts);
-if(count($submitted)>0){
+if(count($submitted->protocols)>0){
 ?>
 <table class="taskman">
 <tr>
@@ -43,6 +43,6 @@ if(count($submitted)>0){
 
 <?php 
 } else {
-	printf("No protocols submitted in last $1%d days ",$days);
+	echo getstring('report.submitted.none',$days);
 }
 ?>

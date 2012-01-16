@@ -374,6 +374,7 @@ $LANG['report.highrisk'] = 'High Risk Patients';
 $LANG['report.kpioverview'] = 'Performance Indicators';
 $LANG['report.overdue'] = 'Overdue Protocols';
 $LANG['report.submitted'] = 'Patient Protocols Submitted (last %d days)';
+$LANG['report.submitted.none'] = 'No protocols submitted in last %d days';
 $LANG['report.tasksdue'] = 'Protocols due (next %d days)';
 $LANG['report.title'] = 'Reports';
 $LANG['risk.factor.'] = '';

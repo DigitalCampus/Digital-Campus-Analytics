@@ -5,26 +5,25 @@ $PAGE = "report";
 include_once "includes/header.php";
 
 $days = optional_param("days",31,PARAM_INT);
-$userid = optional_param("userid","",PARAM_TEXT);
+$currentHPcode = optional_param("hpcode",$USER->hpcode,PARAM_TEXT);
 $submit = optional_param("submit","",PARAM_TEXT);
 
-$users = $API->getUsers();
 
 printf("<h2 class='printhide'>%s</h2>", getString("report.title"));
-$currentUser = $API->getUserById($userid);
+$hps = $API->getHealthPoints();
+
+$currenthpname = "";
 ?>
 <form action="" method="get" class="printhide">
 	<?php echo getString("report.form.hew");?>
-	<select name="userid">
+	<select name="hpcode">
 		<?php 
-			foreach($users as $u){
-				if ($userid == $u->userid){
-					$currentHEW = $u->firstname." ".$u->lastname;
-					$currentHP = $u->hpname;
-					$currentHPcode = $u->hpcode;
-					printf("<option value='%d' selected='selected'>%s (%s)</option>",$u->userid, $currentHEW, $u->hpname);
+			foreach($hps as $hp){
+				if ($hp->hpcode == $currentHPcode){
+					$currenthpname =  $hp->hpname;
+					printf("<option value='%d' selected='selected'>%s</option>",$hp->hpcode, $hp->hpname);
 				} else {
-					printf("<option value='%d'>%s (%s)</option>",$u->userid, $u->firstname." ".$u->lastname, $u->hpname);
+					printf("<option value='%d'>%s</option>",$hp->hpcode, $hp->hpname);
 				}
 			}
 		?>
@@ -33,15 +32,8 @@ $currentUser = $API->getUserById($userid);
 </form>
 
 <?php 
-if ($userid == ""){
-	include_once "includes/footer.php";
-	die;
-} else if ($currentUser == null){
-	include_once "includes/footer.php";
-	die;
-}
 
-printf("<h2>%s (%s)</h2>", $currentHEW, $currentHP);
+printf("<h2>%s</h2>", $currenthpname);
 
 printf("<h3>%s</h3>", getString("report.kpioverview"));
 include_once('includes/report/kpioverview.php');
