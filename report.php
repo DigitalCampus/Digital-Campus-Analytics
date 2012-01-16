@@ -44,17 +44,17 @@ include_once('includes/report/submitted.php');
 printf("<h3>%s</h3>", getString("report.datacheck.registration"));
 include_once('includes/report/datacheck.registration.php');
 
-printf("<h3>%s</h3>", getString("report.datacheck.missing"));
-echo "to be added";// TODO 
+//printf("<h3>%s</h3>", getString("report.datacheck.missing"));
+//echo "to be added";// TODO 
 
 printf("<h3>%s</h3>", getString("report.overdue"));
-echo "to be added";// TODO 
+include_once('includes/report/overdue.php'); 
 
 printf("<h3>%s</h3>", getString("report.tasksdue",array($days)));
 include_once('includes/report/tasksdue.php');
 
 printf("<h3>%s</h3>", getString("report.deliveriesdue",array($days)));
-echo "to be added";// TODO 
+include_once('includes/report/deliveries.php'); 
 
 printf("<h3>%s</h3>", getString("report.highrisk"));
 echo "to be added";// TODO 

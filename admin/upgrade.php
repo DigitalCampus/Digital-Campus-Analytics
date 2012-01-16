@@ -69,7 +69,13 @@ if ($currentDBversion < 4){
 	echo "Upgraded to version 4\n";
 }
 
-
+/*
+if ($currentDBversion < 5){
+	
+	//now update the db version prop
+	$API->setSystemProperty('database.version','5');
+	echo "Upgraded to version 5\n";
+}*/
 
 echo "Upgrade complete";
 ?>

@@ -1,7 +1,7 @@
 <?php 
 
 $opts = array("days"=>$days,'hpcode'=>$currentHPcode);
-$tasks = $API->getTasksDue($opts);
+$tasks = $API->getOverdueTasks($opts);
 
 if(count($tasks)>0){
 ?>
@@ -34,7 +34,7 @@ if(count($tasks)>0){
 </table>
 <?php 
 } else {
-	echo getstring('report.tasksdue.none');
+	echo getstring('report.overdue.none');
 }
 ?>
 

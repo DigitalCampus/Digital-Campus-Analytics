@@ -3,7 +3,7 @@
  * cron for running various scheduled tasks
  */
 
-// TODO - extend max exectuion time?
+// TODO - extend max execution time?
 
 require_once "../config.php";
 header("Content-Type: text/plain; charset=UTF-8");
@@ -46,7 +46,7 @@ foreach($submitted->protocols as $s){
 // update & cache task list
 $API->cacheTasksDue($days);
 
-// TODO remove any really old overdue tasks based on the ignore policy
+// remove any really old overdue tasks based on the ignore policy
 $sql = sprintf("DELETE FROM cache_tasks 
 				WHERE datedue < DATE_ADD(NOW(), INTERVAL -%d DAY)",$API->getSystemProperty('overdue.ignore'));
 $API->runSql($sql);

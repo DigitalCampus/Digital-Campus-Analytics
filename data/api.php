@@ -1423,7 +1423,6 @@ class API {
 			$sql = sprintf("INSERT INTO cache_visit (hpcode,userid,visithpcode,visitdate,protocol,user_uri)
 							VALUES (%d,%d,%d,'%s','%s','%s')",$hpcode,$userid,$visithpcode,$visitdate,$protocol,$user_uri);
 			$this->runSql($sql);
-			echo "added\n";
 		}
 	}
 	
@@ -1480,7 +1479,7 @@ class API {
 				$date->add(new DateInterval('P1D'));
 				$this->cacheAddTask($userid, $hpcode, $date->format('Y-m-d'), PROTOCOL_PNC);
 			}
-			// are they due for next PNC? 
+			// are they due for next PNC
 			if (count($patient->pnc)>0){
 				if($patient->pnc[count($patient->pnc)-1]->Q_APPOINTMENTDATE != ""){
 					$this->cacheAddTask($userid, $hpcode, $patient->pnc[count($patient->pnc)-1]->Q_APPOINTMENTDATE,PROTOCOL_PNC);
@@ -1501,7 +1500,6 @@ class API {
 	}
 	
 	function getTasksDue($opts=array()){
-		// TODO make this use the cache_tasks table
 		if(array_key_exists('days',$opts)){
 			$days = max(0,$opts['days']);
 		} else {
@@ -1540,9 +1538,78 @@ class API {
 	}
 	
 	function getOverdueTasks($opts=array()){
+		if(array_key_exists('days',$opts)){
+			$days = max(0,$opts['days']);
+		} else {
+			$days = DEFAULT_DAYS;
+		}
 		
+		$sql = "SELECT
+						ct.datedue,
+						ct.userid,
+						CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
+						ct.hpcode,
+						php.hpname as patientlocation,
+						ct.protocol
+					FROM cache_tasks ct 
+				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
+					WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
+					OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
+		if(array_key_exists('hpcode',$opts)){
+			$sql .= " AND  (hpcode = ".$opts['hpcode'];
+			$sql .= " OR visithpcode = ".$opts['hpcode'].")";
+		}
+		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
+		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
+		$sql .= " INNER JOIN healthpoint php ON php.hpcode = ct.hpcode";
+		$sql .= sprintf(" WHERE ct.datedue < now()");
+		$sql .= " ORDER BY datedue ASC";
+		
+		$tasks = array();
+		$result = $this->runSql($sql);
+		while($o = mysql_fetch_object($result)){
+			array_push($tasks, $o);
+		}
+		return $tasks;
 	}
 
+	function getDeliveriesDue($opts=array()){
+		if(array_key_exists('days',$opts)){
+			$days = max(0,$opts['days']);
+		} else {
+			$days = DEFAULT_DAYS;
+		}
+	
+		$sql = "SELECT
+					ct.datedue,
+					ct.userid,
+					CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
+					ct.hpcode,
+					php.hpname as patientlocation,
+					ct.protocol
+				FROM cache_tasks ct 
+					INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
+						WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
+						OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
+		if(array_key_exists('hpcode',$opts)){
+			$sql .= " AND  (hpcode = ".$opts['hpcode'];
+			$sql .= " OR visithpcode = ".$opts['hpcode'].")";
+		}
+		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
+		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
+		$sql .= " INNER JOIN healthpoint php ON php.hpcode = ct.hpcode";
+		$sql .= sprintf(" WHERE ct.datedue > NOW()
+						AND ct.datedue < DATE_ADD(now(), INTERVAL +%d DAY)",$days);
+		$sql .= sprintf(" AND protocol='%s'",PROTOCOL_DELIVERY);
+		$sql .= " ORDER BY datedue ASC";
+		
+		$tasks = array();
+		$result = $this->runSql($sql);
+		while($o = mysql_fetch_object($result)){
+			array_push($tasks, $o);
+		}
+		return $tasks;
+	}
 	function getANC1Defaulters($opts=array()){
 		$kpi = new KPI();
 		return $kpi->getANC1Defaulters($opts);
