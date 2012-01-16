@@ -1,6 +1,6 @@
 <?php
 $opts=array('days'=>$days,'hpcode'=>$currentHPcode);
-$submitted = $API->getProtocolsSubmitted($opts);
+$submitted = $API->getProtocolsSubmitted_Cache($opts);
 if(count($submitted->protocols)>0){
 ?>
 <table class="taskman">

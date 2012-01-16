@@ -1,6 +1,6 @@
 <?php 
 $opts = array('days'=>$days,'limit'=>'all');
-$submitted = $API->getProtocolsSubmitted($opts);
+$submitted = $API->getProtocolsSubmitted_Cache($opts);
 
 printf("<h3>%s</h3>",getstring('submitted.total.count',array(count($submitted->protocols),$days)));
 

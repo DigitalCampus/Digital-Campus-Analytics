@@ -19,7 +19,7 @@ $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 
 $anc1thismonth = $API->getANC1Defaulters($opts);
 $anc2thismonth = $API->getANC2Defaulters($opts);
-$nosubmittedthismonth = $API->getProtocolsSubmitted($opts);
+$nosubmittedthismonth = $API->getProtocolsSubmitted_Cache($opts);
 $tt1thismonth = $API->getTT1Defaulters($opts);
 
 $opts = array();
@@ -29,7 +29,7 @@ $opts['enddate'] = $datemonthago->format('Y-m-d');
 
 $anc1previousmonth = $API->getANC1Defaulters($opts);
 $anc2previousmonth= $API->getANC2Defaulters($opts);
-$nosubmittedpreviousmonth = $API->getProtocolsSubmitted($opts);
+$nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 $tt1previousmonth = $API->getTT1Defaulters($opts);
 ?>
 <div class="kpiheader">

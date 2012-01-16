@@ -2,7 +2,7 @@
 $protocols = array();
 $summary = array();
 $opts = array('days'=>$days,'limit'=>'all');
-$submitted = $API->getProtocolsSubmitted($opts);
+$submitted = $API->getProtocolsSubmitted_Cache($opts);
 
 printf("<h3>%s</h3>",getstring('submitted.total.count',array($submitted->count,$days)));
 
