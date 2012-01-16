@@ -1421,10 +1421,81 @@ class API {
 		}
 	}
 	
+	function cacheTasksDue($days){
+		// get all the patients submitted recently (according to past no $days)
+		$submitted = $this->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
+		$toupdate = array();
+		foreach($submitted->protocols as $s){
+			$toupdate[$s->Q_HEALTHPOINTID."/".$s->Q_USERID] = true;
+		}
+		
+		foreach($toupdate as $k=>$v){
+			$temp = explode('/',$k);
+			$hpcode = $temp[0];
+			$userid = $temp[1];
+			$patient = $this->getPatient(array('hpcode'=>$hpcode,'patid'=>$userid));
+			// empty the cache for this patient 
+			$this->cacheEmptyTasks($userid,$hpcode);
+			
+			$edd = "";
+			
+			// based on ANC First, are they due for ANC follow up 
+			if(isset($patient->ancfirst) && count($patient->ancfollow)==0 && !isset($patient->delivery) && count($patient->pnc)==0){
+				if($patient->ancfirst->Q_APPOINTMENTDATE != ""){
+					$this->cacheAddTask($userid, $hpcode, $patient->ancfirst->Q_APPOINTMENTDATE,PROTOCOL_ANCFOLLOW);
+				}
+				$edd = $patient->ancfirst->Q_EDD;
+			}
+			
+			// based on ANC Follow up are they due for another 
+			if(count($patient->ancfollow)>0 && !isset($patient->delivery) && count($patient->pnc)==0){
+				//get the most recent ANC follow
+				if($patient->ancfollow[count($patient->ancfollow)-1]->Q_APPOINTMENTDATE != ""){
+					$this->cacheAddTask($userid, $hpcode, $patient->ancfollow[count($patient->ancfollow)-1]->Q_APPOINTMENTDATE,PROTOCOL_ANCFOLLOW);
+				}
+				$edd = $patient->ancfollow[count($patient->ancfollow)-1]->Q_EDD;
+			}
+			
+			// get their most recent EDD to enter delivery date 
+			if(!isset($patient->delivery) && count($patient->pnc)==0 && $edd != ''){
+				$this->cacheAddTask($userid, $hpcode, $edd, PROTOCOL_DELIVERY);
+			}
+			
+			// based on when due for first PNC
+			if($edd != "" && !isset($patient->delivery) && count($patient->pnc)==0){
+				$date = new DateTime($edd);
+				$date->add(new DateInterval('P1D'));
+				$this->cacheAddTask($userid, $hpcode, $date->format('Y-m-d'), PROTOCOL_PNC);
+			}
+			
+			// if had delivery protocol but no PNC
+			if(isset($patient->delivery) && count($patient->pnc)==0){
+				$date = new DateTime($patient->delivery->Q_DELIVERYDATE);
+				$date->add(new DateInterval('P1D'));
+				$this->cacheAddTask($userid, $hpcode, $date->format('Y-m-d'), PROTOCOL_PNC);
+			}
+			// are they due for next PNC? 
+			if (count($patient->pnc)>0){
+				if($patient->pnc[count($patient->pnc)-1]->Q_APPOINTMENTDATE != ""){
+					$this->cacheAddTask($userid, $hpcode, $patient->pnc[count($patient->pnc)-1]->Q_APPOINTMENTDATE,PROTOCOL_PNC);
+				}
+			}
+		}
+	}
 	
+	function cacheEmptyTasks($userid, $hpcode){
+		$sql = sprintf("DELETE FROM cache_tasks WHERE userid=%d AND hpcode=%d",$userid,$hpcode);
+		$this->runSql($sql);
+	}
+	
+	function cacheAddTask($userid, $hpcode,$datedue,$protocol){
+		$sql = sprintf("INSERT INTO cache_tasks (hpcode,userid,datedue,protocol)
+							VALUES (%d,%d,'%s','%s')", $hpcode, $userid ,$datedue, $protocol);
+		$this->runSql($sql);
+	}
 	
 	function getTasksDue($opts=array()){
-		// TODO check task list
+		// TODO make this use the cache_tasks table
 		if(array_key_exists('days',$opts)){
 			$days = max(0,$opts['days']);
 		} else {
@@ -1471,7 +1542,6 @@ class API {
 		$sql .= " ORDER BY datedue";
 		// TODO add permissions??
 
-		// TODO add overdue tasks
 		
 		$tasks = array();
 		$result = $this->runSql($sql);
@@ -1481,6 +1551,9 @@ class API {
 		return $tasks;
 	}
 	
+	function getOverdueTasks($opts=array()){
+		
+	}
 
 	function getANC1Defaulters($opts=array()){
 		$kpi = new KPI();
