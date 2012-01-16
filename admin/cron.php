@@ -15,8 +15,10 @@ $now = time();
 
 if($lastrun + ($minint*60) > $now){
 	echo "exiting";
-	die;
+	//die;
 }
+// let cron run with admin permissions
+$USER->props['permissions.admin'] = 'true';
 
 // update current patients
 $API->updatePatients();
@@ -27,6 +29,15 @@ if($logdays > 0){
 	$sql = sprintf("DELETE FROM log WHERE logtime < DATE_ADD(NOW(), INTERVAL -%d DAY)",$logdays);
 	$API->runSql($sql);
 }
+
+// update & cache which HPs the patients have visited
+// get all submitted protocols in last 2 days // TODO - should really be since cron last run or something
+$submitted = $API->getProtocolsSubmitted(array('days'=>5,'limit'=>'all'));
+
+foreach($submitted->protocols as $s){
+	$API->cacheAddPatientHealthPointVisit($s->Q_USERID,$s->patienthpcode,$s->protocolhpcode,$s->datestamp,$s->protocol,$s->user_uri);
+}
+
 // update & cache patient risk factors
 
 // update & cache task list

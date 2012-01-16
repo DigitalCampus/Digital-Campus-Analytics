@@ -368,6 +368,7 @@ class API {
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
+						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						Q_AGE,
 						Q_CONSENT,
@@ -458,6 +459,7 @@ class API {
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
+						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
 						_CREATOR_URI_USER,
@@ -575,6 +577,7 @@ class API {
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
+						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
 						Q_ABDOMINALPAIN,
@@ -658,6 +661,7 @@ class API {
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
+						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
 						Q_ABORTION,
@@ -737,6 +741,7 @@ class API {
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
+						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
 						Q_AGE,
@@ -783,6 +788,7 @@ class API {
 		$sql = "SELECT 	pathp.hpcode,
 						pathp.hpname as patientlocation,
 						hp.hpname as protocollocation,
+						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
 						Q_ADVICEDANGERSIGNS,
@@ -894,6 +900,7 @@ class API {
 		$sql = "SELECT 	pathp.hpcode,
 							pathp.hpname as patientlocation,
 							hp.hpname as protocollocation,
+							hp.hpcode as protocolhpcode,
 							CONCAT(u.firstname,' ',u.lastname) as submittedname,
 							_URI,
 							_CREATOR_URI_USER,
@@ -1053,7 +1060,8 @@ class API {
 					p.Q_GPSDATA_LNG,
 					p.Q_LOCATION,
 					hp.locationlat,
-					hp.locationlng
+					hp.locationlng,
+					u.user_uri 
 				FROM ".TABLE_REGISTRATION." p 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
@@ -1084,7 +1092,8 @@ class API {
 					p.Q_GPSDATA_LNG,
 					p.Q_LOCATION,
 					hp.locationlat,
-					hp.locationlng
+					hp.locationlng,
+					u.user_uri 
 				FROM ".TABLE_ANCFIRST." p 
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
@@ -1114,7 +1123,8 @@ class API {
 					p.Q_GPSDATA_LNG,
 					p.Q_LOCATION,
 					hp.locationlat,
-					hp.locationlng
+					hp.locationlng,
+					u.user_uri 
 				FROM ".TABLE_ANCFOLLOW." p 
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
@@ -1145,7 +1155,8 @@ class API {
 					'' AS Q_GPSDATA_LNG,
 					'' AS Q_LOCATION,
 					hp.locationlat,
-					hp.locationlng
+					hp.locationlng,
+					u.user_uri 
 				FROM ".TABLE_ANCLABTEST." p 
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
@@ -1175,7 +1186,8 @@ class API {
 					p.Q_GPSDATA_LNG,
 					p.Q_LOCATION,
 					hp.locationlat,
-					hp.locationlng
+					hp.locationlng,
+					u.user_uri 
 				FROM ".TABLE_ANCTRANSFER." p 
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
@@ -1206,7 +1218,8 @@ class API {
 						p.Q_GPSDATA_LNG,
 						p.Q_LOCATION,
 						hp.locationlat,
-						hp.locationlng
+						hp.locationlng,
+						u.user_uri 
 					FROM ".TABLE_DELIVERY." p 
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
@@ -1237,7 +1250,8 @@ class API {
 						p.Q_GPSDATA_LNG,
 						p.Q_LOCATION,
 						hp.locationlat,
-						hp.locationlng
+						hp.locationlng,
+						u.user_uri 
 					FROM ".TABLE_PNC." p 
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
@@ -1293,6 +1307,121 @@ class API {
 		}
 	    return $submitted; 
 	}
+	
+	function getProtocolsSubmitted_Cache($opts=array()){
+		if(array_key_exists('days',$opts)){
+			$days = max(0,$opts['days']);
+		} else if(array_key_exists('startdate',$opts) && array_key_exists('enddate',$opts)) {
+			$startdate = $opts['startdate'];
+			$enddate = $opts['enddate'];
+		} else {
+			array_push($ERROR,"You must specify either no days or start/end dates for this function");
+			return false;
+		}
+		if(array_key_exists('limit',$opts)){
+			$limit = max(0,$opts['limit']);
+		} else {
+			$limit = DEFAULT_LIMIT;
+		}
+		if(array_key_exists('start',$opts)){
+			$start = max($opts['start'],0);
+		} else {
+			$start = DEFAULT_START;
+		}
+		
+		$sql = "SELECT * FROM (";
+		$sql .= "	SELECT 	cv.visitdate as datestamp,
+							cv.userid AS Q_USERID,
+							CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
+							php.hpcode as patienthpcode,
+							hp.hpcode as protocolhpcode,
+							php.hpname as patientlocation,
+							hp.hpname as protocollocation,
+							cv.protocol,
+							CONCAT(u.firstname,' ',u.lastname) as submittedname,
+							cv.user_uri 
+					FROM cache_visit cv 
+					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = cv.userid AND r.Q_HEALTHPOINTID = cv.hpcode)
+					INNER JOIN user u ON cv.user_uri = u.user_uri 
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
+					INNER JOIN healthpoint php ON php.hpcode = cv.hpcode";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE cv.visitdate >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE cv.visitdate > '%s'",$startdate);
+			$sql .= sprintf(" AND cv.visitdate <= '%s'",$enddate);
+		}
+		
+		
+		$sql .= ") a ";
+		$sql .= "WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= "OR a.protocolhpcode IN (".$this->getUserHealthPointPermissions().")) " ;
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
+		if(array_key_exists('hpcode',$opts)){
+			$sql .= " AND  (a.patienthpcode = ".$opts['hpcode'];
+			$sql .= " OR a.protocolhpcode = ".$opts['hpcode'].")";
+		}
+		$sql .= "ORDER BY datestamp DESC";
+		
+		
+		//query to get the total no of records
+		$countsql = "SELECT COUNT(*) AS norecords FROM (".$sql.") a;";
+		
+		$countres = $this->runSql($countsql);
+		
+		$submitted = new stdClass();
+		
+		$submitted->count = 0;
+		while($row = mysql_fetch_object($countres)){
+			$submitted->count = $row->norecords;
+		}
+		
+		$submitted->start = max(min($submitted->count-1,$start),0);
+		$submitted->limit = $limit;
+		$start = $submitted->start;
+		
+		//add a limit if necessary
+		if($limit != 'all'){
+			$sql .= " LIMIT ".$start.",".$limit;
+		}
+		
+		$submitted->protocols = array();
+		$result = $this->runSql($sql);
+		
+		while($row = mysql_fetch_object($result)){
+			array_push($submitted->protocols,$row);
+		}
+		return $submitted;
+		
+	}
+	
+	function cacheEmptyPatientHealthPointVisit($userid, $hpcode){
+		$sql = sprintf("DELETE FROM cache_visit WHERE userid= %d AND hpcode=%d",$userid,$hpcode);
+		$this->runSql($sql);
+	}
+	
+	function cacheAddPatientHealthPointVisit($userid, $hpcode,$visithpcode,$visitdate,$protocol,$user_uri){
+		$sql = sprintf("SELECT * FROM cache_visit 
+						WHERE
+							hpcode = %d
+						AND userid = %d
+						AND visithpcode = %d
+						AND visitdate = '%s'
+						AND protocol = '%s'
+						AND user_uri = '%s'",$hpcode,$userid,$visithpcode,$visitdate,$protocol,$user_uri);
+		$result = $this->runSql($sql);
+		
+		if(mysql_num_rows($result) == 0){
+			$sql = sprintf("INSERT INTO cache_visit (hpcode,userid,visithpcode,visitdate,protocol,user_uri)
+							VALUES (%d,%d,%d,'%s','%s','%s')",$hpcode,$userid,$visithpcode,$visitdate,$protocol,$user_uri);
+			$this->runSql($sql);
+			echo "added\n";
+		}
+	}
+	
+	
 	
 	function getTasksDue($opts=array()){
 		// TODO check task list
