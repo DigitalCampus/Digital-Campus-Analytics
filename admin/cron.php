@@ -36,7 +36,7 @@ if($logdays > 0){
 }
 
 // update & cache which HPs the patients have visited
-// get all submitted protocols in last 5 days // TODO - should really be since cron last run or something
+// get all submitted protocols in last $days // TODO - should really be since cron last run or something
 $submitted = $API->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
 
 foreach($submitted->protocols as $s){

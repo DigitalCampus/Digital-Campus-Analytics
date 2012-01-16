@@ -10,7 +10,7 @@ if($USER->getProp('permissions.admin') != "true"){
 }
 $userid = required_param("userid",PARAM_INT);
 $user = $API->getUserByID($userid);
-$API->getUserProperties($user);
+$user->props = $API->getUserProperties($userid);
 $healthpoints = $API->getHealthPoints(true);
 
 $submit = optional_param('submit','',PARAM_TEXT);
@@ -48,7 +48,7 @@ if($submit != ""){
 		
 		// reload the user
 		$user = $API->getUserByID($userid);
-		$API->getUserProperties($user);
+		$user->props = $API->getUserProperties($userid);
 	}
 }
 

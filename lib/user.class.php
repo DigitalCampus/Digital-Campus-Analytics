@@ -41,7 +41,7 @@ class User {
     function load(){
     	global $API;
     	$API->getUser($this);
-    	$API->getUserProperties($this);
+    	$this->props = $API->getUserProperties($this->userid);
     }
     
     /**

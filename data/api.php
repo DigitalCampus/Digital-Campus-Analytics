@@ -145,12 +145,14 @@ class API {
 	}
 	
 	
-	function getUserProperties(&$user){
-		$sql = "SELECT * FROM userprops WHERE userid=".$user->userid;
+	function getUserProperties($userid){
+		$sql = "SELECT * FROM userprops WHERE userid=".$userid;
 		$result = $this->runSql($sql);
+		$props = array();
 	  	while($row = mysql_fetch_array($result, MYSQL_ASSOC)){
-	  		$user->props[$row['propname']] = $row['propvalue'];
+	  		$props[$row['propname']] = $row['propvalue'];
 		}
+		return $props;
 	} 
 	
 	function setUserProperty($userid,$name,$value){
@@ -358,7 +360,11 @@ class API {
 		$patients = array();
 		while($o = mysql_fetch_object($result)){
 			$opts = array('hpcode'=>$o->Q_HEALTHPOINTID,'patid'=>$o->Q_USERID);
-			array_push($patients,$this->getPatient($opts));
+			$p = $this->getPatient($opts);
+			if($p == null){
+				echo $o->Q_HEALTHPOINTID."/".$o->Q_USERID."<br/>";
+			}
+			array_push($patients,$p);
 		}
 		
 		return $patients;
@@ -410,7 +416,7 @@ class API {
 		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 
 	    $result = $this->runSql($sql);
-
+	    
 	  	$pat = mysql_fetch_object($result);
 	  	if($pat == null){
 	  		$pat = new stdClass();
@@ -447,6 +453,7 @@ class API {
 			&& count($pat->anclabtest) == 0
 			&& $pat->delivery == null
 			&& count($pat->pnc) == 0){
+			echo "here";
 			return false;
 		} else {
 			return $pat;
@@ -1365,7 +1372,6 @@ class API {
 		}
 		$sql .= "ORDER BY datestamp DESC";
 		
-		
 		//query to get the total no of records
 		$countsql = "SELECT COUNT(*) AS norecords FROM (".$sql.") a;";
 		
@@ -1502,47 +1508,29 @@ class API {
 			$days = DEFAULT_DAYS;
 		}
 		
-		$sql = "SELECT * FROM (";
-		$sql .= "SELECT A.Q_APPOINTMENTDATE as datedue,
-						u.userid,
-						A.Q_USERID,
+		$sql = "SELECT  
+						ct.datedue,
+						ct.userid,
 						CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
-						A.Q_HEALTHPOINTID,
+						ct.hpcode,
 						php.hpname as patientlocation,
-						'".getstring(PROTOCOL_ANCFOLLOW)."' AS protocol
-				FROM ".TABLE_ANCFIRST." A
-				LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON A.Q_USERID = R.Q_USERID AND A.Q_HEALTHPOINTID = R.Q_HEALTHPOINTID
-				INNER JOIN healthpoint php ON php.hpcode = A.Q_HEALTHPOINTID
-				INNER JOIN user u ON u.user_uri = A._CREATOR_URI_USER
-				WHERE A.Q_APPOINTMENTDATE > now()
-				AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +".$days." DAY)";
-		
-		$sql .= " UNION
-				SELECT 	A.Q_APPOINTMENTDATE as datedue,
-						u.userid,
-						A.Q_USERID,
-						CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
-						A.Q_HEALTHPOINTID,
-						php.hpname as patientlocation,
-						'".getstring(PROTOCOL_ANCFOLLOW)."' AS protocol
-				FROM ".TABLE_ANCFOLLOW." A
-				LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON A.Q_USERID = R.Q_USERID AND A.Q_HEALTHPOINTID = R.Q_HEALTHPOINTID
-				INNER JOIN healthpoint php ON php.hpcode = A.Q_HEALTHPOINTID
-				INNER JOIN user u ON u.user_uri = A._CREATOR_URI_USER
-				WHERE A.Q_APPOINTMENTDATE > now()
-				AND A.Q_APPOINTMENTDATE < DATE_ADD(now(), INTERVAL +".$days." DAY)";
-		// TODO add delivery
-		
-		// TODO add PNC
-		$sql .= ") C ";
-		$sql .= "WHERE Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
-		if($this->getIgnoredHealthPoints() != ""){
-			$sql .= " AND Q_HEALTHPOINTID NOT IN (".$this->getIgnoredHealthPoints().")";
+						ct.protocol
+					FROM cache_tasks ct 
+				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
+					WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
+					OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
+		if(array_key_exists('hpcode',$opts)){
+			$sql .= " AND  (hpcode = ".$opts['hpcode'];
+			$sql .= " OR visithpcode = ".$opts['hpcode'].")";
 		}
-		$sql .= " ORDER BY datedue";
-		// TODO add permissions??
-
-		
+		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
+		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
+		$sql .= " INNER JOIN healthpoint php ON php.hpcode = ct.hpcode";
+		$sql .= sprintf(" WHERE ct.datedue > NOW()
+					AND ct.datedue < DATE_ADD(now(), INTERVAL +%d DAY)",$days);
+		$sql .= " ORDER BY datedue ASC";
+	
+			
 		$tasks = array();
 		$result = $this->runSql($sql);
 		while($o = mysql_fetch_object($result)){

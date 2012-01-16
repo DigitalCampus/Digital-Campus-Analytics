@@ -46,9 +46,15 @@ if($hpcode == 'overall'){
 
 $patients = $API->getCurrentPatients($currentopts);
 
+
 $risks = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0);
 // loop through and update the counters for each patient:
 foreach($patients as $p){
+	echo "<pre>";
+	if(!isset($p->risk)){
+		print_r($p);
+	}
+	echo "</pre>";
 	$risks[$p->risk->category]++;
 }
 

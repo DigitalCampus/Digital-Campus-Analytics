@@ -1,6 +1,6 @@
 <?php 
 
-$opts = array("days"=>$days);
+$opts = array("days"=>$days,'hpcode'=>$currentHPcode);
 $tasks = $API->getTasksDue($opts);
 
 ?>
@@ -13,21 +13,21 @@ $tasks = $API->getTasksDue($opts);
 	</tr>
 	<?php 
 
-		/*foreach($tasks as $task){
-			$d = strtotime($task->datedue);
+		foreach($tasks as $t){
+			$d = strtotime($t->datedue);
 			echo "<tr class='n'>";
-			echo "<td nowrap>".displayAsEthioDate($d)."</td>";
-			echo "<td nowrap>".$task->patientlocation."/".$task->Q_USERID."</td>";
+			echo "<td nowrap>".displayAsEthioDate($d)."<br/>". date('D d M Y',$d)."</td>";
+			echo "<td nowrap>".$t->patientlocation."/".$t->userid."</td>";
 			echo "<td nowrap>";
-			if(trim($task->patientname) == ""){
+			if(trim($t->patientname) == ""){
 				printf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));
 			} else {
-				echo $task->patientname;
+				echo $t->patientname;
 			}
 			echo "</td>";
-			echo "<td nowrap>".$task->protocol."</td>";
+			echo "<td nowrap>".getstring($t->protocol)."</td>";
 			echo "</tr>";
-		}*/
+		}
 			
 	?>
 </table>

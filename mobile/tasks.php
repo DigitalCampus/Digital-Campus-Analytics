@@ -16,7 +16,7 @@ foreach($tasks as $task){
 		$task->patientname = getString('warning.patient.notregistered');
 	}
 	printf("<div class='taskpname'>%s</div>",$task->patientname);
-	printf("<div class='taskpid'>%s/%s</div>",$task->patientlocation,$task->Q_USERID);
+	printf("<div class='taskpid'>%s/%s</div>",$task->patientlocation,$task->userid);
 	printf("<div class='taskprisk'>%s</div>","Risk not known");
 	printf("<div style='clear:both;'></div></div>");
 }

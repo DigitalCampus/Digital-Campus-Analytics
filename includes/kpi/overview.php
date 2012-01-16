@@ -3,14 +3,14 @@
 $datetoday = new DateTime();
 
 $datemonthago = new DateTime();
-$datemonthago->sub(new DateInterval('P1M'));
+$datemonthago->sub(new DateInterval('P30D'));
 
 $date2monthago = new DateTime();
 $date2monthago->sub(new DateInterval('P2M'));
 
 $opts = array();
 $opts['hps'] = $API->getUserHealthPointPermissions();
-$opts['startdate'] = $datemonthago->format('Y-m-d');
+$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 
 $anc1thismonth = $API->getANC1Defaulters($opts);
@@ -20,8 +20,8 @@ $tt1thismonth = $API->getTT1Defaulters($opts);
 
 $opts = array();
 $opts['hps'] = $API->getUserHealthPointPermissions();
-$opts['startdate'] = $date2monthago->format('Y-m-d');
-$opts['enddate'] = $datemonthago->format('Y-m-d');
+$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
+$opts['enddate'] = $datemonthago->format('Y-m-d 00:00:00');
 
 $anc1previousmonth = $API->getANC1Defaulters($opts);
 $anc2previousmonth= $API->getANC2Defaulters($opts);
