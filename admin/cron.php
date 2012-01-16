@@ -10,14 +10,17 @@ header("Content-Type: text/plain; charset=UTF-8");
 
 $days = optional_param('days',5,PARAM_INT);
 
+// so can force cron to run even when inside min interval (only really useful for development)
+$force = optional_param('force',false,PARAM_BOOL);
+
 // check to see when cron was last run (and against min interval)
 $lastrun = $API->getSystemProperty('cron.lastrun');
 $minint = $API->getSystemProperty('cron.mininterval');
 $now = time();
 
-if($lastrun + ($minint*60) > $now){
+if(($lastrun + ($minint*60) > $now) && !$force){
 	echo "exiting";
-	//die;
+	die;
 }
 // let cron run with admin permissions
 $USER->props['permissions.admin'] = 'true';
@@ -43,7 +46,10 @@ foreach($submitted->protocols as $s){
 // update & cache task list
 $API->cacheTasksDue($days);
 
-// TODO remove any really old overdue tasks
+// TODO remove any really old overdue tasks based on the ignore policy
+$sql = sprintf("DELETE FROM cache_tasks 
+				WHERE datedue < DATE_ADD(NOW(), INTERVAL -%d DAY)",$API->getSystemProperty('overdue.ignore'));
+$API->runSql($sql);
 
 // TODO update & cache patient risk factors
 
