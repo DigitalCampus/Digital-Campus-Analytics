@@ -2,11 +2,12 @@
 /*
  * cron for running various scheduled tasks
  */
-header("Content-Type: text/plain; charset=UTF-8");
 
 // TODO - extend max exectuion time?
 
 require_once "../config.php";
+header("Content-Type: text/plain; charset=UTF-8");
+
 // check to see when cron was last run (and against min interval)
 $lastrun = $API->getSystemProperty('cron.lastrun');
 $minint = $API->getSystemProperty('cron.mininterval');

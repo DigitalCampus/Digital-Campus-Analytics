@@ -147,3 +147,4 @@ INSERT INTO `properties` (`propid`, `propname`, `propvalue`, `propinfo`) VALUES
 (1, 'cron.lastrun', '0', 'Date/time cron was last run'),
 (2, 'log.archive.days', '365', 'Number of days to keep log entries for, anything older will be auto deleted. Use 0 to set as ''never delete'''),
 (3, 'cron.mininterval', '60', 'Minimum interval, in minutes, at which cron can run. To prevent running too often');
+(4, 'database.version', '1', 'Database version number. Used to detect database updates');
