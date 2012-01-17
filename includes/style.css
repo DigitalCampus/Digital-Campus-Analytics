@@ -119,6 +119,7 @@ table.taskman {
 	background: #9aca3c;
 	border-collapse:collapse;
 	font-size:100%;
+	width:75%;
 }
 
 table.admin {

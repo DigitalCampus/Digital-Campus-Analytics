@@ -2,33 +2,20 @@
 <?php 
 echo "<h4>".getstring('risk.title')."</h4>";
 // display the risk factor analysis
-switch ($patient->risk->category){
-	case 'none':
-		echo getstring('risk.none');
-		break;
-	case 'unavoidable':
-		echo getstring('risk.unavoidable');
-		break;
-	case 'single':
-		echo getstring('risk.single');
-		break;
-	case 'multiple':
-		echo getstring('risk.multiple');
-		break;
-}
-//print_r($patient->risk);
+$ra = new RiskAssessment();
+$risk = $ra->getRisks_Cache($hpcode,$patientid);
+echo getstring('risk.'.$risk->category);
 
-$temp = array();
-foreach ($patient->risk->risks as $k=>$v){
-	
-	if($v){
-		array_push($temp, getstring('risk.factor.'.$k));
+for ($i=0; $i<count($risk->risks);$i++){
+	if($i==0){
+		echo ": ";
+	}
+	echo getstring('risk.factor.'.$risk->risks[$i]);
+	if($i<count($risk->risks)-1){
+		echo ", ";
 	}
 }
-if(count($temp) >0){
-	echo ": ";
-	echo implode(', ',$temp);	
-}
+
 
 
 ?>

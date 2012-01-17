@@ -69,13 +69,47 @@ if ($currentDBversion < 4){
 	echo "Upgraded to version 4\n";
 }
 
-/*
+
 if ($currentDBversion < 5){
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+			('target.anc1', '60', 'Target percentage of ANC1 visits on time')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('target.anc2', '60', 'Target percentage of ANC2 visits on time')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('target.tt1', '60', 'Target percentage of TT1 injections on time')";
+	$API->runSql($sql);
+	
+	// create table to cache patient risk factors
+	$sql = "CREATE TABLE `cache_risk` (
+				  `riskid` bigint  NOT NULL AUTO_INCREMENT,
+				  `hpcode` integer  NOT NULL,
+				  `userid` integer  NOT NULL,
+				  `risk` varchar(255)  NOT NULL,
+				  PRIMARY KEY (`riskid`)
+				)
+				ENGINE = InnoDB
+				CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$API->runSql($sql);
+	
+	$sql = "CREATE TABLE `cache_risk_category` (
+					  `riskcatid` bigint  NOT NULL AUTO_INCREMENT,
+					  `hpcode` integer  NOT NULL,
+					  `userid` integer  NOT NULL,
+					  `riskcategory` varchar(255)  NOT NULL,
+					  PRIMARY KEY (`riskcatid`)
+					)
+					ENGINE = InnoDB
+					CHARACTER SET utf8 COLLATE utf8_general_ci;";
+	$API->runSql($sql);
 	
 	//now update the db version prop
 	$API->setSystemProperty('database.version','5');
 	echo "Upgraded to version 5\n";
-}*/
+}
 
 echo "Upgrade complete";
 ?>

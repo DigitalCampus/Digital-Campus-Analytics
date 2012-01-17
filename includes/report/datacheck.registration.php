@@ -4,8 +4,6 @@ $dc = new DataCheck();
 $unregistered = $dc->unregistered($opts);
 
 if(count($unregistered)>0){
-	// TODO - add date/time registered
-	// TODO - link through to protocol data
 ?>
 	
 <table class="taskman">

@@ -361,9 +361,6 @@ class API {
 		while($o = mysql_fetch_object($result)){
 			$opts = array('hpcode'=>$o->Q_HEALTHPOINTID,'patid'=>$o->Q_USERID);
 			$p = $this->getPatient($opts);
-			if($p == null){
-				echo $o->Q_HEALTHPOINTID."/".$o->Q_USERID."<br/>";
-			}
 			array_push($patients,$p);
 		}
 		
@@ -440,10 +437,6 @@ class API {
 		$pat->anclabtest= $this->getPatientANCLabTest($opts);
 		$pat->delivery = $this->getPatientDelivery($opts);
 		$pat->pnc = $this->getPatientPNC($opts);
-		
-		// risk assessment
-		$ra = new RiskAssessment();
-		$pat->risk = $ra->getRisks($pat);
 		
 		// if patient record has no protocols then assume invalid patientid/hpcode 
 		if($pat->regcomplete == false
@@ -1440,7 +1433,7 @@ class API {
 			$userid = $temp[1];
 			$patient = $this->getPatient(array('hpcode'=>$hpcode,'patid'=>$userid));
 			// empty the cache for this patient 
-			$this->cacheEmptyTasks($userid,$hpcode);
+			$this->cacheDeleteTasks($userid,$hpcode);
 			
 			$edd = "";
 			
@@ -1488,7 +1481,7 @@ class API {
 		}
 	}
 	
-	function cacheEmptyTasks($userid, $hpcode){
+	function cacheDeleteTasks($userid, $hpcode){
 		$sql = sprintf("DELETE FROM cache_tasks WHERE userid=%d AND hpcode=%d",$userid,$hpcode);
 		$this->runSql($sql);
 	}
@@ -1496,6 +1489,63 @@ class API {
 	function cacheAddTask($userid, $hpcode,$datedue,$protocol){
 		$sql = sprintf("INSERT INTO cache_tasks (hpcode,userid,datedue,protocol)
 							VALUES (%d,%d,'%s','%s')", $hpcode, $userid ,$datedue, $protocol);
+		$this->runSql($sql);
+	}
+	
+	
+	function cacheRisks($days){
+		// get all the patients submitted recently (according to past no $days)
+		$submitted = $this->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
+		$toupdate = array();
+		foreach($submitted->protocols as $s){
+			$toupdate[$s->Q_HEALTHPOINTID."/".$s->Q_USERID] = true;
+		}
+	
+		foreach($toupdate as $k=>$v){
+			$temp = explode('/',$k);
+			$hpcode = $temp[0];
+			$userid = $temp[1];
+			//delete existing risks & risk category info
+			$this->cacheDeleteRisks($userid, $hpcode);
+			$this->cacheDeleteRiskCategory($userid, $hpcode);
+			
+			$patient = $this->getPatient(array('hpcode'=>$hpcode,'patid'=>$userid));
+			
+			$ra = new RiskAssessment();
+			$risks = $ra->getRisks($patient);
+			
+			// cache the risk factors
+			foreach($risks->risks as $k=>$v){
+				if($v){
+					$this->cacheAddRisk($userid, $hpcode,$k);
+				}
+			}
+			
+			// cache the category
+			$this->cacheAddRiskCategory($userid, $hpcode, $risks->category);
+		}
+	}
+	
+	
+	function cacheDeleteRisks($userid, $hpcode){
+		$sql = sprintf("DELETE FROM cache_risk WHERE userid=%d AND hpcode=%d",$userid,$hpcode);
+		$this->runSql($sql);
+	}
+	
+	function cacheAddRisk($userid, $hpcode,$risk){
+		$sql = sprintf("INSERT INTO cache_risk (hpcode,userid,risk)
+								VALUES (%d,%d,'%s')", $hpcode, $userid ,$risk);
+		$this->runSql($sql);
+	}
+	
+	function cacheDeleteRiskCategory($userid, $hpcode){
+		$sql = sprintf("DELETE FROM cache_risk_category WHERE userid=%d AND hpcode=%d",$userid,$hpcode);
+		$this->runSql($sql);
+	}
+	
+	function cacheAddRiskCategory($userid, $hpcode,$riskcat){
+		$sql = sprintf("INSERT INTO cache_risk_category (hpcode,userid,riskcategory)
+									VALUES (%d,%d,'%s')", $hpcode, $userid ,$riskcat);
 		$this->runSql($sql);
 	}
 	

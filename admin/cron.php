@@ -52,7 +52,7 @@ $sql = sprintf("DELETE FROM cache_tasks
 $API->runSql($sql);
 
 // TODO update & cache patient risk factors
-
+$API->cacheRisks($days);
 
 
 // TODO update & cache KPI figures?

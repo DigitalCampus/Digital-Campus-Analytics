@@ -44,18 +44,14 @@ if($hpcode == 'overall'){
 	$currentopts['hps'] = $hpcode;
 }
 
-$patients = $API->getCurrentPatients($currentopts);
+$ra = new RiskAssessment();
+$risks = $ra->getRiskStatistics($currentopts);
 
 
-$risks = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0);
+$summary = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0);
 // loop through and update the counters for each patient:
-foreach($patients as $p){
-	echo "<pre>";
-	if(!isset($p->risk)){
-		print_r($p);
-	}
-	echo "</pre>";
-	$risks[$p->risk->category]++;
+foreach($risks as $k=>$v){
+	$summary[$k] = $v;
 }
 
 ?>
@@ -75,7 +71,7 @@ foreach($patients as $p){
 
 <?php
 $total = 0; 
-foreach($risks as $k=>$v){
+foreach($summary as $k=>$v){
 	$total += $v;
 }
 
@@ -94,7 +90,7 @@ if ($total == 0){
 			data.addColumn('string', 'Risk Category');
 			data.addColumn('number', 'Number');
 			<?php 
-				foreach($risks as $k=>$v){
+				foreach($summary as $k=>$v){
 					printf("data.addRow(['%s',%d]);",getString("risk.".$k),$v);
 				}
 			?>		

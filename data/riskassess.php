@@ -1,6 +1,7 @@
 <?php 
 
 class RiskAssessment {
+	
 	function getRisks($p){
 		$risk = new stdClass;
 		$risk->risks = array();
@@ -481,6 +482,85 @@ class RiskAssessment {
 		}
 		
 		return $risk;
+	}
+	
+	function getRisks_Cache($hpcode,$userid){
+		global $API;
+		$sql = sprintf("SELECT * FROM cache_risk WHERE hpcode=%d AND userid=%d",$hpcode,$userid);
+		$results = $API->runSql($sql);
+		$risk = new stdClass;
+		$risk->risks = array();
+		while($o = mysql_fetch_object($results)){
+	  		array_push($risk->risks,$o->risk);
+	  	}
+	  	$risk->category = 'notavailable';
+	  	$sql = sprintf("SELECT * FROM cache_risk_category WHERE hpcode=%d AND userid=%d",$hpcode,$userid);
+	  	$results = $API->runSql($sql);
+	  	while($o = mysql_fetch_object($results)){
+	  		$risk->category = $o->riskcategory;
+	  	}
+		return $risk;
+	}
+	
+	function getRiskStatistics($opts=array()){
+		global $API;
+		if(array_key_exists('hps',$opts)){
+			$hps = $opts['hps'];
+		} else {
+			$hps = $API->getUserHealthPointPermissions();
+		}
+		
+		$sql = sprintf("SELECT COUNT(*) as riskcatcount, riskcategory
+						FROM cache_risk_category crc
+						INNER JOIN patientcurrent pc ON pc.hpcode = crc.hpcode AND pc.patid = crc.userid
+						INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
+							WHERE (hpcode IN (".$API->getUserHealthPointPermissions().") 
+							OR visithpcode IN (".$API->getUserHealthPointPermissions().") )");
+		
+		$sql .= " AND ( hpcode IN (".$hps.")";
+		$sql .= " OR visithpcode IN (".$hps."))";
+		
+		$sql .= ") cv ON cv.userid = crc.userid AND cv.hpcode = crc.hpcode" ;
+		$sql .= " WHERE pc.pcurrent = 1 OR pc.pcurrent IS NULL";
+		$sql .= " GROUP BY riskcategory";
+		$risks = array();
+		$results = $API->runSql($sql);
+	  	while($o = mysql_fetch_object($results)){
+	  		$risks[$o->riskcategory] = $o->riskcatcount;
+	  	}
+		return $risks;
+	}
+	
+	function getHighRiskPatients($opts=array()){
+		global $API;
+		if(array_key_exists('hpcode',$opts)){
+			$hps = $opts['hpcode'];
+		} else {
+			$hps = $API->getUserHealthPointPermissions();
+		}
+	
+		$sql = sprintf("SELECT crc.*,
+							CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
+							php.hpname as patientlocation
+						FROM cache_risk_category crc
+						INNER JOIN patientcurrent pc ON pc.hpcode = crc.hpcode AND pc.patid = crc.userid
+						INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
+							WHERE (hpcode IN (%s) 
+							OR visithpcode IN (%s))",$API->getUserHealthPointPermissions(),$API->getUserHealthPointPermissions());
+		$sql .= sprintf(" AND (hpcode IN (%s) OR visithpcode IN (%s))",$hps,$hps);
+		$sql .= ") cv ON cv.userid = crc.userid AND cv.hpcode = crc.hpcode";
+		$sql .= sprintf(" LEFT OUTER JOIN %s r ON (r.Q_USERID = crc.userid AND r.Q_HEALTHPOINTID = crc.hpcode)",TABLE_REGISTRATION);
+		$sql .= "INNER JOIN healthpoint php ON php.hpcode = crc.hpcode";
+		$sql .= " WHERE (pc.pcurrent = 1 OR pc.pcurrent IS NULL)";
+		$sql .= " AND riskcategory ='multiple'";
+		$sql .= " ORDER BY patientname ASC";
+		
+		$highrisk = array();
+		$results = $API->runSql($sql);
+		while($o = mysql_fetch_object($results)){
+			array_push($highrisk,$o);
+		}
+		return $highrisk;
 	}
 }	
 ?>

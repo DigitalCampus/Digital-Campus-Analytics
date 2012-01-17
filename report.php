@@ -15,7 +15,6 @@ $hps = $API->getHealthPoints();
 $currenthpname = "";
 ?>
 <form action="" method="get" class="printhide">
-	<?php echo getString("report.form.hew");?>
 	<select name="hpcode">
 		<?php 
 			foreach($hps as $hp){
@@ -57,7 +56,7 @@ printf("<h3>%s</h3>", getString("report.deliveriesdue",array($days)));
 include_once('includes/report/deliveries.php'); 
 
 printf("<h3>%s</h3>", getString("report.highrisk"));
-echo "to be added";// TODO 
+include_once('includes/report/highrisk.php'); 
 
 include_once "includes/footer.php";
 ?>

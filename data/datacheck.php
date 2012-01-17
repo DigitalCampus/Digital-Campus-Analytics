@@ -8,7 +8,7 @@ class DataCheck {
 	function summary() {
 		$total = 0;
 		$total += count($this->unregistered());
-		$total += count($this->missingProtocols());
+		//$total += count($this->missingProtocols());
 		$total += count($this->duplicates());
 		if($total >0){
 			return true;
@@ -152,7 +152,7 @@ class DataCheck {
 		global $API;
 		$report = array();
 		
-		$sql = "SELECt * FROM (";
+		$sql = "SELECT * FROM (";
 		//duplicate Registration
 		$sql .= "SELECT 	i.Q_HEALTHPOINTID,
 						php.hpname as patientlocation, 
@@ -322,7 +322,7 @@ class DataCheck {
 		return $report;
 	}
 	
-	function missingProtocols(){
+	/*function missingProtocols(){
 		global $API;
 		$missing = array();
 	
@@ -425,5 +425,5 @@ class DataCheck {
 			array_push($missing,$row);
 		}
 		return $missing;
-	}
+	}*/
 }
