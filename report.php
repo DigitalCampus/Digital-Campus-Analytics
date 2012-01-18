@@ -27,36 +27,17 @@ $currenthpname = "";
 			}
 		?>
 	</select>
+	<select name="report">
+		<option value="hew">HEW</option>
+		<option value="hew">Supervisor</option>
+		<option value="hew">Midwife</option>
+	</select>
 	<input type="submit" name="submit" value="<?php echo getString("report.form.searchbtn");?>"></input>
 </form>
 
 <?php 
 
-printf("<h2>%s</h2>", $currenthpname);
-
-printf("<h3>%s</h3>", getString("report.kpioverview"));
-include_once('includes/report/kpioverview.php');
-
-printf("<h3>%s</h3>", getString("report.submitted",array($days)));
-include_once('includes/report/submitted.php');
-
-printf("<h3>%s</h3>", getString("report.datacheck.registration"));
-include_once('includes/report/datacheck.registration.php');
-
-//printf("<h3>%s</h3>", getString("report.datacheck.missing"));
-//echo "to be added";// TODO 
-
-printf("<h3>%s</h3>", getString("report.overdue"));
-include_once('includes/report/overdue.php'); 
-
-printf("<h3>%s</h3>", getString("report.tasksdue",array($days)));
-include_once('includes/report/tasksdue.php');
-
-printf("<h3>%s</h3>", getString("report.deliveriesdue",array($days)));
-include_once('includes/report/deliveries.php'); 
-
-printf("<h3>%s</h3>", getString("report.highrisk"));
-include_once('includes/report/highrisk.php'); 
+include_once('includes/report/hew.php');
 
 include_once "includes/footer.php";
 ?>
