@@ -5,67 +5,16 @@
 */
 
 $submit = optional_param("submit","",PARAM_TEXT);
-
-$userhealthpoints = $API->getHealthPoints();
-$currentHPname = "";
-$compareHPname = "";
-$cohorthealthpoints = $API->getCohortHealthPoints();
-$districts = $API->getDistricts();
-
-
-$cohorthps = array();
-foreach ($cohorthealthpoints as $k=>$v){
-	array_push($cohorthps, $k);
-}
-$cohorthps = implode(',',$cohorthps);
-
-$hpcode = optional_param("hpcode",$USER->hpcode,PARAM_TEXT);
-$hpcomparecode = optional_param("hpcomparecode","overall",PARAM_TEXT);
-
-$AverageArray = array();
-$ComparisonHPArray = array();
-foreach($districts as $d){
-	//get the hps for this district
-	$hps4district = $API->getHealthPointsForDistict($d->did);
-	$temp = array();
-	foreach($hps4district as $h){
-		array_push($temp,$h->hpcode);
-	}
-	$hps = implode(",",$temp);
-	$AverageArray[$hps] = $d->dname;
-	if($hpcode == $hps){
-		$currentHPname = $d->dname;
-	}
-	if($hpcomparecode == $hps){
-		$compareHPname = $d->dname;
-	}
-}
-foreach($cohorthealthpoints as $hp){
-	$ComparisonHPArray[$hp->hpcode] = $hp->hpname;
-	if($hpcode == $hp->hpcode){
-		$currentHPname = $hp->hpname;
-	}
-	if($hpcomparecode == $hp->hpcode){
-		$compareHPname = $hp->hpname;
-	}
-}
-
+$hpcodes = optional_param("hpcodes",$USER->hpcode,PARAM_TEXT);
+$hpcomparecodes = optional_param("hpcomparecodes",$API->getCohortHealthPoints(true),PARAM_TEXT);
 
 $currentopts = $opts;
-if($hpcode === 'overall'){
-	$currentopts['hps'] = $cohorthps;
-	$currentHPname = "Overall";
-} else {
-	$currentopts['hps'] = $hpcode;
-}
+$currentopts['hps'] = $hpcodes;
+$currentHPname = getNameFromHPCodes($hpcodes);
 
 $compareopts = $opts;
-if($hpcomparecode == 'overall'){
-	$compareopts['hps'] = $cohorthps;
-	$compareHPname = "Overall";
-} else {
-	$compareopts['hps'] = $hpcomparecode;
-}
+$compareopts['hps'] = $hpcomparecodes;
+$compareHPname =  getNameFromHPCodes($hpcomparecodes);
 
 $summary = $API->getTT1Defaulters($currentopts);
 $compare = $API->getTT1Defaulters($compareopts);
@@ -116,13 +65,13 @@ $compare = $API->getTT1Defaulters($compareopts);
 	<p>Compare:
 	<select name="hpcode">
 		<?php 
-			outputSelectList($districts,$AverageArray,$ComparisonHPArray,$currentopts['hps']);
+			displayHealthPointSelectList($currentopts['hps']);
 		?>
 	</select>
 	with:
 	<select name="hpcomparecode">
 		<?php 			
-			outputSelectList($districts,$AverageArray,$ComparisonHPArray,$compareopts['hps']);
+			displayHealthPointSelectList($compareopts['hps']);
 		?>
 	</select>
 	<input type="hidden" name="kpi" value="tt1defaulters"/>
@@ -132,35 +81,5 @@ $compare = $API->getTT1Defaulters($compareopts);
 
 
 <h2>TT1 Non-defaulters</h2>
-	<div id="chart_tt1defaulters" class="graph"><?php echo getstring('warning.graph.unavailable');?></div>
+<div id="chart_tt1defaulters" class="graph"><?php echo getstring('warning.graph.unavailable');?></div>
 
-
-<?php 
-
-function outputSelectList($districts,$AverageArray,$ComparisonHPArray,$selected){
-	if(count($districts) > 1){
-		if($selected == 'overall'){
-			printf("<option value='overall' selected='selected'>Overall</option>");
-		} else {
-			printf("<option value='overall'>Overall</option>");
-		}
-		
-		printf("<option value='' disabled='disabled'>---</option>");
-	}
-	foreach($AverageArray as $k=>$v){
-		if(strcasecmp($selected,$k) == 0){
-			printf("<option value='%s' selected='selected'>%s</option>", $k,$v);
-		} else {
-			printf("<option value='%s'>%s</option>", $k,$v);
-		}
-	}
-	printf("<option value='' disabled='disabled'>---</option>");
-	foreach($ComparisonHPArray as $k=>$v){
-		if(strcasecmp($selected,$k) == 0){
-			printf("<option value='%s' selected='selected'>%s</option>", $k,$v);
-		} else {
-			printf("<option value='%s'>%s</option>", $k,$v);
-		}
-	}
-}
-?>

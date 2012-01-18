@@ -119,6 +119,7 @@ if($flushcache){
 	// regenerating cache for last 1 year - not ideal
 	$API->cron(365);
 	echo "cron complete.";
+	scriptFooter('info','upgrade',sprintf('upgrade to version %d complete',$API->getSystemProperty('database.version')));
 }
-scriptFooter('info','upgrade',sprintf('upgrade to version %d complete',$API->getSystemProperty('database.version')));
+
 ?>

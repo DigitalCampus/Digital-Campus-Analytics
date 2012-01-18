@@ -304,9 +304,9 @@ class API {
 	function getHealthPoints($getall = false){
 		if($getall){
 			$sql = "SELECT * FROM healthpoint ORDER BY hpname ASC;";
-		} else {
+		} else  {
 			$sql = sprintf("SELECT * FROM healthpoint WHERE hpcode IN (%s) ORDER BY hpname ASC;",$this->getUserHealthPointPermissions());
-		}
+		} 
 		$healthposts = array();
 	    $result = $this->runSql($sql);
 	  	while($row = mysql_fetch_object($result)){
@@ -316,7 +316,7 @@ class API {
 	}
 	
 	
-	function getCohortHealthPoints(){
+	function getCohortHealthPoints($aslist = false){
 		$sql = sprintf("SELECT * FROM healthpoint hp
 						INNER JOIN district d ON d.did = hp.did
 						WHERE d.did IN (SELECT did 
@@ -329,6 +329,13 @@ class API {
 		$result = $this->runSql($sql);
 		while($row = mysql_fetch_object($result)){
 			$healthposts[$row->hpcode] = $row;
+		}
+		if($aslist){
+			$temp = array();
+			foreach ($healthposts as $k=>$v){
+				array_push($temp,$k);
+			}
+			return implode(',',$temp);
 		}
 		return $healthposts;
 	}

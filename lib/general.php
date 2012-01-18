@@ -10,6 +10,82 @@ function displayUserRiskFactor($weight){
 	}
 }
 
+function displayHealthPointSelectList($selected){
+	global $API;
+	$districts = $API->getDistricts();
+	$cohort = $API->getCohortHealthPoints();
+	
+	$districtArray = array();
+	
+	foreach($districts as $d){
+		//get the hps for this district
+		$hps4district = $API->getHealthPointsForDistict($d->did);
+		$temp = array();
+		foreach($hps4district as $h){
+			array_push($temp,$h->hpcode);
+		}
+		$hps = implode(",",$temp);
+		$districtArray[$hps] = $d->dname;
+	}
+	
+	
+	if(count($districts) > 1){
+		if($selected == 'overall'){
+			printf("<option value='overall' selected='selected'>Overall</option>");
+		} else {
+			printf("<option value='overall'>Overall</option>");
+		}
+	
+		printf("<option value='' disabled='disabled'>---</option>");
+	}
+	foreach($districtArray as $k=>$v){
+		if(strcasecmp($selected,$k) == 0){
+			printf("<option value='%s' selected='selected'>%s</option>", $k,$v);
+		} else {
+			printf("<option value='%s'>%s</option>", $k,$v);
+		}
+	}
+	printf("<option value='' disabled='disabled'>---</option>");
+	foreach($cohort as $chp){
+		if(strcasecmp($selected,$chp->hpcode) == 0){
+			printf("<option value='%s' selected='selected'>%s</option>", $chp->hpcode,$chp->hpname);
+		} else {
+			printf("<option value='%s'>%s</option>", $chp->hpcode,$chp->hpname);
+		}
+	}
+}
+
+
+function getNameFromHPCodes($hpcodes){
+	global $API;
+	// set it to be overall - default
+	$name ='Overall';
+	$hps = $API->getHealthPoints(true);
+	
+	$hpcodesArray = explode(',',$hpcodes);
+	if (count($hpcodesArray) == 1){
+		foreach($hps as $hp){
+			if($hp->hpcode == $hpcodesArray[0]){
+				$name = $hp->hpname;
+			}
+		}
+	} elseif (count($hpcodesArray) > 1){
+		$districts = $API->getDistricts();
+		foreach($districts as $d){
+			//get the hps for this district
+			$hps4district = $API->getHealthPointsForDistict($d->did);
+			$temp = array();
+			foreach($hps4district as $h){
+				array_push($temp,$h->hpcode);
+			}
+			$hps = implode(",",$temp);
+			if($hps == $hpcodes){
+				$name = $d->dname;
+			}
+		}
+	}
+	return $name;
+}
 
 class XMLSerializer {
 
