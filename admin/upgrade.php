@@ -1,15 +1,12 @@
 <?php
 require_once "../config.php";
 header("Content-Type: text/plain; charset=UTF-8");
-// only allow access by admins
-if($USER->getProp('permissions.admin') != "true"){
-	writeToLog('warning','adminpage','accessdenied');
-	echo getString ("warning.accessdenied");
-	die;
-}
+
+include_once('install.php');
 
 $currentDBversion = $API->getSystemProperty('database.version');
 
+$flushcache = false;
 
 if ($currentDBversion < 2){
 	// create table to cache task list
@@ -31,6 +28,7 @@ if ($currentDBversion < 2){
 	
 	//now update the db version prop
 	$API->setSystemProperty('database.version','2');
+	$flushcache = true;
 	echo "Upgraded to version 2\n";
 }
 
@@ -53,6 +51,7 @@ if ($currentDBversion < 3){
 
 	//now update the db version prop
 	$API->setSystemProperty('database.version','3');
+	$flushcache = true;
 	echo "Upgraded to version 3\n";
 }
 
@@ -66,6 +65,7 @@ if ($currentDBversion < 4){
 	
 	//now update the db version prop
 	$API->setSystemProperty('database.version','4');
+	$flushcache = true;
 	echo "Upgraded to version 4\n";
 }
 
@@ -108,8 +108,17 @@ if ($currentDBversion < 5){
 	
 	//now update the db version prop
 	$API->setSystemProperty('database.version','5');
+	$flushcache = true;
 	echo "Upgraded to version 5\n";
 }
 
-echo "Upgrade complete";
+echo "Upgrade complete\n";
+if($flushcache){
+	echo "Now running cron to update the cache tables... This may take some time!\n";
+	$USER->props['permissions.admin'] = 'true';
+	// regenerating cache for last 1 year - not ideal
+	$API->cron(365);
+	echo "cron complete.";
+}
+scriptFooter('info','upgrade',sprintf('upgrade to version %d complete',$API->getSystemProperty('database.version')));
 ?>

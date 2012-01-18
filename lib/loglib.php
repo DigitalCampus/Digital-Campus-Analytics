@@ -11,7 +11,12 @@ function writeToLog($loglevel,$logtype,$logmsg,$logpagephptime=0,$logpagemysqlti
 	} 
 	
 	$uagent = new uagent_info();
-	$API->writeLog($loglevel,$USER->userid,$logtype,$logmsg,$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$uagent->useragent);
+	if($USER){
+		$uid = $USER->userid;
+	} else {
+		$uid = 0;
+	}
+	$API->writeLog($loglevel,$uid,$logtype,$logmsg,$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$uagent->useragent);
 }
 
 function _mysql_query($query,$db) {

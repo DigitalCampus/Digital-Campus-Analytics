@@ -29,7 +29,7 @@ class API {
 		$result = _mysql_query($sql,$this->DB);
 		if (!$result){
 	    	writeToLog('error','database',$sql);
-	    	return;
+	    	return false;
 	    }
 	    return $result;
 	}
@@ -41,12 +41,51 @@ class API {
 	    $this->DB = false;
 	} 
 	
+	function cron($days){
+		
+		$this->updatePatients();
+		
+		// clear up log table
+		$logdays = $this->getSystemProperty('log.archive.days');
+		if($logdays > 0){
+			$sql = sprintf("DELETE FROM log WHERE logtime < DATE_ADD(NOW(), INTERVAL -%d DAY)",$logdays);
+			$this->runSql($sql);
+		}
+		
+		// update & cache which HPs the patients have visited
+		// get all submitted protocols in last $days // TODO - should really be since cron last run or something
+		$submitted = $this->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
+		
+		foreach($submitted->protocols as $s){
+			$this->cacheAddPatientHealthPointVisit($s->Q_USERID,$s->patienthpcode,$s->protocolhpcode,$s->datestamp,$s->protocol,$s->user_uri);
+		}
+		
+		// update & cache task list
+		$this->cacheTasksDue($days);
+		
+		// remove any really old overdue tasks based on the ignore policy
+		$sql = sprintf("DELETE FROM cache_tasks
+						WHERE datedue < DATE_ADD(NOW(), INTERVAL -%d DAY)",$this->getSystemProperty('overdue.ignore'));
+		$this->runSql($sql);
+		
+		// update & cache patient risk factors
+		$this->cacheRisks($days);
+		
+		// TODO update & cache KPI figures?
+		
+		$this->setSystemProperty('cron.lastrun',time());
+	}
+	
+	
 	function getUser($user){
 		$sql = sprintf("SELECT u.*, hp.hpcode 
 						FROM user u
 						INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 						WHERE username ='%s' LIMIT 0,1",$user->username);
 		$result = $this->runSql($sql);
+		if(!$result){
+			return;
+		}
 	  	while($o = mysql_fetch_object($result)){
 	  		$user->userid = $o->userid;
 			$user->username = $o->username;
@@ -123,6 +162,9 @@ class API {
 	function getSystemProperty($propname){
 		$sql = sprintf("SELECT * FROM properties WHERE propname='%s'",$propname);
 		$result = $this->runSql($sql);
+		if(!$result){
+			return $result;
+		}
 		while($o = mysql_fetch_object($result)){
 			return $o->propvalue;
 		}
@@ -148,6 +190,9 @@ class API {
 	function getUserProperties($userid){
 		$sql = "SELECT * FROM userprops WHERE userid=".$userid;
 		$result = $this->runSql($sql);
+		if(!$result){
+			return;
+		}
 		$props = array();
 	  	while($row = mysql_fetch_array($result, MYSQL_ASSOC)){
 	  		$props[$row['propname']] = $row['propvalue'];
@@ -180,7 +225,9 @@ class API {
 		global $USER;
 		$sql = sprintf("SELECT userid FROM user WHERE username='%s' AND password=md5('%s')",$username,$password);
 		$result = $this->runSql($sql);
-
+		if(!$result){
+			return false;
+		}
 	  	while($row = mysql_fetch_array($result, MYSQL_ASSOC)){
 	  		return true;
 		}
@@ -219,7 +266,9 @@ class API {
 		}
 		
 		$result = $this->runSql($sql);
-
+		if(!$result){
+			return "-1";
+		}
 		$temp = array();
 		while($o = mysql_fetch_object($result)){
 			array_push($temp,$o->hpcode);
@@ -247,7 +296,8 @@ class API {
 		$sql = sprintf("INSERT INTO log (loglevel,userid,logtype,logmsg,logip,logpagephptime,logpagemysqltime,logpagequeries,logagent) 
 						VALUES ('%s',%d,'%s','%s','%s',%f,%f,%d,'%s')", 
 						$loglevel,$userid,$logtype,mysql_real_escape_string($logmsg),$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$logagent);
-		$this->runSql($sql);
+		// just run sql directly (without using $this->runSql) so doesn't try to log an error writing to the log!
+		_mysql_query($sql,$this->DB);
 	}
 	
 	// return list of Health posts

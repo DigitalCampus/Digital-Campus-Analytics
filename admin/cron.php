@@ -25,40 +25,8 @@ if(($lastrun + ($minint*60) > $now) && !$force){
 // let cron run with admin permissions
 $USER->props['permissions.admin'] = 'true';
 
-// update current patients
-$API->updatePatients();
+$API->cron($days);
 
-// clear up log table
-$logdays = $API->getSystemProperty('log.archive.days');
-if($logdays > 0){
-	$sql = sprintf("DELETE FROM log WHERE logtime < DATE_ADD(NOW(), INTERVAL -%d DAY)",$logdays);
-	$API->runSql($sql);
-}
-
-// update & cache which HPs the patients have visited
-// get all submitted protocols in last $days // TODO - should really be since cron last run or something
-$submitted = $API->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
-
-foreach($submitted->protocols as $s){
-	$API->cacheAddPatientHealthPointVisit($s->Q_USERID,$s->patienthpcode,$s->protocolhpcode,$s->datestamp,$s->protocol,$s->user_uri);
-}
-
-// update & cache task list
-$API->cacheTasksDue($days);
-
-// remove any really old overdue tasks based on the ignore policy
-$sql = sprintf("DELETE FROM cache_tasks 
-				WHERE datedue < DATE_ADD(NOW(), INTERVAL -%d DAY)",$API->getSystemProperty('overdue.ignore'));
-$API->runSql($sql);
-
-// TODO update & cache patient risk factors
-$API->cacheRisks($days);
-
-
-// TODO update & cache KPI figures?
-
-
-$API->setSystemProperty('cron.lastrun',$time);
 echo "cron complete.";
 
 // this must always be the last function to run in the page

@@ -1,10 +1,9 @@
 To install...
 
 1. Set up an ODK Aggregate server (http://code.google.com/p/opendatakit/downloads/list). IT needs to be set up as a self hosted version of ODK (not on Google App Engine) with Tomcat and MySQL.
-2. Run the /install/db.sql script (in mysql) to add the required tables to your ODK Aggregate database
-3. Upload the current versions of the protocols to your ODK Aggregate server (https://github.com/alexlittle/Digital-Campus-Protocols) - this makes sure you have the right database tables set up
-4. Copy the /config-sample.php file to /config.php and add in the correct values for the database connection settings and homeAddress/homePath
-5. Now run the script http://<your server>/admin/upgrade.php to complete the database setup
-6. You should now be able to visit the analytics application at http://localhost/<your-path>/
-7. You can log in with username/password admin/admin - but this password should be changed the first time you log in.
-8. Set up a cron task to run (http://<your server>/admin/cron.php) regularly (approx once or twice per day should be sufficient). This performs clean up tasks and caches for various functions.
+2. Upload the current versions of the protocols to your ODK Aggregate server (https://github.com/alexlittle/Digital-Campus-Protocols) - this makes sure you have the right database tables set up
+3. Copy the /config-sample.php file to /config.php and add in the correct values for the database connection settings and homeAddress/homePath
+4. Now run the script http://<your server>/admin/upgrade.php to complete the database setup
+5. You should now be able to visit the analytics application at http://localhost/<your-path>/
+6. You can log in with username/password admin/admin - but this password should be changed the first time you log in.
+7. Set up a cron task to run (http://<your server>/admin/cron.php) regularly (approx once or twice per day should be sufficient). This performs clean up tasks and caches for various functions.
