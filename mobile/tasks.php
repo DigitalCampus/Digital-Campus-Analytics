@@ -4,7 +4,8 @@ $PAGE="tasks";
 include_once 'includes/header.php';
 
 $opts = array("days"=>14,'hpcode'=>$USER->hpcode);
-$tasks = $API->getTasksDue($opts);
+$tasks = array();
+//$tasks = $API->getTasksDue($opts);
 //print_r($tasks);
 
 foreach($tasks as $task){

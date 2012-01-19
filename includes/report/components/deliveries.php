@@ -2,7 +2,7 @@
 
 $opts = array("days"=>$days,'hpcode'=>$currentHPcode);
 $tasks = $API->getDeliveriesDue($opts);
-
+$ra = new RiskAssessment();
 if(count($tasks)>0){
 ?>
 <table class="taskman">
@@ -10,7 +10,7 @@ if(count($tasks)>0){
 		<th><?php echo getString("tasks.th.date")?></th>
 		<th><?php echo getString("tasks.th.patientid")?></th>
 		<th><?php echo getString("tasks.th.patient")?></th>
-		<th><?php echo getString("tasks.th.protocol")?></th>
+		<th><?php echo getString("report.highrisk.th.risks")?></th>
 	</tr>
 	<?php 
 
@@ -26,7 +26,14 @@ if(count($tasks)>0){
 				echo $t->patientname;
 			}
 			echo "</td>";
-			echo "<td nowrap>".getstring($t->protocol)."</td>";
+			echo "<td nowrap>";
+			$risks = $ra->getRisks_Cache($t->hpcode, $t->userid);
+			echo getstring("risk.".$risks->category);
+			echo "<ul>";
+			foreach ($risks->risks as $s){
+				printf("<li>%s</li>",getstring("risk.factor.".$s));
+			}
+			echo "</ul></td>";
 			echo "</tr>";
 		}
 			

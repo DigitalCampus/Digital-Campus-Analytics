@@ -27,11 +27,11 @@ $currenthpname = "";
 			}
 		?>
 	</select>
-	<select name="report">
+	<!-- select name="report">
 		<option value="hew">HEW</option>
 		<option value="hew">Supervisor</option>
 		<option value="hew">Midwife</option>
-	</select>
+	</select -->
 	<input type="submit" name="submit" value="<?php echo getString("report.form.searchbtn");?>"></input>
 </form>
 

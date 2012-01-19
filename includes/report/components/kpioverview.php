@@ -17,7 +17,7 @@ $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 $anc1thismonth = $API->getANC1Defaulters($opts);
 $anc2thismonth = $API->getANC2Defaulters($opts);
 $nosubmittedthismonth = $API->getProtocolsSubmitted_Cache($opts);
-$tt1thismonth = $API->getTT1Defaulters($opts);
+//$tt1thismonth = $API->getTT1Defaulters($opts);
 
 $opts = array();
 $opts['hps'] = $currentHPcode;
@@ -28,7 +28,7 @@ $opts['enddate'] = $datemonthago->format('Y-m-d');
 $anc1previousmonth = $API->getANC1Defaulters($opts);
 $anc2previousmonth= $API->getANC2Defaulters($opts);
 $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
-$tt1previousmonth = $API->getTT1Defaulters($opts);
+//$tt1previousmonth = $API->getTT1Defaulters($opts);
 
 ?>
 <div class="kpiheader" style="width:50%">
@@ -47,9 +47,9 @@ $tt1previousmonth = $API->getTT1Defaulters($opts);
 	 	if ($change > 0){
 	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d</span>",'images/increase.png',$change);
 	 	} else if ($change == 0){
-	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0%%</span>",'images/equal.png',$change);
+	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0</span>",'images/equal.png',$change);
 	 	} else if ($change < 0){
-	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d%%</span>",'images/decrease.png',$change);
+	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d</span>",'images/decrease.png',$change);
 	 	}
 	?>
 	</div>
@@ -71,7 +71,7 @@ $tt1previousmonth = $API->getTT1Defaulters($opts);
 	 	}
 	?>
 	</div>
-	<div class="kpitarget">60%</div>
+	<div class="kpitarget"><?php echo $API->getSystemProperty('target.anc1'); ?>%</div>
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi" style="width:50%">
@@ -89,24 +89,24 @@ $tt1previousmonth = $API->getTT1Defaulters($opts);
 	 	}
 	?>
 	</div>
-	<div class="kpitarget">60%</div>
+	<div class="kpitarget"><?php echo $API->getSystemProperty('target.anc2'); ?>%</div>
 	<div style="clear:both;"></div>
 </div>
-<div class="kpi" style="width:50%">
+<!-- div class="kpi" style="width:50%">
 	<div class="kpititle"><a href="kpi.php?kpi=tt1defaulters">TT1 on time</a></div>
-	<div class="kpiscore"><?php echo $tt1thismonth[0]->nondefaulters; ?>%</div>
+	<div class="kpiscore"><?php //echo $tt1thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 
-		$change = $tt1thismonth[0]->nondefaulters - $tt1previousmonth[0]->nondefaulters;
+		/*$change = $tt1thismonth[0]->nondefaulters - $tt1previousmonth[0]->nondefaulters;
 	 	if ($change > 0){
 	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d%%</span>",'images/increase.png',$change);
 	 	} else if ($change == 0){
 	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0%%</span>",'images/equal.png',$change);
 	 	} else if ($change < 0){
 	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d%%</span>",'images/decrease.png',$change);
-	 	}
+	 	}*/
 	?>
 	</div>
-	<div class="kpitarget">60%</div>
+	<div class="kpitarget"><?php echo $API->getSystemProperty('target.tt1'); ?>%</div>
 	<div style="clear:both;"></div>
-</div>
+</div -->

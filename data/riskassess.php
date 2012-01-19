@@ -9,50 +9,50 @@ class RiskAssessment {
 		/*
 		 * Age
 		 */ 
-		$risk->risks['Q_AGE_UNDER18'] = false;
+		$risk->risks['Q_AGE_UNDER'] = false;
 		// from Registration 
 		if(isset($p->Q_AGE) && $p->Q_AGE < 18 ){
-			$risk->risks['Q_AGE_UNDER18'] = true;
+			$risk->risks['Q_AGE_UNDER'] = true;
 		} 
 		// from ANC first
 		if(isset($p->ancfirst->Q_AGE) && $p->ancfirst->Q_AGE < 18){
-			$risk->risks['Q_AGE_UNDER18'] = true;
+			$risk->risks['Q_AGE_UNDER'] = true;
 		}
 		//from ANC Follow
 		foreach($p->ancfollow as $x){
 			if(isset($x->Q_AGE) && $x->Q_AGE < 18){
-				$risk->risks['Q_AGE_UNDER18'] = true;
+				$risk->risks['Q_AGE_UNDER'] = true;
 			}
 		}
 		//from ANC Transfer
 		foreach($p->anctransfer as $x){
 			if(isset($x->Q_AGE) && $x->Q_AGE < 18){
-				$risk->risks['Q_AGE_UNDER18'] = true;
+				$risk->risks['Q_AGE_UNDER'] = true;
 			}
 		}
 		
-		$risk->risks['Q_AGE_OVER34'] = false;
+		$risk->risks['Q_AGE_OVER'] = false;
 		// from Registration
 		if(isset($p->Q_AGE) && $p->Q_AGE > 34){
-			$risk->risks['Q_AGE_OVER34'] = true;
+			$risk->risks['Q_AGE_OVER'] = true;
 		}
 		// from ANC first
 		if(isset($p->ancfirst->Q_AGE) && $p->ancfirst->Q_AGE > 34){
-			$risk->risks['Q_AGE_OVER34'] = true;
+			$risk->risks['Q_AGE_OVER'] = true;
 		}
 		//from ANC Follow
 		foreach($p->ancfollow as $x){
 			if(isset($x->Q_AGE) && $x->Q_AGE > 34){
-				$risk->risks['Q_AGE_OVER34'] = true;
+				$risk->risks['Q_AGE_OVER'] = true;
 			}
 		}
 		//from ANC Transfer
 		foreach($p->anctransfer as $x){
 			if(isset($x->Q_AGE) && $x->Q_AGE > 34){
-				$risk->risks['Q_AGE_OVER34'] = true;
+				$risk->risks['Q_AGE_OVER'] = true;
 			}
 		}
-		if($risk->risks['Q_AGE_OVER34'] == true || $risk->risks['Q_AGE_UNDER18'] == true){
+		if($risk->risks['Q_AGE_OVER'] == true || $risk->risks['Q_AGE_UNDER'] == true){
 			$risk->count++;
 		}
 		
@@ -306,19 +306,19 @@ class RiskAssessment {
 		$risk->risks[$factor] = false;
 		// from ANC First
 		if(isset($p->ancfirst->Q_SYSTOLICBP) && isset($p->ancfirst->Q_DIASTOLICBP) 
-											&& (($p->ancfirst->Q_SYSTOLICBP >= 140) 
-												|| ($p->ancfirst->Q_SYSTOLICBP <= 90)
-												|| ($p->ancfirst->Q_DIASTOLICBP >= 90)
-												|| ($p->ancfirst->Q_DIASTOLICBP <= 60))){
+											&& (($p->ancfirst->Q_SYSTOLICBP > 120) 
+												|| ($p->ancfirst->Q_SYSTOLICBP < 90)
+												|| ($p->ancfirst->Q_DIASTOLICBP > 90)
+												|| ($p->ancfirst->Q_DIASTOLICBP < 60))){
 			$risk->risks[$factor] = true;
 		}
 		// from ANC Follow
 		foreach($p->ancfollow as $x){
 			if(isset($x->Q_SYSTOLICBP) && isset($x->Q_DIASTOLICBP)
-											&& (($x->Q_SYSTOLICBP >= 140) 
-											|| ($x->Q_SYSTOLICBP <= 90)
-											|| ($x->Q_DIASTOLICBP >= 90)
-											|| ($x->Q_DIASTOLICBP <= 60))){
+											&& (($x->Q_SYSTOLICBP > 120) 
+											|| ($x->Q_SYSTOLICBP < 90)
+											|| ($x->Q_DIASTOLICBP > 90)
+											|| ($x->Q_DIASTOLICBP < 60))){
 				$risk->risks[$factor] = true;
 			}
 		}
