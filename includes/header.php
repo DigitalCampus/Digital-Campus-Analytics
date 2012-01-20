@@ -95,20 +95,19 @@ header("Content-Type: text/html; charset=UTF-8");
 	<?php 
 	if ($PAGE != "login"){
 		include_once $CONFIG->homePath.'includes/menu.php';
-	}
-	?>
-	<div id="content">
-<?php 	
+	}	
 
-$dc = new DataCheck();
-// display warning message about invalid data
-if($dc->summary() && $PAGE != 'login'){
+	$dc = new DataCheck();
+	// display warning message about invalid data
+	if($dc->summary() && $PAGE != 'login'){
+	?>
+	<div id="datacheckwarning" class="datawarning printhide">
+		<img src="<?php echo $CONFIG->homeAddress; ?>images/warning.png" align="left"></img><?php echo getString('warning.datacheck', array($CONFIG->homeAddress.'datacheck.php'));?>
+	</div>
+	<?php 
+	}
 ?>
-<div id="datacheckwarning" class="datawarning printhide">
-	<img src="<?php echo $CONFIG->homeAddress; ?>images/warning.png" align="left"></img><?php echo getString('warning.datacheck', array($CONFIG->homeAddress.'datacheck.php'));?>
-</div>
-<?php 
-}
-?>
+
+<div id="content">
 
 

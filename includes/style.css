@@ -169,11 +169,10 @@ tr.l:hover {
 
 div.datawarning {
 	padding:5px;
-	margin:10px;
-	border:1px solid red;
 	min-height:50px;
+	background: pink;
+	border:1px solid red;
 }
-
 
 div.summary {
 	float:left;
