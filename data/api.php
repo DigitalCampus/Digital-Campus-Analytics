@@ -400,7 +400,7 @@ class API {
 		if(array_key_exists('hps',$opts)){
 			$hps = $opts['hps'];
 		} else {
-			$hps = $API->getUserHealthPointPermissions();
+			$hps = $this->getUserHealthPointPermissions();
 		}
 		
 		$sql = sprintf("SELECT 	r.Q_HEALTHPOINTID,
