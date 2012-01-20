@@ -133,9 +133,9 @@ class DataCheck {
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= " AND a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints().")";
 		}
-		if(array_key_exists('hpcode',$opts)){
-			$sql .= " AND  (a.patienthpcode = ".$opts['hpcode'];
-			$sql .= " OR a.protocolhpcode = ".$opts['hpcode'].")";
+		if(array_key_exists('hpcodes',$opts)){
+			$sql .= " AND  (a.patienthpcode IN ( ".$opts['hpcodes'].")";
+			$sql .= " OR a.protocolhpcode IN (".$opts['hpcodes']."))";
 		}
 		$sql .= " ORDER BY submittedname ASC, patientlocation ASC, Q_USERID ASC"; 
 

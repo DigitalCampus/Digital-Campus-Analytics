@@ -533,8 +533,8 @@ class RiskAssessment {
 	
 	function getHighRiskPatients($opts=array()){
 		global $API;
-		if(array_key_exists('hpcode',$opts)){
-			$hps = $opts['hpcode'];
+		if(array_key_exists('hpcodes',$opts)){
+			$hps = $opts['hpcodes'];
 		} else {
 			$hps = $API->getUserHealthPointPermissions();
 		}

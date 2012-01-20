@@ -1,5 +1,5 @@
 <?php 
-$opts=array('hpcode'=>$currentHPcode);
+$opts=array('hpcodes'=>$report->hpcodes);
 $ra = new RiskAssessment();
 $highrisk = $ra->getHighRiskPatients($opts);
 

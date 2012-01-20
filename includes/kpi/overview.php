@@ -9,7 +9,7 @@ $date2monthago = new DateTime();
 $date2monthago->sub(new DateInterval('P2M'));
 
 $opts = array();
-$opts['hps'] = $API->getUserHealthPointPermissions();
+$opts['hpcodes'] = $API->getUserHealthPointPermissions();
 $opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 
@@ -19,7 +19,7 @@ $nosubmittedthismonth = $API->getProtocolsSubmitted_Cache($opts);
 //$tt1thismonth = $API->getTT1Defaulters($opts);
 
 $opts = array();
-$opts['hps'] = $API->getUserHealthPointPermissions();
+$opts['hpcodes'] = $API->getUserHealthPointPermissions();
 $opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
 $opts['enddate'] = $datemonthago->format('Y-m-d 00:00:00');
 

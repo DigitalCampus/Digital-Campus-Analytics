@@ -1,6 +1,6 @@
 <?php 
 
-$opts = array("days"=>$days,'hpcode'=>$currentHPcode);
+$opts = array("days"=>$days,'hpcodes'=>$report->hpcodes);
 $tasks = $API->getTasksDue($opts);
 
 if(count($tasks)>0){

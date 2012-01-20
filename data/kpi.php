@@ -19,8 +19,8 @@ class KPI {
 			return false;
 		}
 	
-		if(array_key_exists('hps',$opts)){
-			$hps = $opts['hps'];
+		if(array_key_exists('hpcodes',$opts)){
+			$hps = $opts['hpcodes'];
 		} else {
 			$hps = $API->getUserHealthPointPermissions();
 		}
@@ -47,9 +47,6 @@ class KPI {
 		}
 		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$hps);
 	
-		//echo "<br/>";
-		//echo $sql;
-		//echo "<br/>";
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = $API->runSql($sql);
@@ -91,9 +88,6 @@ class KPI {
 			}
 		}
 	
-		//echo "<pre>";
-		//print_r($summary);
-		//echo "</pre>";
 		// change into a percentage rather than absolute values
 		foreach($summary as $k=>$v){
 			$total = $v->defaulters + $v->nondefaulters;
@@ -114,8 +108,8 @@ class KPI {
 		} else {
 			$months = 6;
 		}
-		if(array_key_exists('hps',$opts)){
-			$hps = $opts['hps'];
+		if(array_key_exists('hpcodes',$opts)){
+			$hps = $opts['hpcodes'];
 		} else {
 			$hps = $this->getUserHealthPointPermissions();
 		}
@@ -192,8 +186,8 @@ class KPI {
 			return false;
 		}
 	
-		if(array_key_exists('hps',$opts)){
-			$hps = $opts['hps'];
+		if(array_key_exists('hpcodes',$opts)){
+			$hps = $opts['hpcodes'];
 		} else {
 			$hps = $API->getUserHealthPointPermissions();
 		}
@@ -319,8 +313,8 @@ class KPI {
 			return false;
 		}
 		
-		if(array_key_exists('hps',$opts)){
-			$hps = $opts['hps'];
+		if(array_key_exists('hpcodes',$opts)){
+			$hps = $opts['hpcodes'];
 		} else {
 			$hps = $API->getUserHealthPointPermissions();
 		}

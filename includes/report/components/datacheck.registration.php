@@ -1,5 +1,5 @@
 <?php 
-$opts=array('hpcode'=>$currentHPcode);
+$opts=array('hpcodes'=>$report->hpcodes);
 $dc = new DataCheck();
 $unregistered = $dc->unregistered($opts);
 

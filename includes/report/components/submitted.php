@@ -1,5 +1,5 @@
 <?php
-$opts=array('days'=>$days,'hpcode'=>$currentHPcode);
+$opts=array('days'=>$days,'hpcodes'=>$report->hpcodes);
 $submitted = $API->getProtocolsSubmitted_Cache($opts);
 if(count($submitted->protocols)>0){
 ?>

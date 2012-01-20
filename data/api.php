@@ -1416,9 +1416,9 @@ class API {
 		if($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
-		if(array_key_exists('hpcode',$opts)){
-			$sql .= " AND  (a.patienthpcode = ".$opts['hpcode'];
-			$sql .= " OR a.protocolhpcode = ".$opts['hpcode'].")";
+		if(array_key_exists('hpcodes',$opts)){
+			$sql .= " AND  (a.patienthpcode IN (".$opts['hpcodes'].")";
+			$sql .= " OR a.protocolhpcode IN (".$opts['hpcodes']."))";
 		}
 		$sql .= "ORDER BY datestamp DESC";
 		
@@ -1624,9 +1624,9 @@ class API {
 				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 					WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
 					OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
-		if(array_key_exists('hpcode',$opts)){
-			$sql .= " AND  (hpcode = ".$opts['hpcode'];
-			$sql .= " OR visithpcode = ".$opts['hpcode'].")";
+		if(array_key_exists('hpcodes',$opts)){
+			$sql .= " AND  (hpcode IN (".$opts['hpcodes'].")";
+			$sql .= " OR visithpcode IN (".$opts['hpcodes']."))";
 		}
 		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
 		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
@@ -1662,9 +1662,9 @@ class API {
 				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 					WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
 					OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
-		if(array_key_exists('hpcode',$opts)){
-			$sql .= " AND  (hpcode = ".$opts['hpcode'];
-			$sql .= " OR visithpcode = ".$opts['hpcode'].")";
+		if(array_key_exists('hpcodes',$opts)){
+			$sql .= " AND  (hpcode IN (".$opts['hpcodes'].")";
+			$sql .= " OR visithpcode IN ( ".$opts['hpcodes']."))";
 		}
 		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
 		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
@@ -1698,9 +1698,9 @@ class API {
 					INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 						WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
 						OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
-		if(array_key_exists('hpcode',$opts)){
-			$sql .= " AND  (hpcode = ".$opts['hpcode'];
-			$sql .= " OR visithpcode = ".$opts['hpcode'].")";
+		if(array_key_exists('hpcodes',$opts)){
+			$sql .= " AND  (hpcode IN (".$opts['hpcodes'].")";
+			$sql .= " OR visithpcode IN (".$opts['hpcodes']."))";
 		}
 		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
 		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
@@ -1717,6 +1717,7 @@ class API {
 		}
 		return $tasks;
 	}
+	
 	function getANC1Defaulters($opts=array()){
 		$kpi = new KPI();
 		return $kpi->getANC1Defaulters($opts);
