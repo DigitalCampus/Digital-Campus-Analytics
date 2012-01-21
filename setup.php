@@ -18,8 +18,10 @@ require_once $CONFIG->homePath."lib/i8nlib.php";
 require_once $CONFIG->homePath."lib/loglib.php";
 require_once $CONFIG->homePath."lib/mdetect.php";
 
-
 require_once $CONFIG->homePath."lib/user.class.php";
+
+// load system properties into config...
+$CONFIG->props = array();
 
 unset($API);
 global $API;

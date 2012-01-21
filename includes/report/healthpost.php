@@ -5,6 +5,8 @@ printf("<h2>%s</h2>", $currenthpname);
 printf("<h3>%s</h3>", getString("report.kpioverview"));
 include_once('components/kpioverview.php');
 
+include_once('components/submitted-bar.php');
+
 printf("<h3>%s</h3>", getString("report.deliveriesdue",array($days)));
 include_once('components/deliveries.php');
 

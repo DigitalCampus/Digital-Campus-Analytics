@@ -1,15 +1,5 @@
 <?php
 
-function displayUserRiskFactor($weight){
-	if($weight >= 4){
-		echo '<div class="risk highrisk">'.$weight.'</div>';
-	} else if ($weight >= 1){
-		echo '<div class="risk mediumrisk">'.$weight.'</div>';
-	} else {
-		echo '<div class="risk lowrisk">'.$weight.'</div>';
-	}
-}
-
 function displayHealthPointSelectList($selected){
 	global $API;
 	$districts = $API->getDistricts();
@@ -85,6 +75,12 @@ function getNameFromHPCodes($hpcodes){
 		}
 	}
 	return $name;
+}
+
+
+function lastOfMonth($d) {
+	$date = strtotime($d->format('d-M-Y'));
+	return date("d-M-Y", strtotime('-1 second',strtotime('+1 month',strtotime(date('m',$date).'/01/'.date('Y',$date)))));
 }
 
 class XMLSerializer {

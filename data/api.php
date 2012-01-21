@@ -316,14 +316,24 @@ class API {
 	}
 	
 	
-	function getCohortHealthPoints($aslist = false){
-		$sql = sprintf("SELECT * FROM healthpoint hp
-						INNER JOIN district d ON d.did = hp.did
-						WHERE d.did IN (SELECT did 
-										FROM healthpoint 
-										WHERE hpcode IN (%s))
-						ORDER BY hp.hpname ASC",
-						$this->getUserHealthPointPermissions());
+	function getCohortHealthPoints($aslist = false,$hpcodes = false){
+		if(!$hpcodes){
+			$sql = sprintf("SELECT * FROM healthpoint hp
+							INNER JOIN district d ON d.did = hp.did
+							WHERE d.did IN (SELECT did 
+											FROM healthpoint 
+											WHERE hpcode IN (%s))
+							ORDER BY hp.hpname ASC",
+							$this->getUserHealthPointPermissions());
+		} else {
+			$sql = sprintf("SELECT * FROM healthpoint hp
+										INNER JOIN district d ON d.did = hp.did
+										WHERE d.did IN (SELECT did 
+														FROM healthpoint 
+														WHERE hpcode IN (%s) AND hpcode IN (%s))
+										ORDER BY hp.hpname ASC",
+			$this->getUserHealthPointPermissions(),$hpcodes);
+		}
 		
 		$healthposts = array();
 		$result = $this->runSql($sql);
