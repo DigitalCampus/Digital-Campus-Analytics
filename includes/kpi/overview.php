@@ -69,7 +69,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	 	}
 	?>
 	</div>
-	<div class="kpitarget"><?php echo $API->getSystemProperty('target.anc1'); ?>%</div>
+	<div class="kpitarget"><?php echo $CONFIG->props['target.anc1']; ?>%</div>
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
@@ -87,7 +87,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	 	}
 	?>
 	</div>
-	<div class="kpitarget"><?php echo $API->getSystemProperty('target.anc2'); ?>%</div>
+	<div class="kpitarget"><?php echo $CONFIG->props['target.anc2']; ?>%</div>
 	<div style="clear:both;"></div>
 </div>
 <!-- div class="kpi">
@@ -105,6 +105,6 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	 	}*/
 	?>
 	</div>
-	<div class="kpitarget"><?php echo $API->getSystemProperty('target.tt1'); ?>%</div>
+	<div class="kpitarget"><?php echo $CONFIG->props['target.tt1']; ?>%</div>
 	<div style="clear:both;"></div>
 </div -->

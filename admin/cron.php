@@ -14,8 +14,8 @@ $days = optional_param('days',5,PARAM_INT);
 $force = optional_param('force',false,PARAM_BOOL);
 
 // check to see when cron was last run (and against min interval)
-$lastrun = $API->getSystemProperty('cron.lastrun');
-$minint = $API->getSystemProperty('cron.mininterval');
+$lastrun = $CONFIG->props['cron.lastrun'];
+$minint = $CONFIG->props['cron.mininterval'];
 $now = time();
 
 if(($lastrun + ($minint*60) > $now) && !$force){

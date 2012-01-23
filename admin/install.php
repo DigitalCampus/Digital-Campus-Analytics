@@ -3,7 +3,8 @@ require_once "../config.php";
 header("Content-Type: text/plain; charset=UTF-8");
 
 //find out if already installed...
-$installed = $API->getSystemProperty('database.version');
+$installed = $CONFIG->props['database.version'];
+
 if($installed == false){
 	
 	$sql = "CREATE TABLE IF NOT EXISTS `district` (

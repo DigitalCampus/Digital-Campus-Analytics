@@ -4,7 +4,7 @@ header("Content-Type: text/plain; charset=UTF-8");
 
 include_once('install.php');
 
-$currentDBversion = $API->getSystemProperty('database.version');
+$currentDBversion = $CONFIG->props['database.version'];
 
 $flushcache = false;
 
@@ -112,6 +112,64 @@ if ($currentDBversion < 5){
 	echo "Upgraded to version 5\n";
 }
 
+if ($currentDBversion < 6){
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+			('default.limit', '50', 'Default limit for number of records to return')";
+	$API->runSql($sql);
+
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('anc1.duebyend', '119', 'No days after LMP by ANC1 is due')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('anc2.duebystart', '168', 'No days after LMP by ANC2 due - start')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('anc2.duebyend', '203', 'No days after LMP by ANC2 due - end')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('anc3.duebystart', '210', 'No days after LMP by ANC3 due - start')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('anc3.duebyend', '231', 'No days after LMP by ANC3 due - end')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('anc4.duebystart', '238', 'No days after LMP by ANC4 due - start')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('anc4.duebyend', '259', 'No days after LMP by ANC4 due - end')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('tt1.validity', '42', 'No days TT1 only is valid for - before counting as defaulter')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('tt2.validity', '365', 'No days TT2 only is valid for - before counting as defaulter')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('default.lang', 'en', 'Default language')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('langs.available', '{'\en'\:'\English'\,'\tg'\:'\Tigrinyan'\},'\am'\:'\Amharic'\}', 'JSON encoded array of the lanaguages available')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('google.analytics', '', 'Google Analytics key')";
+	$API->runSql($sql);
+	
+	//now update the db version prop
+	$API->setSystemProperty('database.version','6');
+	echo "Upgraded to version 6\n";
+}
+
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";
@@ -119,7 +177,7 @@ if($flushcache){
 	// regenerating cache for last 1 year - not ideal
 	$API->cron(365);
 	echo "cron complete.";
-	scriptFooter('info','upgrade',sprintf('upgrade to version %d complete',$API->getSystemProperty('database.version')));
+	scriptFooter('info','upgrade',sprintf('upgrade to version %d complete',$CONFIG->props['database.version']));
 }
 
 ?>

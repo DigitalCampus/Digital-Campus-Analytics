@@ -20,12 +20,12 @@ require_once $CONFIG->homePath."lib/mdetect.php";
 
 require_once $CONFIG->homePath."lib/user.class.php";
 
-// load system properties into config...
-$CONFIG->props = array();
-
 unset($API);
 global $API;
 $API = new API();
+
+// load system properties into config...
+$CONFIG->props = $API->getSystemProperties();
 
 //start session
 startSession();

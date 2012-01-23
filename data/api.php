@@ -42,11 +42,11 @@ class API {
 	} 
 	
 	function cron($days){
-		
+		global $CONFIG;
 		$this->updatePatients();
 		
 		// clear up log table
-		$logdays = $this->getSystemProperty('log.archive.days');
+		$logdays = $CONFIG->props['log.archive.days'];
 		if($logdays > 0){
 			$sql = sprintf("DELETE FROM log WHERE logtime < DATE_ADD(NOW(), INTERVAL -%d DAY)",$logdays);
 			$this->runSql($sql);
@@ -65,7 +65,7 @@ class API {
 		
 		// remove any really old overdue tasks based on the ignore policy
 		$sql = sprintf("DELETE FROM cache_tasks
-						WHERE datedue < DATE_ADD(NOW(), INTERVAL -%d DAY)",$this->getSystemProperty('overdue.ignore'));
+						WHERE datedue < DATE_ADD(NOW(), INTERVAL -%d DAY)",$CONFIG->props['overdue.ignore']);
 		$this->runSql($sql);
 		
 		// update & cache patient risk factors
@@ -159,16 +159,14 @@ class API {
 		return $users;
 	}
 	
-	function getSystemProperty($propname){
-		$sql = sprintf("SELECT * FROM properties WHERE propname='%s'",$propname);
+	function getSystemProperties(){
+		$sql = "SELECT * FROM properties";
 		$result = $this->runSql($sql);
-		if(!$result){
-			return $result;
-		}
+		$props = array();
 		while($o = mysql_fetch_object($result)){
-			return $o->propvalue;
+			$props[$o->propname] = $o->propvalue;
 		}
-		return null;
+		return $props;
 	}
 	
 	function setSystemProperty($propname,$propvalue){

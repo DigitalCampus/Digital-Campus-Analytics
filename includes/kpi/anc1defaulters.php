@@ -39,7 +39,7 @@ $compare = $API->getANC1Defaulters($compareopts);
 				printf("data.setValue(%d, 0, '%s');\n", $counter,$k );
 				printf("data.setValue(%d, 1, %d);\n", $counter, $v->nondefaulters );
 				printf("data.setValue(%d, 2, %d);\n", $counter, $compare[$k]->nondefaulters);
-				printf("data.setValue(%d, 3, %d);\n", $counter, 60);
+				printf("data.setValue(%d, 3, %d);\n", $counter, $CONFIG->props['target.anc1']);
 				
 				$counter++;
 			}
