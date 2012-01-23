@@ -7,7 +7,7 @@ class KPI {
 	
 	
 	function getANC1Defaulters($opts=array()){
-		global $ERROR,$API;
+		global $ERROR,$API,$CONFIG;
 		
 		if(array_key_exists('months',$opts)){
 			$months = max(0,$opts['months']);
@@ -35,7 +35,7 @@ class KPI {
 							hp.hpname as healthpoint
 					FROM %s p 
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid",ANC1_DUE_BY_END,TABLE_ANCFIRST);
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid",$CONFIG->props['anc1.duebyend'],TABLE_ANCFIRST);
 		if(isset($months)){
 			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
 		} else {
@@ -120,7 +120,7 @@ class KPI {
 								p.Q_HEALTHPOINTID, 
 								p.Q_LMP, 
 								p._CREATION_DATE as createdate, 
-								DATE_ADD(p.Q_LMP, INTERVAL ".ANC1_DUE_BY_END." DAY) AS ANC1DUEBY ,
+								DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc1.duebyend']." DAY) AS ANC1DUEBY ,
 								hp.hpname as healthpoint
 						FROM ".TABLE_ANCFIRST." p 
 						INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
@@ -175,7 +175,7 @@ class KPI {
 	}
 	
 	function getANC2Defaulters($opts=array()){
-		global $API;
+		global $API,$CONFIG;
 		if(array_key_exists('months',$opts)){
 			$months = max(0,$opts['months']);
 		} else if(array_key_exists('startdate',$opts) && array_key_exists('enddate',$opts)) {
@@ -198,8 +198,8 @@ class KPI {
 							p.Q_HEALTHPOINTID, 
 							p.Q_LMP, 
 							p._CREATION_DATE as createdate,  
-							DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_START." DAY) AS ANC2_DUE_BY_START,
-							DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) AS ANC2_DUE_BY_END
+							DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebystart']." DAY) AS ANC2_DUE_BY_START,
+							DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) AS ANC2_DUE_BY_END
 					FROM ".TABLE_ANCFOLLOW." p";
 		if(isset($months)){
 			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
@@ -212,7 +212,7 @@ class KPI {
 		}
 		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$hps);
 	
-		// if createdate not between ANC2_DUE_BY_START and ANC2_DUE_BY_END then defaulter, group by month/year of createdate
+		// if createdate not between $CONFIG->props['anc2.duebystart'] and $CONFIG->props['anc2.duebyend'] then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = $API->runSql($sql);
 		$summary = array();
@@ -256,22 +256,22 @@ class KPI {
 							p.Q_USERID, 
 							p.Q_HEALTHPOINTID, 
 							p.Q_LMP, 
-							DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) AS ANC2_DUE_BY_END 
+							DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) AS ANC2_DUE_BY_END 
 					FROM ".TABLE_ANCFIRST." p
 					LEFT OUTER JOIN ".TABLE_ANCFOLLOW." f ON f.Q_USERID = p.Q_USERID AND f.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID
 					WHERE f.Q_USERID IS NULL";
 		if(isset($months)){
-			$sql .= " AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
-							AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) < curdate()";
+			$sql .= " AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
+							AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) < curdate()";
 		} else {
-			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) > '%s'",$startdate);
-			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) <= '%s'",$enddate);
+			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) > '%s'",$startdate);
+			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) <= '%s'",$enddate);
 		}
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
 		}
 		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s)",$hps);
-		$sql .= " ORDER BY DATE_ADD(p.Q_LMP, INTERVAL ".ANC2_DUE_BY_END." DAY) ASC";
+		$sql .= " ORDER BY DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) ASC";
 		// TODO add constraint about terminations
 	
 		// all those returned by above query are defaulters - as have now Follow up
@@ -301,7 +301,7 @@ class KPI {
 	
 	
 	function getTT1Defaulters($opts=array()){
-		global $ERROR,$API;
+		global $ERROR,$API,$CONFIG;
 		
 		if(array_key_exists('months',$opts)){
 			$months = max(0,$opts['months']);
@@ -323,7 +323,8 @@ class KPI {
 						p.Q_USERID, 
 						p.Q_HEALTHPOINTID, 
 						p._CREATION_DATE as createdate,
-						p.Q_TETANUS
+						p.Q_TETANUS,
+						p.Q_TT1
 				FROM ".TABLE_ANCFIRST." p ";
 		if(isset($months)){
 			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
@@ -336,10 +337,10 @@ class KPI {
 		}
 		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$hps);
 		
-		//echo $sql;
 		$results = $API->runSql($sql);
 		$summary = array();
 		
+		$tt1validity = $CONFIG->props['tt1.validity']*24*60*60;
 		if(isset($months)){
 			$date = new DateTime();
 			$date->sub(new DateInterval('P'.$months.'M'));
@@ -351,12 +352,21 @@ class KPI {
 				$date->add(new DateInterval('P1M'));
 			}
 			
+			
 			while($row = mysql_fetch_array($results)){
 				$date = new DateTime($row['createdate']);
 				$arrayIndex = $date->format('M-Y');
-			
+				
 				if ($row['Q_TETANUS'] == 'none' ){
 					$summary[$arrayIndex]->defaulters++;
+				} elseif ($row['Q_TETANUS'] == 'tt1') {
+					$tt1 = strtotime($row['Q_TT1']);
+					$create = strtotime($row['createdate']);
+					if ($tt1 + $tt1validity < $create){
+						$summary[$arrayIndex]->defaulters++;
+					} else {
+						$summary[$arrayIndex]->nondefaulters++;
+					}
 				} else {
 					$summary[$arrayIndex]->nondefaulters++;
 				}
@@ -367,8 +377,16 @@ class KPI {
 			$summary[0]->nondefaulters = 0;
 			// otherwise we're only interested in the total over the dates given
 			while($row = mysql_fetch_array($results)){
-				if ($row['Q_TETANUS'] == 'none' ){
+			if ($row['Q_TETANUS'] == 'none' ){
 					$summary[0]->defaulters++;
+				} elseif ($row['Q_TETANUS'] == 'tt1') {
+					$tt1 = strtotime($row['Q_TT1']);
+					$create = strtotime($row['createdate']);
+					if ($tt1 + $tt1validity < $create){
+						$summary[0]->defaulters++;
+					} else {
+						$summary[0]->nondefaulters++;
+					}
 				} else {
 					$summary[0]->nondefaulters++;
 				}

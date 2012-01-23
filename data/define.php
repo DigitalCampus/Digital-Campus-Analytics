@@ -41,17 +41,6 @@ define('DEFAULT_LIMIT',50);
 define('DEFAULT_START',0);
 define('DEFAULT_DAYS',7);
 
-define("ANC1_DUE_BY_END",119);
-
-define("ANC2_DUE_BY_START",168);
-define("ANC2_DUE_BY_END",203);
-
-define("ANC3_DUE_BY_START",210);
-define("ANC3_DUE_BY_END",231);
-
-define("ANC4_DUE_BY_START",238);
-define("ANC4_DUE_BY_END",259);
-
 define("IGNORE_HEALTHPOINTS","9999");
 
 ?>

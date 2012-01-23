@@ -106,7 +106,7 @@ VALUES
 		'<?php echo $sixweeksago->format('Y-m-d')?>',
 		'<?php echo $users['rishan']->hpcode; ?>',
 		'1',
-		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.(ANC1_DUE_BY_END + 42).'D')); echo $temp->format('Y-m-d');?>'
+		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.($CONFIG->props['anc1.duebyend'] + 42).'D')); echo $temp->format('Y-m-d');?>'
 	),
 	('uuid:<?php echo uniqid(); ?>',
 		'<?php echo $users['rishan']->uid; ?>',
@@ -115,7 +115,7 @@ VALUES
 		'<?php echo $sixweeksago->format('Y-m-d')?>',
 		'<?php echo $users['rishan']->hpcode; ?>',
 		'2',
-		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.(ANC1_DUE_BY_END + 43).'D')); echo $temp->format('Y-m-d');?>'
+		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.($CONFIG->props['anc1.duebyend'] + 43).'D')); echo $temp->format('Y-m-d');?>'
 	),
 	('uuid:<?php echo uniqid(); ?>',
 		'<?php echo $users['rishan']->uid; ?>',
@@ -124,7 +124,7 @@ VALUES
 		'<?php echo $sixweeksago->format('Y-m-d')?>',
 		'<?php echo $users['rishan']->hpcode; ?>',
 		'3',
-		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.(ANC1_DUE_BY_END + 41).'D')); echo $temp->format('Y-m-d');?>'
+		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.($CONFIG->props['anc1.duebyend'] + 41).'D')); echo $temp->format('Y-m-d');?>'
 	),
 	('uuid:<?php echo uniqid(); ?>',
 		'<?php echo $users['mihret']->uid; ?>',
@@ -133,7 +133,7 @@ VALUES
 		'<?php echo $oneweekago->format('Y-m-d')?>',
 		'<?php echo $users['mihret']->hpcode; ?>',
 		'3',
-		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.(ANC1_DUE_BY_END + 7).'D')); echo $temp->format('Y-m-d');?>'
+		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.($CONFIG->props['anc1.duebyend'] + 7).'D')); echo $temp->format('Y-m-d');?>'
 	)
 	,
 	('uuid:<?php echo uniqid(); ?>',
@@ -143,5 +143,5 @@ VALUES
 		'<?php echo $oneweekago->format('Y-m-d')?>',
 		'<?php echo $users['mihret']->hpcode; ?>',
 		'6',
-		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.(ANC1_DUE_BY_END + 8).'D')); echo $temp->format('Y-m-d');?>'
+		'<?php $temp = new DateTime(); $temp->sub(new DateInterval('P'.($CONFIG->props['anc1.duebyend'] + 8).'D')); echo $temp->format('Y-m-d');?>'
 	)

@@ -9,11 +9,17 @@ $hpcodes = optional_param("hpcodes",$USER->hpcode,PARAM_TEXT);
 $hpcomparecodes = optional_param("hpcomparecodes",$API->getCohortHealthPoints(true),PARAM_TEXT);
 
 $currentopts = $opts;
-$currentopts['hps'] = $hpcodes;
+if($hpcodes == 'overall'){
+	$hpcodes = $API->getUserHealthPointPermissions();
+}
+$currentopts['hpcodes'] = $hpcodes;
 $currentHPname = getNameFromHPCodes($hpcodes);
 
 $compareopts = $opts;
-$compareopts['hps'] = $hpcomparecodes;
+if($hpcomparecodes == 'overall'){
+	$hpcomparecodes = $API->getUserHealthPointPermissions();
+}
+$compareopts['hpcodes'] = $hpcomparecodes;
 $compareHPname =  getNameFromHPCodes($hpcomparecodes);
 
 $summary = $API->getANC1Defaulters($currentopts);
@@ -66,13 +72,13 @@ $compare = $API->getANC1Defaulters($compareopts);
 	<p>Compare:
 	<select name="hpcodes">
 		<?php 
-			displayHealthPointSelectList($currentopts['hps']);
+			displayHealthPointSelectList($currentopts['hpcodes']);
 		?>
 	</select>
 	with:
 	<select name="hpcomparecodes">
 		<?php 			
-			displayHealthPointSelectList($compareopts['hps']);
+			displayHealthPointSelectList($compareopts['hpcodes']);
 		?>
 	</select>
 	<input type="hidden" name="kpi" value="anc1defaulters">
