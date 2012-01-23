@@ -7,7 +7,7 @@ foreach($cohort as $c){
 	$summary[$i] = new stdClass();
 	$summary[$i]->hpname = $c->hpname;
 	$summary[$i]->hpcode = $c->hpcode;
-	$opts=array('startdate'=>'2012-01-01 00:00:00','enddate'=>'2012-01-31 23:59:59','hpcodes'=>$c->hpcode,'limit'=>'0');
+	$opts=array('startdate'=>$report->startDate->format('Y-m-d 00:00:00'),'enddate'=>$report->endDate->format('Y-m-d 23:59:59'),'hpcodes'=>$c->hpcode,'limit'=>'0');
 	$submitted = $API->getProtocolsSubmitted_Cache($opts);
 	$summary[$i]->count = $submitted->count;
 	//print_r($submitted);
@@ -31,9 +31,8 @@ foreach($cohort as $c){
 		
         var options = {
           	width: 600, 
-          	height: 400,
-          	title: 'Protocols Submitted',
-          	chartArea:{left:150,top:50,width:"60%",height:"70%"},
+          	height: 350,
+          	chartArea:{left:150,top:10,width:"60%",height:"80%"},
         	legend:{position:'none'}
         };
 

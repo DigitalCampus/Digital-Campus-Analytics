@@ -320,7 +320,32 @@ div.kpiheadertitle {
 }
 
 div.kpititle, div.kpiscore, div.kpichange, div.kpitarget {
-	width:25%;
+	width:20%;
+	text-align:center;
+	float:left;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+div.kpireport {
+	border: 1px solid #ccc;	
+	padding:5px;
+	margin:5px;
+}
+
+div.kpireportheader {
+	padding:0px 5px;
+	margin:5px;
+}
+
+div.kpireportheadertitle {
+	float:left;
+	width:20%;
+	text-align:center;
+}
+
+div.kpireporttitle, div.kpireportscore, div.kpireportchange, div.kpireporttarget {
+	width:20%;
 	text-align:center;
 	float:left;
 	font-size: 120%;
