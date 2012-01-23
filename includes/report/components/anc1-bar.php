@@ -23,17 +23,21 @@ foreach($cohort as $c){
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Health Point');
         data.addColumn('number', 'Percent non-defaulters');
+        data.addColumn('number', 'Target');
 		<?php 
+			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc1']);
 			foreach($summary as $s){
-				printf("data.addRow(['%s',%d]);",$s->hpname,$s->count);	
+				printf("data.addRow(['%s',%d,%d]);",$s->hpname,$s->count,$CONFIG->props['target.anc1']);	
 			}
+			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc1']);
 		?>
 		
         var options = {
-          	width: 600, 
+          	width: 700, 
           	height: 350,
-          	chartArea:{left:150,top:10,width:"60%",height:"80%"},
+          	chartArea:{left:200,top:10,width:"60%",height:"80%"},
         	legend:{position:'none'},
+        	series: [{type: "bars"},{type: "area",areaOpacity:0.1,color:'#04B431'}],
         	hAxis: {title: 'Percentage', maxValue: 100, minValue: 0}
         };
 

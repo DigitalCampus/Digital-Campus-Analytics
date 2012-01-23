@@ -30,9 +30,9 @@ foreach($cohort as $c){
 		?>
 		
         var options = {
-          	width: 600, 
+          	width: 700, 
           	height: 350,
-          	chartArea:{left:150,top:10,width:"60%",height:"80%"},
+          	chartArea:{left:200,top:10,width:"60%",height:"80%"},
         	legend:{position:'none'},
         	hAxis: {title: 'Number submitted', minValue: 0}
         };
