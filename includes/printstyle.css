@@ -289,7 +289,7 @@ div.kpireportheadertitle {
 }
 
 div.kpireporttitle, div.kpireportscore, div.kpireportchange, div.kpireporttarget {
-	width:25%;
+	width:20%;
 	text-align:center;
 	float:left;
 	font-size: 120%;

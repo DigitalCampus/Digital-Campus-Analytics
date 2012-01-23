@@ -366,6 +366,7 @@ $LANG['Q_WHOATTENDED.trainedbirthattendant'] = 'Trained traditional birth attend
 $LANG['Q_WHOATTENDED.untrainedbirthattendant'] = 'Untrained traditional birth attendant';
 $LANG['Q_YEAROFBIRTH'] = 'Year of birth (Ethiopian calendar)';
 $LANG['Q_YOUNGESTCHILD'] = 'Youngest child alive';
+$LANG['report.anc1.bar'] = 'Percentage ANC 1 non-defaulters (%s to %s)';
 $LANG['report.datacheck.registration'] = 'Unregistered Patients';
 $LANG['report.datacheck.missing'] = 'Missing Protocols';
 $LANG['report.deliveriesdue'] = 'Deliveries due (next %d days)';

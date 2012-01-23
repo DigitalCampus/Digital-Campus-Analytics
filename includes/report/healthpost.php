@@ -8,6 +8,9 @@ include_once('components/kpioverview.php');
 printf("<h3>%s</h3>", getString("report.submitted.bar",array($report->startDate->format('d-M-Y'),$report->endDate->format('d-M-Y'))));
 include_once('components/submitted-bar.php');
 
+printf("<h3>%s</h3>", getString("report.anc1.bar",array($report->startDate->format('d-M-Y'),$report->endDate->format('d-M-Y'))));
+include_once('components/anc1-bar.php');
+
 printf("<h3>%s</h3>", getString("report.deliveriesdue",array($days)));
 include_once('components/deliveries.php');
 
