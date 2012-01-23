@@ -16,6 +16,11 @@ function writeToLog($loglevel,$logtype,$logmsg,$logpagephptime=0,$logpagemysqlti
 	} else {
 		$uid = 0;
 	}
+	
+	// add current page url (to help debug later)
+	if($loglevel != 'info'){
+		$logmsg .= ": ".$_SERVER['REQUEST_URI'];
+	}
 	$API->writeLog($loglevel,$uid,$logtype,$logmsg,$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$uagent->useragent);
 }
 
