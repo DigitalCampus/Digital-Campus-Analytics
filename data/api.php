@@ -1745,5 +1745,10 @@ class API {
 		$kpi = new KPI();
 		return $kpi->getTT1Defaulters($opts);
 	}
+	
+	function getPNC1Defaulters($opts=array()){
+		$kpi = new KPI();
+		return $kpi->getPNC1Defaulters($opts);
+	}
 
 }

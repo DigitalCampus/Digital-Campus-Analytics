@@ -5,26 +5,47 @@
  */
 class KPI {
 	
-	
-	function getANC1Defaulters($opts=array()){
-		global $ERROR,$API,$CONFIG;
-		
+	private function checkOpts($opts){
 		if(array_key_exists('months',$opts)){
-			$months = max(0,$opts['months']);
+			$opts['months'] = max(0,$opts['months']);
 		} else if(array_key_exists('startdate',$opts) && array_key_exists('enddate',$opts)) {
-			$startdate = $opts['startdate'];
-			$enddate = $opts['enddate'];
+			$opts['startdate'] = $opts['startdate'];
+			$opts['enddate'] = $opts['enddate'];
 		} else {
 			array_push($ERROR,"You must specify either months or start/end dates for this function");
 			return false;
 		}
-	
+		
 		if(array_key_exists('hpcodes',$opts)){
-			$hps = $opts['hpcodes'];
+			$opts['hps'] = $opts['hpcodes'];
 		} else {
-			$hps = $API->getUserHealthPointPermissions();
+			$opts['hps'] = $API->getUserHealthPointPermissions();
 		}
+		return $opts;
+	}
 	
+	private function convertPercent($summary){
+		// change into a percentage rather than absolute values
+		foreach($summary as $k=>$v){
+			$total = $v->defaulters + $v->nondefaulters;
+			if ($total > 0){
+				$pc_default = round(($v->defaulters * 100)/$total);
+				$pc_nondefault = round(($v->nondefaulters * 100)/$total);
+				$summary[$k]->defaulters = $pc_default;
+				$summary[$k]->nondefaulters = $pc_nondefault;
+			}
+		}
+		return $summary;
+	}
+	
+	function getANC1Defaulters($opts=array()){
+		global $ERROR,$API,$CONFIG;
+		
+		$opts = $this->checkOpts($opts);
+		if(!$opts){
+			return;
+		}
+		
 		// get all the submitted ANC1 protocols between the dates or months specified
 		$sql = sprintf("SELECT 	p._URI,
 							p.Q_USERID, 
@@ -36,16 +57,16 @@ class KPI {
 					FROM %s p 
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid",$CONFIG->props['anc1.duebyend'],TABLE_ANCFIRST);
-		if(isset($months)){
-			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+		if(array_key_exists('months',$opts)){
+			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$opts['months']." month,'%Y-%m-01 00:00:00')";
 		} else {
-			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
-			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$opts['startdate']);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$opts['enddate']);
 		}
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= sprintf(" AND p.Q_HEALTHPOINTID NOT IN (%s)",$API->getIgnoredHealthPoints());
 		}
-		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$hps);
+		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$opts['hps']);
 	
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
@@ -53,7 +74,7 @@ class KPI {
 	
 		$summary = array();
 		// if months is set we need to divide up into months
-		if(isset($months)){
+		if(array_key_exists('months',$opts)){
 			$date = new DateTime();
 			$date->sub(new DateInterval('P'.$months.'M'));
 				
@@ -88,17 +109,7 @@ class KPI {
 			}
 		}
 	
-		// change into a percentage rather than absolute values
-		foreach($summary as $k=>$v){
-			$total = $v->defaulters + $v->nondefaulters;
-			if ($total > 0){
-				$pc_default = round(($v->defaulters * 100)/$total);
-				$pc_nondefault = round(($v->nondefaulters * 100)/$total);
-				$summary[$k]->defaulters = $pc_default;
-				$summary[$k]->nondefaulters = $pc_nondefault;
-			}
-		}
-		return $summary;
+		return $this->convertPercent($summary);
 	}
 	
 	function getANC1DefaultersBestPerformer($opts=array()){
@@ -176,20 +187,9 @@ class KPI {
 	
 	function getANC2Defaulters($opts=array()){
 		global $API,$CONFIG;
-		if(array_key_exists('months',$opts)){
-			$months = max(0,$opts['months']);
-		} else if(array_key_exists('startdate',$opts) && array_key_exists('enddate',$opts)) {
-			$startdate = $opts['startdate'];
-			$enddate = $opts['enddate'];
-		} else {
-			array_push($ERROR,"You must specify either months or start/end dates for this function");
-			return false;
-		}
-	
-		if(array_key_exists('hpcodes',$opts)){
-			$hps = $opts['hpcodes'];
-		} else {
-			$hps = $API->getUserHealthPointPermissions();
+		$opts = $this->checkOpts($opts);
+		if(!$opts){
+			return;
 		}
 	
 		// all those who had an ANC follow up visit
@@ -201,23 +201,23 @@ class KPI {
 							DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebystart']." DAY) AS ANC2_DUE_BY_START,
 							DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) AS ANC2_DUE_BY_END
 					FROM ".TABLE_ANCFOLLOW." p";
-		if(isset($months)){
-			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+		if(array_key_exists('months',$opts)){
+			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$opts['months']." month,'%Y-%m-01 00:00:00')";
 		} else {
-			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
-			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$opts['startdate']);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$opts['enddate']);
 		}
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= sprintf(" AND p.Q_HEALTHPOINTID NOT IN (%s)",$API->getIgnoredHealthPoints());
 		}
-		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$hps);
+		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$opts['hps']);
 	
 		// if createdate not between $CONFIG->props['anc2.duebystart'] and $CONFIG->props['anc2.duebyend'] then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = $API->runSql($sql);
 		$summary = array();
 		// if months is set we need to divide up into months
-		if(isset($months)){
+		if(array_key_exists('months',$opts)){
 			$date = new DateTime();
 			$date->sub(new DateInterval('P'.$months.'M'));
 	
@@ -251,7 +251,7 @@ class KPI {
 				}
 			}
 		}
-		// all those who had an ANC1 but not a second visit and didn't have termination protocol entered before ANC was due
+		// all those who had an ANC1 but not a second visit and didn't have termination protocol entered before ANC2 was due
 		$sql = "SELECT 	p._URI,
 							p.Q_USERID, 
 							p.Q_HEALTHPOINTID, 
@@ -260,23 +260,23 @@ class KPI {
 					FROM ".TABLE_ANCFIRST." p
 					LEFT OUTER JOIN ".TABLE_ANCFOLLOW." f ON f.Q_USERID = p.Q_USERID AND f.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID
 					WHERE f.Q_USERID IS NULL";
-		if(isset($months)){
+		if(array_key_exists('months',$opts)){
 			$sql .= " AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
 							AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) < curdate()";
 		} else {
-			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) > '%s'",$startdate);
-			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) <= '%s'",$enddate);
+			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) > '%s'",$opts['startdate']);
+			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) <= '%s'",$opts['enddate']);
 		}
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= " AND p.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
 		}
-		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s)",$hps);
+		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s)",$opts['hps']);
 		$sql .= " ORDER BY DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) ASC";
 		// TODO add constraint about terminations
 	
 		// all those returned by above query are defaulters - as have now Follow up
 		$results = $API->runSql($sql);
-		if(isset($months)){
+		if(array_key_exists('months',$opts)){
 			while($row = mysql_fetch_array($results)){
 				$date = new DateTime($row['ANC2_DUE_BY_END']);
 				$arrayIndex = $date->format('M-Y');
@@ -285,40 +285,19 @@ class KPI {
 		} else {
 				
 		}
-	
-		// change into a percentage rather than absolute values
-		foreach($summary as $k=>$v){
-			$total = $v->defaulters + $v->nondefaulters;
-			if ($total > 0){
-				$pc_default = round(($v->defaulters * 100)/$total);
-				$pc_nondefault = round(($v->nondefaulters * 100)/$total);
-				$summary[$k]->defaulters = $pc_default;
-				$summary[$k]->nondefaulters = $pc_nondefault;
-			}
-		}
-		return $summary;
+
+		return $this->convertPercent($summary);
 	}
 	
 	
 	function getTT1Defaulters($opts=array()){
 		global $ERROR,$API,$CONFIG;
-		
-		if(array_key_exists('months',$opts)){
-			$months = max(0,$opts['months']);
-		} else if(array_key_exists('startdate',$opts) && array_key_exists('enddate',$opts)) {
-			$startdate = $opts['startdate'];
-			$enddate = $opts['enddate'];
-		} else {
-			array_push($ERROR,"You must specify either months or start/end dates for this function");
-			return false;
+	
+		$opts = $this->checkOpts($opts);
+		if(!$opts){
+			return;
 		}
-		
-		if(array_key_exists('hpcodes',$opts)){
-			$hps = $opts['hpcodes'];
-		} else {
-			$hps = $API->getUserHealthPointPermissions();
-		}
-		
+	
 		$sql = "SELECT 	p._URI,
 						p.Q_USERID, 
 						p.Q_HEALTHPOINTID, 
@@ -326,22 +305,22 @@ class KPI {
 						p.Q_TETANUS,
 						p.Q_TT1
 				FROM ".TABLE_ANCFIRST." p ";
-		if(isset($months)){
+		if(array_key_exists('months',$opts)){
 			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
 		} else {
-			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
-			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$opts['startdate']);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$opts['enddate']);
 		}
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= sprintf(" AND p.Q_HEALTHPOINTID NOT IN (%s)",$API->getIgnoredHealthPoints());
 		}
-		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$hps);
+		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$opts['hps']);
 		
 		$results = $API->runSql($sql);
 		$summary = array();
 		
 		$tt1validity = $CONFIG->props['tt1.validity']*24*60*60;
-		if(isset($months)){
+		if(array_key_exists('months',$opts)){
 			$date = new DateTime();
 			$date->sub(new DateInterval('P'.$months.'M'));
 			
@@ -393,17 +372,81 @@ class KPI {
 			}
 		}
 		
-		// change into a percentage rather than absolute values
-		foreach($summary as $k=>$v){
-			$total = $v->defaulters + $v->nondefaulters;
-			if ($total > 0){
-				$pc_default = round(($v->defaulters * 100)/$total);
-				$pc_nondefault = round(($v->nondefaulters * 100)/$total);
-				$summary[$k]->defaulters = $pc_default;
-				$summary[$k]->nondefaulters = $pc_nondefault;
+		return $this->convertPercent($summary);
+	}
+	
+	function getPNC1Defaulters($opts=array()){
+		global $ERROR,$API,$CONFIG;
+		
+		$opts = $this->checkOpts($opts);
+		if(!$opts){
+			return;
+		}
+		
+		/*
+		 * Get the earliest PNC for each person who has had one entered
+		 */
+		$sql = sprintf("SELECT p._URI,
+							p.Q_USERID, 
+							p.Q_HEALTHPOINTID, 
+							p.Q_DELIVERYDATE, 
+							p._CREATION_DATE as createdate,
+							DATE_ADD(p.Q_DELIVERYDATE, INTERVAL %d DAY) as startduedate,
+							DATE_ADD(p.Q_DELIVERYDATE, INTERVAL %d DAY) as endduedate
+						FROM %s p
+						INNER JOIN (SELECT min(_CREATION_DATE) as createdate,Q_HEALTHPOINTID,Q_USERID FROM %s 
+							GROUP BY Q_HEALTHPOINTID,Q_USERID) pnc1 
+							ON pnc1.createdate = p._CREATION_DATE 
+							AND pnc1.Q_USERID = p.Q_USERID 
+							AND pnc1.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID",$CONFIG->props['pnc1.duebystart'],$CONFIG->props['pnc1.duebyend'],TABLE_PNC,TABLE_PNC);
+		if(array_key_exists('months',$opts)){
+			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$opts['startdate']);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$opts['enddate']);
+		}
+		if($API->getIgnoredHealthPoints() != ""){
+			$sql .= sprintf(" AND p.Q_HEALTHPOINTID NOT IN (%s)",$API->getIgnoredHealthPoints());
+		}
+		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$opts['hps']);
+		
+		$results = $API->runSql($sql);
+		$summary = array();
+		if(array_key_exists('months',$opts)){
+			$date = new DateTime();
+			$date->sub(new DateInterval('P'.$months.'M'));
+		
+			for ($i=0; $i<$months+1 ;$i++){
+				$summary[$date->format('M-Y')] = new stdClass;
+				$summary[$date->format('M-Y')]->defaulters = 0;
+				$summary[$date->format('M-Y')]->nondefaulters = 0;
+				$date->add(new DateInterval('P1M'));
+			}
+		
+			while($row = mysql_fetch_array($results)){
+				$date = new DateTime($row['createdate']);
+				$arrayIndex = $date->format('M-Y');
+					
+				if ($row['createdate'] > $row['startduedate'] && $row['createdate'] < $row['endduedate']){
+					$summary[$arrayIndex]->nondefaulters++;
+				} else {
+					$summary[$arrayIndex]->defaulters++;
+				}
+			}
+		} else {
+			$summary[0] = new stdClass();
+			$summary[0]->defaulters = 0;
+			$summary[0]->nondefaulters = 0;
+			// otherwise we're only interested in the total over the dates given
+			while($row = mysql_fetch_array($results)){
+				if ($row['createdate'] > $row['startduedate'] && $row['createdate'] < $row['endduedate']){
+					$summary[0]->nondefaulters++;
+				} else {
+					$summary[0]->defaulters++;
+				}
 			}
 		}
 		
-		return $summary;
+		return $this->convertPercent($summary);
 	}
 }

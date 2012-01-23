@@ -170,6 +170,39 @@ if ($currentDBversion < 6){
 	echo "Upgraded to version 6\n";
 }
 
+if ($currentDBversion < 7){
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('pnc1.duebystart', '1', 'No days after delivery by PNC1 due - start')";
+	$API->runSql($sql);
+
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('pnc1.duebyend', '3', 'No days after delivery by PNC1 due - end')";
+	$API->runSql($sql);
+
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('pnc2.duebystart', '6', 'No days after delivery by PNC2 due - start')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('pnc2.duebyend', '7', 'No days after delivery by PNC2 due - end')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('pnc3.duebystart', '35', 'No days after delivery by PNC3 due - start')";
+	$API->runSql($sql);
+	
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('pnc3.duebyend', '42', 'No days after delivery by PNC3 due - end')";
+	$API->runSql($sql);
+
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('target.pnc1', '60', 'Target percentage of PNC1 visits on time')";
+	$API->runSql($sql);
+	//now update the db version prop
+	$API->setSystemProperty('database.version','7');
+	echo "Upgraded to version 7\n";
+}
+
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";
