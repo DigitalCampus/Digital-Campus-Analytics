@@ -157,12 +157,12 @@ if ($currentDBversion < 6){
 				('default.lang', 'en', 'Default language')";
 	$API->runSql($sql);
 	
-	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
-				('langs.available', '{'\en'\:'\English'\,'\tg'\:'\Tigrinyan'\},'\am'\:'\Amharic'\}', 'JSON encoded array of the lanaguages available')";
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES 
+				('langs.available', '{\"en\":\"English\",\"ti\":\"Tigrinyan\",\"am\":\"Amharic\"}', 'JSON encoded array of the lanaguages available')";
 	$API->runSql($sql);
 	
 	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
-				('google.analytics', '', 'Google Analytics key')";
+				('google.analytics', 'UA-3609005-8', 'Google Analytics key')";
 	$API->runSql($sql);
 	
 	//now update the db version prop

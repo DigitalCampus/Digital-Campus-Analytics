@@ -31,11 +31,12 @@ header("Content-Type: text/html; charset=UTF-8");
 				<form action="" method="post" name="langform" id="langform">
 				<select name="lang" onchange="document.langform.submit();">
 					<?php 
-						foreach ($CONFIG->langs as $key => $value){
-							if (isset($_SESSION["session_lang"]) &&  $_SESSION["session_lang"] == $key){
-								echo "<option value='".$key."' selected='selected'>".$value."</option>";
+						$langs = json_decode($CONFIG->props['langs.available'],true);
+						foreach ($langs as $k => $v){
+							if (isset($_SESSION["session_lang"]) &&  $_SESSION["session_lang"] == $k){
+								echo "<option value='".$k."' selected='selected'>".$v."</option>";
 							} else {
-								echo "<option value='".$key."'>".$value."</option>";
+								echo "<option value='".$k."'>".$v."</option>";
 							}
 						}
 					?>
