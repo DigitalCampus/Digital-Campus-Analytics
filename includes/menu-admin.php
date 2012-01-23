@@ -6,6 +6,4 @@
 | 
 <a href="healthpoints.php">Health Points</a>
 | 
-<a href="checkage.php">Age check</a>
-| 
 <a href="props.php">System Properties</a>
