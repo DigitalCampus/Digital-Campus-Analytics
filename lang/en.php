@@ -14,6 +14,7 @@ $LANG['dashboard.submitted.nodays'] = '%s days';
 $LANG['dashboard.submitted.title'] = 'Protocols submitted in last:';
 $LANG['dashboard.tt1defaulters.title'] = 'TT 1 Defaulters';
 $LANG['dashboard.tt2defaulters.title'] = 'TT 2 Defaulters';
+$LANG['datacheck.age.title'] = 'Check Age & Year of Birth being used consistently';
 $LANG['datacheck.duplicate.protocol.info'] = 'Protocols submitted more than once';
 $LANG['datacheck.duplicate.protocol.none'] = 'No duplicate protocols entered';
 $LANG['datacheck.duplicate.protocol.title'] = 'Duplicate protocols';

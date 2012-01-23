@@ -70,8 +70,11 @@ $dc = new DataCheck();
 	} else {
 		echo "<p>".getString("datacheck.duplicate.protocol.none")."</p>";
 	}
+?>
  
-
+<h2><?php echo getString("datacheck.age.title")?></h2>
+<?php 
+$dc->age();
 include_once "includes/footer.php";
 
 ?>
