@@ -45,9 +45,9 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	 	if ($change > 0){
 	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d</span>",'images/increase.png',$change);
 	 	} else if ($change == 0){
-	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0%%</span>",'images/equal.png',$change);
+	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0</span>",'images/equal.png',$change);
 	 	} else if ($change < 0){
-	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d%%</span>",'images/decrease.png',$change);
+	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d</span>",'images/decrease.png',$change);
 	 	}
 	?>
 	</div>

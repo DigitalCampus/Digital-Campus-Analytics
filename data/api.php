@@ -243,7 +243,7 @@ class API {
 	}
 	
 	// returns comma separated list of the hpcodes the current user is allowed to view
-	function getUserHealthPointPermissions(){
+	function getUserHealthPointPermissions($returnsql=false){
 		global $USER;
 		
 		if($USER->getProp('permissions.admin') == 'true'){
@@ -261,6 +261,10 @@ class API {
 		} else {
 			//otherwise can only see the date from the hpid in their user table record (hpid) 
 			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid = %d",$USER->hpid);
+		}
+		
+		if($returnsql){
+			return $sql;
 		}
 		
 		$result = $this->runSql($sql);

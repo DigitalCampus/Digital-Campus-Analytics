@@ -19,7 +19,7 @@ class KPI {
 		if(array_key_exists('hpcodes',$opts)){
 			$opts['hps'] = $opts['hpcodes'];
 		} else {
-			$opts['hps'] = $API->getUserHealthPointPermissions();
+			$opts['hps'] = $API->getUserHealthPointPermissions(true);
 		}
 		return $opts;
 	}
@@ -67,7 +67,7 @@ class KPI {
 			$sql .= sprintf(" AND p.Q_HEALTHPOINTID NOT IN (%s)",$API->getIgnoredHealthPoints());
 		}
 		$sql .= sprintf(" AND p.Q_HEALTHPOINTID IN (%s) ORDER BY p._CREATION_DATE ASC",$opts['hps']);
-	
+		
 		// if createdate > ANC1DUEBY then defaulter, group by month/year of createdate
 		// otherwise non defaulter
 		$results = $API->runSql($sql);
@@ -76,9 +76,9 @@ class KPI {
 		// if months is set we need to divide up into months
 		if(array_key_exists('months',$opts)){
 			$date = new DateTime();
-			$date->sub(new DateInterval('P'.$months.'M'));
+			$date->sub(new DateInterval('P'.$opts['months'].'M'));
 				
-			for ($i=0; $i<$months+1 ;$i++){
+			for ($i=0; $i<$opts['months']+1 ;$i++){
 				$summary[$date->format('M-Y')] = new stdClass;
 				$summary[$date->format('M-Y')]->defaulters = 0;
 				$summary[$date->format('M-Y')]->nondefaulters = 0;
@@ -219,9 +219,9 @@ class KPI {
 		// if months is set we need to divide up into months
 		if(array_key_exists('months',$opts)){
 			$date = new DateTime();
-			$date->sub(new DateInterval('P'.$months.'M'));
+			$date->sub(new DateInterval('P'.$opts['months'].'M'));
 	
-			for ($i=0; $i<$months+1 ;$i++){
+			for ($i=0; $i<$opts['months']+1 ;$i++){
 				$summary[$date->format('M-Y')] = new stdClass;
 				$summary[$date->format('M-Y')]->defaulters = 0;
 				$summary[$date->format('M-Y')]->nondefaulters = 0;
@@ -261,7 +261,7 @@ class KPI {
 					LEFT OUTER JOIN ".TABLE_ANCFOLLOW." f ON f.Q_USERID = p.Q_USERID AND f.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID
 					WHERE f.Q_USERID IS NULL";
 		if(array_key_exists('months',$opts)){
-			$sql .= " AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')
+			$sql .= " AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) > date_format(curdate() - interval ".$opts['months']." month,'%Y-%m-01 00:00:00')
 							AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) < curdate()";
 		} else {
 			$sql .= sprintf(" AND DATE_ADD(p.Q_LMP, INTERVAL ".$CONFIG->props['anc2.duebyend']." DAY) > '%s'",$opts['startdate']);
@@ -306,7 +306,7 @@ class KPI {
 						p.Q_TT1
 				FROM ".TABLE_ANCFIRST." p ";
 		if(array_key_exists('months',$opts)){
-			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$opts['months']." month,'%Y-%m-01 00:00:00')";
 		} else {
 			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$opts['startdate']);
 			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$opts['enddate']);
@@ -322,9 +322,9 @@ class KPI {
 		$tt1validity = $CONFIG->props['tt1.validity']*24*60*60;
 		if(array_key_exists('months',$opts)){
 			$date = new DateTime();
-			$date->sub(new DateInterval('P'.$months.'M'));
+			$date->sub(new DateInterval('P'.$opts['months'].'M'));
 			
-			for ($i=0; $i<7 ;$i++){
+			for ($i=0; $i<$opts['months']+1;$i++){
 				$summary[$date->format('M-Y')] = new stdClass;
 				$summary[$date->format('M-Y')]->defaulters = 0;
 				$summary[$date->format('M-Y')]->nondefaulters = 0;
@@ -400,7 +400,7 @@ class KPI {
 							AND pnc1.Q_USERID = p.Q_USERID 
 							AND pnc1.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID",$CONFIG->props['pnc1.duebystart'],$CONFIG->props['pnc1.duebyend'],TABLE_PNC,TABLE_PNC);
 		if(array_key_exists('months',$opts)){
-			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$months." month,'%Y-%m-01 00:00:00')";
+			$sql .= " WHERE p._CREATION_DATE > date_format(curdate() - interval ".$opts['months']." month,'%Y-%m-01 00:00:00')";
 		} else {
 			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$opts['startdate']);
 			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$opts['enddate']);
@@ -414,9 +414,9 @@ class KPI {
 		$summary = array();
 		if(array_key_exists('months',$opts)){
 			$date = new DateTime();
-			$date->sub(new DateInterval('P'.$months.'M'));
+			$date->sub(new DateInterval('P'.$opts['months'].'M'));
 		
-			for ($i=0; $i<$months+1 ;$i++){
+			for ($i=0; $i<$opts['months']+1 ;$i++){
 				$summary[$date->format('M-Y')] = new stdClass;
 				$summary[$date->format('M-Y')]->defaulters = 0;
 				$summary[$date->format('M-Y')]->nondefaulters = 0;
@@ -446,6 +446,8 @@ class KPI {
 				}
 			}
 		}
+		
+		// TODO check against the deliveries - anyone who has had delivery but not a within the pnc1.startdatedue will be a defaulter
 		
 		return $this->convertPercent($summary);
 	}
