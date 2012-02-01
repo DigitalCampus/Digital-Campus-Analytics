@@ -515,7 +515,6 @@ class API {
 			&& count($pat->anclabtest) == 0
 			&& $pat->delivery == null
 			&& count($pat->pnc) == 0){
-			echo "here";
 			return false;
 		} else {
 			return $pat;
