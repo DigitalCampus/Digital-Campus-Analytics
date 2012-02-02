@@ -4,7 +4,7 @@ require_once("../config.php");
 checkLogin();
 header("Content-type: text/xml; charset:UTF8");
 $opts = array('days'=>31);
-$submitted = $API->getProtocolsSubmitted($opts);
+$submitted = $API->getProtocolsSubmitted_Cache($opts);
 $anon = array();
 
 foreach($submitted as $s){
