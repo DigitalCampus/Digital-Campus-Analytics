@@ -25,8 +25,8 @@ if(($lastrun + ($minint*60) > $now) && !$force){
 // let cron run with admin permissions
 $USER->props['permissions.admin'] = 'true';
 
-// set username as 'demo' - thi sis so that it will generate records for all the 'for practice' records too.
-$USER->user_name = 'demo';
+// set username as 'demo' - this is so that it will generate records for all the 'for practice' records too.
+$USER->username = 'demo';
 
 $API->cron($days);
 

@@ -1358,8 +1358,7 @@ class API {
 			$sql .= " AND  (a.patienthpcode = ".$opts['hpcode'];
 			$sql .= " OR a.protocolhpcode = ".$opts['hpcode'].")";
 		}
-		$sql .= "ORDER BY datestamp DESC";
-		
+		$sql .= " ORDER BY datestamp DESC";
 		
 		//query to get the total no of records
 		$countsql = "SELECT COUNT(*) AS norecords FROM (".$sql.") a;";

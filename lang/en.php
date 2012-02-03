@@ -497,7 +497,7 @@ $LANG['warning.datacheck'] = 'There are some inconsistencies in the data, for ex
 $LANG['warning.demouser'] = 'You are currently logged in as the demonstration user. 
 								All the data you can see here is practice data and does not represent real patient cases. 
 								This system is currently under development, not all the functionality is finalised, and may not work as expected.
-								What is displayed here is only indication of how a more developed system may work.';
+								What is displayed here is only an indication of how a more developed system may work.';
 $LANG['warning.graph.unavailable'] = 'Chart cannot be generated. Please try later.';
 $LANG['warning.login.invalid'] = 'Invalid username/password combination';
 $LANG['warning.login.nopassword'] = 'Please enter your password';
