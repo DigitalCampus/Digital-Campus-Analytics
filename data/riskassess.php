@@ -548,6 +548,9 @@ class RiskAssessment {
 							WHERE (hpcode IN (%s) 
 							OR visithpcode IN (%s))",$API->getUserHealthPointPermissions(),$API->getUserHealthPointPermissions());
 		$sql .= sprintf(" AND (hpcode IN (%s) OR visithpcode IN (%s))",$hps,$hps);
+		if ($API->getIgnoredHealthPoints() != ""){
+			$sql .= " AND  hpcode NOT IN (".$API->getIgnoredHealthPoints().")";
+		}
 		$sql .= ") cv ON cv.userid = crc.userid AND cv.hpcode = crc.hpcode";
 		$sql .= sprintf(" LEFT OUTER JOIN %s r ON (r.Q_USERID = crc.userid AND r.Q_HEALTHPOINTID = crc.hpcode)",TABLE_REGISTRATION);
 		$sql .= "INNER JOIN healthpoint php ON php.hpcode = crc.hpcode";
