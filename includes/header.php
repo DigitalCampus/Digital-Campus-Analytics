@@ -100,10 +100,17 @@ header("Content-Type: text/html; charset=UTF-8");
 
 	$dc = new DataCheck();
 	// display warning message about invalid data
-	if($dc->summary() && $PAGE != 'login'){
+	if($dc->summary() && $PAGE != 'login' && !$API->isDemoUser()){
 	?>
 	<div id="datacheckwarning" class="datawarning printhide">
 		<img src="<?php echo $CONFIG->homeAddress; ?>images/warning.png" align="left"></img><?php echo getString('warning.datacheck', array($CONFIG->homeAddress.'datacheck.php'));?>
+	</div>
+	<?php 
+	}
+	if($API->isDemoUser()){
+	?>
+	<div id="datacheckwarning" class="datawarning printhide">
+		<?php echo getString('warning.demouser');?>
 	</div>
 	<?php 
 	}

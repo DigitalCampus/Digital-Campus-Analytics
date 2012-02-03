@@ -262,7 +262,7 @@ class API {
 			//otherwise can only see the date from the hpid in their user table record (hpid) 
 			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid = %d",$USER->hpid);
 		}
-		
+
 		if($returnsql){
 			return $sql;
 		}
@@ -284,10 +284,22 @@ class API {
 		return $hpcodes;
 	}
 	
+	function isDemoUser(){
+		global $USER;
+		if ($USER->username == 'demo'){
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	// get the list of ignored health points
 	function getIgnoredHealthPoints(){
-		return IGNORE_HEALTHPOINTS;
+		if($this->isDemoUser()){
+			return "";
+		} else {
+			return IGNORE_HEALTHPOINTS;
+		}
 	}
 	
 	
@@ -422,8 +434,11 @@ class API {
 				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
 				INNER JOIN patientcurrent pc ON pc.hpcode = r.Q_HEALTHPOINTID AND pc.patid = r.Q_USERID
 				WHERE r.Q_HEALTHPOINTID IN (%s) 
-				AND r.Q_HEALTHPOINTID NOT IN (%s)
-				AND pc.pcurrent = 1",TABLE_REGISTRATION,$hps,$this->getIgnoredHealthPoints()) ;
+				AND pc.pcurrent = 1",TABLE_REGISTRATION,$hps) ;
+		
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= sprintf(" AND r.Q_HEALTHPOINTID NOT IN (%s)",$this->getIgnoredHealthPoints());
+		}
 		
 		$result = $this->runSql($sql);
 		$patients = array();

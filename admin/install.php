@@ -123,11 +123,16 @@ if($installed == false){
 	$API->runSql($sql);
 	echo "'healthpoint' table populated\n";
 	
+	// create admin user
 	$sql = "INSERT INTO `user` (`userid`, `username`, `password`, `email`, `firstname`, `lastname`, `defaultlang`, `user_uri`, `hpid`) VALUES (1, 'admin', MD5('admin'), '', 'Admin', 'User', 'en', '', '16');";
 	$API->runSql($sql);
 	$sql = "INSERT INTO `userprops` (`propid`, `userid`, `propname`, `propvalue`) VALUES (NULL, '1', 'permissions.admin', 'true');";
 	$API->runSql($sql);
-	echo "admin user created\n";
+	// create demo user
+	$sql = "INSERT INTO `user` (`userid`, `username`, `password`, `email`, `firstname`, `lastname`, `defaultlang`, `user_uri`, `hpid`) VALUES (2, 'demo', MD5('demo'), '', 'Demo', 'User', 'en', '', '17');";
+	$API->runSql($sql);
+	
+	echo "admin & demo users created\n";
 	
 	
 	$sql = "CREATE TABLE IF NOT EXISTS `properties` (
