@@ -58,8 +58,14 @@ $LANG['menu.patient'] = 'Patient Manager';
 $LANG['menu.report'] = 'Reports';
 $LANG['menu.stats'] = 'Statistics';
 $LANG['menu.submitted'] = 'Submitted Protocols';
+
 $LANG['mobile.app.name'] = 'Health Analytics';
 $LANG['mobile.login.title'] = 'Login';
+$LANG['mobile.menu.deliveries'] = 'Deliveries';
+$LANG['mobile.menu.kpi'] = 'Indicators';
+$LANG['mobile.menu.overdue'] = 'Overdue';
+$LANG['mobile.menu.tasks'] = 'Tasks';
+
 $LANG['name'] = 'Name';
 $LANG['patientlocation'] = 'Patient Location';
 $LANG['patientmanager.form.healthpost'] = 'Select location:';

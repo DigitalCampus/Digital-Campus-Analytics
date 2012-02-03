@@ -1,6 +1,6 @@
 <?php 
 include_once "../config.php";
-$PAGE="index";
+$PAGE = "index";
 include_once 'includes/header.php';
 
 $datetoday = new DateTime();
@@ -12,7 +12,6 @@ $date2monthago = new DateTime();
 $date2monthago->sub(new DateInterval('P2M'));
 
 $opts = array();
-//$opts['hps'] = $USER->hpcode;
 $opts['hpcodes'] = $API->getUserHealthPointPermissions();
 $opts['startdate'] = $datemonthago->format('Y-m-d');
 $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');

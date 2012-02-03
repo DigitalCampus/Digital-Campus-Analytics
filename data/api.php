@@ -1649,6 +1649,9 @@ class API {
 				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 					WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
 					OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
+		if ($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND  hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		if(array_key_exists('hpcodes',$opts)){
 			$sql .= " AND  (hpcode IN (".$opts['hpcodes'].")";
 			$sql .= " OR visithpcode IN (".$opts['hpcodes']."))";
@@ -1687,6 +1690,9 @@ class API {
 				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 					WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
 					OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
+		if ($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND  hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		if(array_key_exists('hpcodes',$opts)){
 			$sql .= " AND  (hpcode IN (".$opts['hpcodes'].")";
 			$sql .= " OR visithpcode IN ( ".$opts['hpcodes']."))";
@@ -1723,6 +1729,9 @@ class API {
 					INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 						WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
 						OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
+		if ($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND  hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		if(array_key_exists('hpcodes',$opts)){
 			$sql .= " AND  (hpcode IN (".$opts['hpcodes'].")";
 			$sql .= " OR visithpcode IN (".$opts['hpcodes']."))";

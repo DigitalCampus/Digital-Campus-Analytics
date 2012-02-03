@@ -51,6 +51,10 @@ li {
 	font-size:100%;
 }
 
+#content h2 {
+	font-size:110%;
+	text-align: center;
+}
 #header-right {
 	float:left;	
 	text-align:right;
@@ -93,6 +97,7 @@ div.taskprotocol {
 }
 div.taskpname {
 	clear:both;
+	
 }
 
 div.kpi {
