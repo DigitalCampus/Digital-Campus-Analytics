@@ -57,8 +57,7 @@ function ethioToGregorian($year, $month, $day){
 
 function gregorianToEthio($year, $month, $day){
 	$jdn = GregorianToJD($month,$day,$year);
-	$ethioMonths = array("Meskerem", "Tikimti", "Hidar", "Tahsas", "Tiri", "Yekatit", "Megabit", "Miazia", "Gunbet", "Sene", "Hamle", "Nehase", "Pagumein");
-	
+
 	$ethio_joffset = 1723856;
 	$r = ($jdn - $ethio_joffset) % 1461;
 
@@ -70,7 +69,7 @@ function gregorianToEthio($year, $month, $day){
 	            + floor($r / 365 )
 	            - floor( $r / 1460 );
 	$date['month'] = floor( $n / 30 ) + 1 ;
-	$date['mtext'] = $ethioMonths[$date['month']-1];
+	$date['mtext'] = getstring('ethio.month.'.($date['month']-1));
 	$date['day']   = ( $n % 30 ) + 1 ;
 	
 	return $date;
@@ -80,7 +79,7 @@ function displayAsEthioDate($datestamp){
 	$day = date('d',$datestamp);
 	$month = date('m', $datestamp);
 	$year = date('Y',$datestamp);
-	$dow = date('D',$datestamp);
+	$dow = getstring('day.'.date('N',$datestamp));
 	$date = gregorianToEthio($year,$month,$day);
 	return sprintf('%s %d %s %d',$dow,$date['day'],$date['mtext'],$date['year']);
 }

@@ -7,7 +7,8 @@ $opts = array("days"=>31);
 $deliveries = $API->getDeliveriesDue($opts);
 $ra = new RiskAssessment();
 
-printf("<h2>Deliveries Due</h2>");
+printf("<h2>%s</h2>",getstring('mobile.title.deliveries'));
+
 foreach($deliveries as $delivery){
 	$d = strtotime($delivery->datedue);
 	printf("<div class='task'>");

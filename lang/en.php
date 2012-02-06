@@ -28,9 +28,33 @@ $LANG['datacheck.unregistered.info'] = 'Users who have had protocols submitted b
 $LANG['datacheck.unregistered.none'] = 'All users have been registered';
 $LANG['datacheck.unregistered.title'] = 'Unregistered Users';
 $LANG['datacheck.view.info'] = 'View info';
+
+$LANG['day.1'] = 'Mon';
+$LANG['day.2'] = 'Tue';
+$LANG['day.3'] = 'Wed';
+$LANG['day.4'] = 'Thu';
+$LANG['day.5'] = 'Fri';
+$LANG['day.6'] = 'Sat';
+$LANG['day.7'] = 'Sun';
+
 $LANG['dob'] = 'Date of birth';
 $LANG['education'] = 'Education Level';
 $LANG['ethiocal'] = '(Ethiopian calendar)';
+
+$LANG['ethio.month.1'] = 'Meskerem';
+$LANG['ethio.month.2'] = 'Tikimti';
+$LANG['ethio.month.3'] = 'Hidar';
+$LANG['ethio.month.4'] = 'Tahsas';
+$LANG['ethio.month.5'] = 'Tiri';
+$LANG['ethio.month.6'] = 'Yekatit';
+$LANG['ethio.month.7'] = 'Megabit';
+$LANG['ethio.month.8'] = 'Miazia';
+$LANG['ethio.month.9'] = 'Gunbet';
+$LANG['ethio.month.10'] = 'Sene';
+$LANG['ethio.month.11'] = 'Hamle';
+$LANG['ethio.month.12'] = 'Nehase';
+$LANG['ethio.month.13'] = 'Pagumein';
+
 $LANG['export.title'] = 'Export';
 $LANG['header.loggedinas'] = 'Logged in as: ';
 $LANG['header.logout'] = 'logout';
@@ -61,10 +85,24 @@ $LANG['menu.submitted'] = 'Submitted Protocols';
 
 $LANG['mobile.app.name'] = 'Health Analytics';
 $LANG['mobile.login.title'] = 'Login';
+
+$LANG['mobile.kpi.heading.lastmonth'] = 'Last Month';
+$LANG['mobile.kpi.heading.previousmonth'] = 'Previous Month';
+$LANG['mobile.kpi.heading.target'] = 'Target';
+$LANG['mobile.kpi.anc1'] = 'ANC1 on time';
+$LANG['mobile.kpi.anc2'] = 'ANC2 on time';
+$LANG['mobile.kpi.protocols'] = 'Protocols submitted';
+$LANG['mobile.kpi.tt1'] = 'TT1 on time';
+
 $LANG['mobile.menu.deliveries'] = 'Deliveries';
 $LANG['mobile.menu.kpi'] = 'Indicators';
 $LANG['mobile.menu.overdue'] = 'Overdue';
 $LANG['mobile.menu.tasks'] = 'Tasks';
+
+$LANG['mobile.title.deliveries'] = 'Deliveries Due';
+$LANG['mobile.title.kpi'] = 'Indicators';
+$LANG['mobile.title.overdue'] = 'Overdue Tasks';
+$LANG['mobile.title.tasks'] = 'Tasks Due';
 
 $LANG['name'] = 'Name';
 $LANG['patientlocation'] = 'Patient Location';
@@ -395,7 +433,6 @@ $LANG['report.title'] = 'Reports';
 $LANG['report.title.healthpost'] = 'Health Post/Centre Report';
 $LANG['report.title.midwife'] = 'Midwife Report';
 $LANG['report.title.supervisor'] = 'Supervisor Report';
-$LANG['risk.factor.'] = '';
 $LANG['risk.factor.Q_ABDOMINALPAIN'] = 'Abdominal pain';
 $LANG['risk.factor.Q_ABORTION'] = 'Previous abortion';
 $LANG['risk.factor.Q_AGE_OVER'] = 'Over 34 years old';

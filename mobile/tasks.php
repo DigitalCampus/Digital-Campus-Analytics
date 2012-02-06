@@ -7,7 +7,8 @@ $opts = array("days"=>31,'hpcodes'=>$USER->hpcode);
 $tasks = $API->getTasksDue($opts);
 $ra = new RiskAssessment();
 
-printf("<h2>Tasks Due</h2>");
+printf("<h2>%s</h2>",getstring('mobile.title.tasks'));
+
 foreach($tasks as $task){
 	$d = strtotime($task->datedue);
 	printf("<div class='task'>");

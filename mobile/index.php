@@ -32,13 +32,13 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 //$tt1previousmonth = $API->getTT1Defaulters($opts);
 ?>
 <div class="kpiheader">
-	<div class="kpiscore">Last month</div>
-	<div class="kpichange">Previous month</div>
-	<div class="kpitarget">Target</div>
+	<div class="kpiscore"><?php echo getstring('mobile.kpi.heading.lastmonth'); ?></div>
+	<div class="kpichange"><?php echo getstring('mobile.kpi.heading.previousmonth'); ?></div>
+	<div class="kpitarget"><?php echo getstring('mobile.kpi.heading.target'); ?></div>
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle">Protocols Submitted</div>
+	<div class="kpititle"><?php echo getstring('mobile.kpi.protocols'); ?></div>
 	<div class="kpiscore"><?php echo $nosubmittedthismonth->count; ?></div>
 	<div class="kpichange">
 	<?php 
@@ -56,7 +56,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle">ANC1 on time</div>
+	<div class="kpititle"><?php echo getstring('mobile.kpi.anc1'); ?></div>
 	<div class="kpiscore"><?php echo $anc1thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 
@@ -74,7 +74,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
-	<div class="kpititle">ANC2 on time</div>
+	<div class="kpititle"><?php echo getstring('mobile.kpi.anc2'); ?></div>
 	<div class="kpiscore"><?php echo $anc2thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 
@@ -92,7 +92,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	<div style="clear:both;"></div>
 </div>
 <!-- div class="kpi">
-	<div class="kpititle">TT1 on time</div>
+	<div class="kpititle"><?php echo getstring('mobile.kpi.tt1'); ?></div>
 	<div class="kpiscore"><?php //echo $tt1thismonth[0]->nondefaulters; ?>%</div>
 	<div class="kpichange">
 	<?php 

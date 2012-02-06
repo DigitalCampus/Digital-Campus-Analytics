@@ -7,7 +7,7 @@ $opts = array("days"=>31,'hpcodes'=>$USER->hpcode);
 $tasks = $API->getOverdueTasks($opts);
 $ra = new RiskAssessment();
 
-printf("<h2>Overdue Tasks</h2>");
+printf("<h2>%s</h2>",getstring('mobile.title.overdue'));
 
 foreach($tasks as $task){
 	$d = strtotime($task->datedue);
