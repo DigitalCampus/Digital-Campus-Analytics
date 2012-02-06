@@ -22,12 +22,14 @@ header("Content-Type: text/html; charset=UTF-8");
 <body>
 <div id="page">
 	<div id="header">
-		<div id="title">
+		<div id="header-logo">
 			<img style="vertical-align:middle" src="<?php echo $CONFIG->homeAddress; ?>images/dc_logo.png"/>
+		</div>
+		<div id="header-title">
 			<h1><?php echo getstring("mobile.app.name");?></h1>
 		</div>
 		<div id="header-right">
-		<div id="langchange">
+			<div id="langchange">
 				<form action="" method="post" name="langform" id="langform">
 				<select name="lang" onchange="document.langform.submit();">
 					<?php 
@@ -42,6 +44,14 @@ header("Content-Type: text/html; charset=UTF-8");
 					?>
 				</select>
 				</form>
+			</div>
+			<div id="logininfo">
+				<?php 
+				if ($PAGE != "login"){
+					echo $USER->getUsername();
+					echo " <a href='".$CONFIG->homeAddress."mobile/logout.php'>".getstring("header.logout")."</a>";
+				}
+				?>
 			</div>
 		</div>
 		<div style="clear:both;"></div>

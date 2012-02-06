@@ -12,8 +12,12 @@ $date2monthago = new DateTime();
 $date2monthago->sub(new DateInterval('P2M'));
 
 $opts = array();
-$opts['hpcodes'] = $API->getUserHealthPointPermissions();
-$opts['startdate'] = $datemonthago->format('Y-m-d');
+if($USER->getProp('permissions.role') == 'hew' || $USER->getProp('permissions.role') == 'midwife'){
+	$opts['hpcodes'] = $USER->hpcode;
+} else {
+	$opts['hpcodes'] = $API->getUserHealthPointPermissions();
+}
+$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 
 $anc1thismonth = $API->getANC1Defaulters($opts);
@@ -22,9 +26,13 @@ $nosubmittedthismonth = $API->getProtocolsSubmitted_Cache($opts);
 //$tt1thismonth = $API->getTT1Defaulters($opts);
 
 $opts = array();
-$opts['hpcodes'] = $API->getUserHealthPointPermissions();
-$opts['startdate'] = $date2monthago->format('Y-m-d');
-$opts['enddate'] = $datemonthago->format('Y-m-d');
+if($USER->getProp('permissions.role') == 'hew' || $USER->getProp('permissions.role') == 'midwife'){
+	$opts['hpcodes'] = $USER->hpcode;
+} else {
+	$opts['hpcodes'] = $API->getUserHealthPointPermissions();
+}
+$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
+$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
 
 $anc1previousmonth = $API->getANC1Defaulters($opts);
 $anc2previousmonth= $API->getANC2Defaulters($opts);

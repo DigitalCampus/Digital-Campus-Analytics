@@ -15,7 +15,7 @@ foreach($deliveries as $delivery){
 	printf("<div class='taskdate'>%s (%s)</div>",displayAsEthioDate($d),date('d M Y',$d));
 	//printf("<div class='taskprotocol'>%s</div>",getstring($delivery->protocol));
 	if($delivery->patientname == ""){
-		$delivery->patientname = getString('warning.patient.notregistered');
+		$delivery->patientname = sprintf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));
 	}
 	printf("<div class='taskpname'>%s</div>",$delivery->patientname);
 	printf("<div class='taskpid'>%s/%s</div>",$delivery->patientlocation,$delivery->userid);

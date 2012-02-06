@@ -3,7 +3,13 @@ include_once "../config.php";
 $PAGE = "overdue";
 include_once 'includes/header.php';
 
-$opts = array("days"=>31,'hpcodes'=>$USER->hpcode);
+$opts = array("days"=>31);
+if($USER->getProp('permissions.role') == 'hew' || $USER->getProp('permissions.role') == 'midwife'){
+	$opts['hpcodes'] = $USER->hpcode;
+} else {
+	$opts['hpcodes'] = $API->getUserHealthPointPermissions();
+}
+
 $tasks = $API->getOverdueTasks($opts);
 $ra = new RiskAssessment();
 
@@ -15,7 +21,7 @@ foreach($tasks as $task){
 	printf("<div class='taskdate'>%s (%s)</div>",displayAsEthioDate($d),date('d M Y',$d));
 	printf("<div class='taskprotocol'>%s</div>",getstring($task->protocol));
 	if($task->patientname == ""){
-		$task->patientname = getString('warning.patient.notregistered');
+		$task->patientname = sprintf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));
 	}
 	printf("<div class='taskpname'>%s</div>",$task->patientname);
 	printf("<div class='taskpid'>%s/%s</div>",$task->patientlocation,$task->userid);
