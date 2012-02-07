@@ -1,7 +1,9 @@
 CACHE MANIFEST
-# 2011-12-04:v6
+# 2012-02-06:v9
 
 CACHE:
 includes/style.css
-images/dc_logo.png
-
+images/dclogo.png
+images/decrease.png
+images/equal.png
+images/increase.png

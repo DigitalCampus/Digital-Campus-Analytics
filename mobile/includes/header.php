@@ -12,7 +12,7 @@ if ($lang != ""){
 header("Content-Type: text/html; charset=UTF-8");
 ?>
 <!DOCTYPE html>
-<!--  html manifest="DigitalCampusAnalytics.manifest"-->
+<html manifest="DigitalCampusAnalytics.manifest">
 <html>
 <head>
     <title><?php echo getstring("app.name");?></title>
@@ -23,7 +23,7 @@ header("Content-Type: text/html; charset=UTF-8");
 <div id="page">
 	<div id="header">
 		<div id="header-logo">
-			<img style="vertical-align:middle" src="<?php echo $CONFIG->homeAddress; ?>images/dc_logo.png"/>
+			<img style="vertical-align:middle" src="<?php echo $CONFIG->homeAddress; ?>mobile/images/dclogo.png"/>
 		</div>
 		<div id="header-title">
 			<h1><?php echo getstring("mobile.app.name");?></h1>
