@@ -145,80 +145,57 @@
 <tr class='rrow'>
 	<td colspan="2" class="sh"><?php echo getstring('section.examination');?></td>
 </tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_WEIGHT');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_WEIGHT; ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_HEIGHT');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_HEIGHT; ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_BLOODPRESSURE');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_SYSTOLICBP."/".$patient->ancfirst->Q_DIASTOLICBP; ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_PALLORANEMIA');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_PALLORANEMIA; ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_CARDIACPULSE');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_CARDIACPULSE; ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_EDEMA');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_EDEMA; ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_FUNDALHEIGHT');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_FUNDALHEIGHT; ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_GESTATIONALAGE');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_GESTATIONALAGE; ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_PRESENTATION');?></td>
-	<td class="rdcell"><?php 
-		if ($patient->ancfirst->Q_PRESENTATION != ""){
-			echo getstring('Q_PRESENTATION.'.$patient->ancfirst->Q_PRESENTATION);
-		} ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_FETALHEARTRATEAUDIBLE');?></td>
-	<td class="rdcell"><?php 
-		if ($patient->ancfirst->Q_FETALHEARTRATEAUDIBLE != ""){
-			echo getstring('Q_FETALHEARTRATEAUDIBLE.'.$patient->ancfirst->Q_FETALHEARTRATEAUDIBLE);
-		}
-	 ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_FETALHEARTRATE24W');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_FETALHEARTRATE24W; ?></td>
-</tr>
-<tr class='rrow'>
-	<td colspan="3" class="sh"><?php echo getstring('section.checklist');?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_APPOINTMENTDATE');?></td>
-	<td class="rdcell"><?php echo displayAsEthioDate(strtotime($patient->ancfirst->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($patient->ancfirst->Q_APPOINTMENTDATE)); ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_IDCARD');?></td>
-	<td class="rdcell"><?php echo getstring("Q_IDCARD.".$patient->ancfirst->Q_IDCARD); ?></td>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_LOCATION');?></td>
-	<td class="rdcell"><?php echo getstring("Q_LOCATION.".$patient->ancfirst->Q_LOCATION); ?></td>
-</tr>
-<?php if($patient->ancfirst->Q_GPSDATA_LAT != ""){
+<?php 
+		
+	$q_presentation = "";
+	if ($patient->ancfirst->Q_PRESENTATION != ""){
+		$q_presentation = getstring("Q_PRESENTATION.".$patient->ancfirst->Q_PRESENTATION);
+	}
+	$q_fetalheartrateaudible = "";
+	if ($patient->ancfirst->Q_FETALHEARTRATEAUDIBLE != ""){
+		$q_fetalheartrateaudible = getstring("Q_FETALHEARTRATEAUDIBLE.".$patient->ancfirst->Q_FETALHEARTRATEAUDIBLE);
+	}
+	
+	$rowArray = array(
+					'Q_WEIGHT' => $patient->ancfirst->Q_WEIGHT,
+					'Q_HEIGHT' => $patient->ancfirst->Q_HEIGHT,
+					'Q_BLOODPRESSURE' => $patient->ancfirst->Q_SYSTOLICBP."/".$patient->ancfirst->Q_DIASTOLICBP,
+					'Q_PALLORANEMIA' => $patient->ancfirst->Q_PALLORANEMIA,
+					'Q_CARDIACPULSE' => $patient->ancfirst->Q_CARDIACPULSE,
+					'Q_EDEMA' => $patient->ancfirst->Q_EDEMA,
+					'Q_FUNDALHEIGHT' => $patient->ancfirst->Q_FUNDALHEIGHT,
+					'Q_GESTATIONALAGE' => $patient->ancfirst->Q_GESTATIONALAGE,
+					'Q_PRESENTATION' => $q_presentation,
+					'Q_FETALHEARTRATEAUDIBLE' => $q_fetalheartrateaudible,
+					'Q_FETALHEARTRATE24W' => $patient->ancfirst->Q_FETALHEARTRATE24W
+					);
+	foreach ($rowArray as $k=>$v){
+		generateANCFirstRow(getstring($k),$v);
+	}
+
 ?>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('Q_GPSDATA');?></td>
-	<td class="rdcell"><?php echo $patient->ancfirst->Q_GPSDATA_LAT.",".$patient->ancfirst->Q_GPSDATA_LNG; ?></td>
+
+<tr class='rrow'>
+	<td colspan="2" class="sh"><?php echo getstring('section.checklist');?></td>
 </tr>
 
 <?php 
-}
+	
+	$q_gpsdata = "";
+	if ($patient->ancfirst->Q_GPSDATA_LAT != ""){
+		$q_gpsdata = $patient->ancfirst->Q_GPSDATA_LAT.",".$patient->ancfirst->Q_GPSDATA_LNG;
+	}
+	$rowArray = array(
+					'Q_APPOINTMENTDATE' => displayAsEthioDate(strtotime($patient->ancfirst->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($patient->ancfirst->Q_APPOINTMENTDATE)),
+					'Q_IDCARD' => $patient->ancfirst->Q_IDCARD,
+					'Q_LOCATION' => getstring("Q_LOCATION.".$patient->ancfirst->Q_LOCATION),
+					'Q_GPSDATA' => $q_gpsdata,
+					
+	);
+	foreach ($rowArray as $k=>$v){
+		generateANCFirstRow(getstring($k),$v);
+	}
+
 ?>
+
 </table>

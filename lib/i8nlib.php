@@ -69,7 +69,7 @@ function gregorianToEthio($year, $month, $day){
 	            + floor($r / 365 )
 	            - floor( $r / 1460 );
 	$date['month'] = floor( $n / 30 ) + 1 ;
-	$date['mtext'] = getstring('ethio.month.'.($date['month']-1));
+	$date['mtext'] = getstring('ethio.month.'.$date['month']);
 	$date['day']   = ( $n % 30 ) + 1 ;
 	
 	return $date;
