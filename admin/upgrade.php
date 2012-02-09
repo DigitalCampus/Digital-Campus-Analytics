@@ -203,6 +203,27 @@ if ($currentDBversion < 7){
 	echo "Upgraded to version 7\n";
 }
 
+if ($currentDBversion < 8){
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('target.protocols', '100', 'Target number of protocols which should be submitted per health point')";
+	$API->runSql($sql);
+	//now update the db version prop
+	$API->setSystemProperty('database.version','8');
+	echo "Upgraded to version 8\n";
+}
+	
+if ($currentDBversion < 9){
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('mobile.deliveries.nodays', '31', 'Show deliveries due in the next number of days')";
+	$API->runSql($sql);
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+					('mobile.tasks.nodays', '31', 'Show tasks due in the next number of days')";
+	$API->runSql($sql);
+	//now update the db version prop
+	$API->setSystemProperty('database.version','9');
+	echo "Upgraded to version 9\n";
+}
+
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";

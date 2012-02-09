@@ -38,10 +38,10 @@ foreach($cohorthealthpoints as $hp){
 
 $currentopts = $opts;
 if($hpcode == 'overall'){
-	$currentopts['hps'] = $cohorthps;
+	$currentopts['hpcodes'] = $cohorthps;
 	$currentHPname = "Overall";
 } else {
-	$currentopts['hps'] = $hpcode;
+	$currentopts['hpcodes'] = $hpcode;
 }
 
 $ra = new RiskAssessment();

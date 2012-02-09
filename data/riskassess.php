@@ -504,18 +504,18 @@ class RiskAssessment {
 	
 	function getRiskStatistics($opts=array()){
 		global $API;
-		if(array_key_exists('hps',$opts)){
-			$hps = $opts['hps'];
+		if(array_key_exists('hpcodes',$opts)){
+			$hps = $opts['hpcodes'];
 		} else {
-			$hps = $API->getUserHealthPointPermissions();
+			$hps = $API->getUserHealthPointPermissions(true);
 		}
 		
 		$sql = sprintf("SELECT COUNT(*) as riskcatcount, riskcategory
 						FROM cache_risk_category crc
 						INNER JOIN patientcurrent pc ON pc.hpcode = crc.hpcode AND pc.patid = crc.userid
 						INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
-							WHERE (hpcode IN (".$API->getUserHealthPointPermissions().") 
-							OR visithpcode IN (".$API->getUserHealthPointPermissions().") )");
+							WHERE (hpcode IN (".$API->getUserHealthPointPermissions(true).") 
+							OR visithpcode IN (".$API->getUserHealthPointPermissions(true).") )");
 		
 		$sql .= " AND ( hpcode IN (".$hps.")";
 		$sql .= " OR visithpcode IN (".$hps."))";

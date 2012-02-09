@@ -83,7 +83,7 @@ $LANG['menu.report'] = 'Reports';
 $LANG['menu.stats'] = 'Statistics';
 $LANG['menu.submitted'] = 'Submitted Protocols';
 
-$LANG['mobile.app.name'] = 'Health Analytics';
+$LANG['mobile.app.name'] = 'Health<br/>Analytics';
 $LANG['mobile.login.title'] = 'Login';
 
 $LANG['mobile.kpi.heading.lastmonth'] = 'Last Month';
@@ -94,13 +94,15 @@ $LANG['mobile.kpi.anc2'] = 'ANC2 on time';
 $LANG['mobile.kpi.protocols'] = 'Protocols submitted';
 $LANG['mobile.kpi.tt1'] = 'TT1 on time';
 
+$LANG['mobile.menu.compare'] = 'Compare';
 $LANG['mobile.menu.deliveries'] = 'Deliveries';
-$LANG['mobile.menu.kpi'] = 'Indicators';
+$LANG['mobile.menu.kpi'] = 'Statistics';
 $LANG['mobile.menu.overdue'] = 'Overdue';
 $LANG['mobile.menu.tasks'] = 'Tasks';
 
 $LANG['mobile.title.deliveries'] = 'Deliveries Due';
-$LANG['mobile.title.kpi'] = 'Indicators';
+$LANG['mobile.title.risk'] = 'Risk Distribution';
+$LANG['mobile.title.kpis'] = 'Performance Indicators';
 $LANG['mobile.title.overdue'] = 'Overdue Tasks';
 $LANG['mobile.title.tasks'] = 'Tasks Due';
 
