@@ -12,7 +12,6 @@ if ($lang != ""){
 header("Content-Type: text/html; charset=UTF-8");
 ?>
 <!DOCTYPE html>
-<html manifest="DigitalCampusAnalytics.manifest">
 <html>
 <head>
     <title><?php echo getstring("app.name");?></title>

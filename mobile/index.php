@@ -13,9 +13,9 @@ $date2monthago->sub(new DateInterval('P2M'));
 
 $opts = array();
 if($USER->getProp('permissions.role') == 'hew' || $USER->getProp('permissions.role') == 'midwife'){
-	$opts['hpcodes'] = $USER->hpcode;
+	$opts['hpcodes'] = optional_param('hpcodes',$USER->hpcode,PARAM_TEXT);
 } else {
-	$opts['hpcodes'] = $API->getUserHealthPointPermissions();
+	$opts['hpcodes'] = optional_param('hpcodes',$API->getUserHealthPointPermissions(),PARAM_TEXT);
 }
 $opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
@@ -25,12 +25,6 @@ $anc2thismonth = $API->getANC2Defaulters($opts);
 $nosubmittedthismonth = $API->getProtocolsSubmitted_Cache($opts);
 //$tt1thismonth = $API->getTT1Defaulters($opts);
 
-$opts = array();
-if($USER->getProp('permissions.role') == 'hew' || $USER->getProp('permissions.role') == 'midwife'){
-	$opts['hpcodes'] = $USER->hpcode;
-} else {
-	$opts['hpcodes'] = $API->getUserHealthPointPermissions();
-}
 $opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
 $opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
 
@@ -38,6 +32,16 @@ $anc1previousmonth = $API->getANC1Defaulters($opts);
 $anc2previousmonth= $API->getANC2Defaulters($opts);
 $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 //$tt1previousmonth = $API->getTT1Defaulters($opts);
+
+if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.role') != 'midwife'){
+?>
+<form action="" method="get" class="printhide" name="hpselectform" name="hpselectform" style="text-align:center;padding:5px">
+	<select name="hpcodes" onchange="document.hpselectform.submit();">
+		<?php displayHealthPointSelectList($opts['hpcodes']);?>
+	</select>
+</form>
+<?php 
+}
 ?>
 <div class="kpiheader">
 	<div class="kpiscore"><?php echo getstring('mobile.kpi.heading.lastmonth'); ?></div>
@@ -60,7 +64,9 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	 	}
 	?>
 	</div>
-	<div class="kpitarget">--</div>
+	<div class="kpitarget"><?php 
+			// multiply the target no of protocosl by the number of hpcodes
+			echo $CONFIG->props['target.protocols']*count(explode(',',$opts['hpcodes'])); ?></div>
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
