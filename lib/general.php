@@ -21,9 +21,9 @@ function displayHealthPointSelectList($selected){
 	
 	if(count($districts) > 1){
 		if($selected == 'overall'){
-			printf("<option value='overall' selected='selected'>Overall</option>");
+			printf("<option value='overall' selected='selected'>%s</option>",getstring('overall'));
 		} else {
-			printf("<option value='overall'>Overall</option>");
+			printf("<option value='overall'>%s</option>",getstring('overall'));
 		}
 	
 		printf("<option value='' disabled='disabled'>---</option>");

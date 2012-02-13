@@ -132,6 +132,7 @@ $LANG['mobile.title.overdue'] = 'Overdue Tasks';
 $LANG['mobile.title.tasks'] = 'Tasks Due';
 
 $LANG['name'] = 'Name';
+$LANG['overall'] = 'Overall';
 $LANG['patientlocation'] = 'Patient Location';
 $LANG['patientmanager.form.healthpost'] = 'Select location:';
 $LANG['patientmanager.form.patientid'] = 'Enter user id number:';
