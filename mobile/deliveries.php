@@ -21,7 +21,7 @@ foreach($deliveries as $delivery){
 	if($delivery->patientname == ""){
 		$delivery->patientname = sprintf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));
 	}
-	printf("<div class='deltaskleft'>%s<br/><small>%s/%s</small></div>",$delivery->patientname,$delivery->patientlocation,$delivery->userid);
+	printf("<div class='deltaskleft'>%s<br/><small>%s</small></div>",$delivery->patientname,displayHealthPointName($delivery->hpcode,$delivery->userid));
 	
 	$risks = $ra->getRisks_Cache($delivery->hpcode, $delivery->userid);
 	printf("<div class='deltaskright'>%s<ul>",getstring("risk.".$risks->category));

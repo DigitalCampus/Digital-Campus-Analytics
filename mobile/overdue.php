@@ -29,7 +29,7 @@ foreach($tasks as $task){
 	}
 	
 	printf("<div class='taskleft'>%s</div>",getstring($task->protocol));
-	printf("<div class='taskright'>%s<br/><small>%s/%s</small></div>",$task->patientname,$task->patientlocation,$task->userid);
+	printf("<div class='taskright'>%s<br/><small>%s</small></div>",$task->patientname,displayHealthPointName($task->hpcode,$task->userid));
 	$risks = $ra->getRisks_Cache($task->hpcode, $task->userid);
 	if($risks->category != 'none'){
 		printf("<div class='taskhighrisk'><img src='images/red-dot.png'/></div>");

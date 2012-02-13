@@ -30,36 +30,36 @@ function displayHealthPointSelectList($selected){
 	}
 	foreach($districtArray as $k=>$v){
 		if(strcasecmp($selected,$k) == 0){
-			printf("<option value='%s' selected='selected'>%s</option>", $k,$v);
+			printf("<option value='%s' selected='selected'>%s</option>", $k,getNameFromHPCodes($k,true));
 		} else {
-			printf("<option value='%s'>%s</option>", $k,$v);
+			printf("<option value='%s'>%s</option>", $k,getNameFromHPCodes($k,true));
 		}
 	}
 	printf("<option value='' disabled='disabled'>---</option>");
 	foreach($cohort as $chp){
 		if(strcasecmp($selected,$chp->hpcode) == 0){
-			printf("<option value='%s' selected='selected'>%s</option>", $chp->hpcode,$chp->hpname);
+			printf("<option value='%s' selected='selected'>%s</option>", $chp->hpcode,displayHealthPointName($chp->hpcode));
 		} else {
-			printf("<option value='%s'>%s</option>", $chp->hpcode,$chp->hpname);
+			printf("<option value='%s'>%s</option>", $chp->hpcode,displayHealthPointName($chp->hpcode));
 		}
 	}
 }
 
 
-function getNameFromHPCodes($hpcodes){
+function getNameFromHPCodes($hpcodes,$district = false){
 	global $API;
 	// set it to be overall - default
 	$name ='Overall';
 	$hps = $API->getHealthPoints(true);
 	
 	$hpcodesArray = explode(',',$hpcodes);
-	if (count($hpcodesArray) == 1){
+	if (count($hpcodesArray) == 1 && !$district){
 		foreach($hps as $hp){
 			if($hp->hpcode == $hpcodesArray[0]){
-				$name = $hp->hpname;
+				$name = getString('healthpoint.id.'.$hp->hpcode);
 			}
 		}
-	} elseif (count($hpcodesArray) > 1){
+	} else {
 		$districts = $API->getDistricts();
 		foreach($districts as $d){
 			//get the hps for this district
@@ -70,7 +70,7 @@ function getNameFromHPCodes($hpcodes){
 			}
 			$hps = implode(",",$temp);
 			if($hps == $hpcodes){
-				$name = $d->dname;
+				$name = getstring('district.id.'.$d->did);
 			}
 		}
 	}

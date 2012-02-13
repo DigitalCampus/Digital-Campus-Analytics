@@ -6,6 +6,4 @@
 	<a href="tasks.php"><?php echo getstring('mobile.menu.tasks');?></a>
 	| 
 	<a href="overdue.php"><?php echo getstring('mobile.menu.overdue');?></a>
-	| 
-	<a href="compare.php"><?php echo getstring('mobile.menu.compare');?></a>
 </div>

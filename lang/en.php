@@ -37,6 +37,11 @@ $LANG['day.5'] = 'Fri';
 $LANG['day.6'] = 'Sat';
 $LANG['day.7'] = 'Sun';
 
+$LANG['district.id.1'] = 'Hinatalo wajerat District';
+$LANG['district.id.2'] = 'Kilteawelaelo District';
+$LANG['district.id.3'] = 'Testing';
+$LANG['district.id.4'] = 'Mekelle';
+
 $LANG['dob'] = 'Date of birth';
 $LANG['education'] = 'Education Level';
 $LANG['ethiocal'] = '(Ethiopian calendar)';
@@ -60,6 +65,26 @@ $LANG['header.loggedinas'] = 'Logged in as: ';
 $LANG['header.logout'] = 'logout';
 $LANG['header.notloggedin'] = 'Not logged in';
 $LANG['healthpoint'] = 'Health post/centre';
+
+$LANG['healthpoint'] = 'Health post/centre';
+$LANG['healthpoint.id.0'] = "Digital Campus Team";
+$LANG['healthpoint.id.1000'] = "Mesanu - Kilteawelaelo health post";
+$LANG['healthpoint.id.1001'] = "Ayanlem health post";
+$LANG['healthpoint.id.1002'] = "Gemad health post";
+$LANG['healthpoint.id.1003'] = "Negash health post";
+$LANG['healthpoint.id.1004'] = "Tsadanaele health post";
+$LANG['healthpoint.id.1005'] = "Maynebri health post";
+$LANG['healthpoint.id.1006'] = "Ara Alemseged health post";
+$LANG['healthpoint.id.1007'] = "Hagerselam health post";
+$LANG['healthpoint.id.1008'] = "Mesanu - Hintalowajerat health post";
+$LANG['healthpoint.id.1009'] = "Frewoyni health post";
+$LANG['healthpoint.id.50001'] = "Abraha Atsbha health centre";
+$LANG['healthpoint.id.50002'] = "Adigudom health centre";
+$LANG['healthpoint.id.50003'] = "Agulae health centre";
+$LANG['healthpoint.id.50004'] = "Hiwane health centre";
+$LANG['healthpoint.id.50005'] = "Negash health centre";
+$LANG['healthpoint.id.70001'] = "Ayder Referal Hospital";
+$LANG['healthpoint.id.9999'] = "Practice only";
 
 $LANG['hpcode'] = 'Health Point Code';
 $LANG['kpi.form.healthpost'] = 'Select location';

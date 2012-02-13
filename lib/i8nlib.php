@@ -84,3 +84,10 @@ function displayAsEthioDate($datestamp){
 	return sprintf('%s %d %s %d',$dow,$date['day'],$date['mtext'],$date['year']);
 }
 
+function displayHealthPointName($hpcode,$userid = ''){
+	$str = getString('healthpoint.id.'.$hpcode);
+	if($userid != ''){
+		$str .= "/".$userid;
+	}
+	return $str;
+}
