@@ -22,7 +22,7 @@ foreach($deliveries as $delivery){
 		$delivery->patientname = sprintf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));
 	}
 	printf("<div class='deltaskleft'>%s<br/><small>%s</small></div>",$delivery->patientname,displayHealthPointName($delivery->hpcode,$delivery->userid));
-	
+
 	$risks = $ra->getRisks_Cache($delivery->hpcode, $delivery->userid);
 	printf("<div class='deltaskright'>%s<ul>",getstring("risk.".$risks->category));
 	foreach ($risks->risks as $s){
