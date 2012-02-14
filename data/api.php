@@ -1634,8 +1634,8 @@ class API {
 						ct.protocol
 					FROM cache_tasks ct 
 				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
-					WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
-					OR visithpcode IN (".$this->getUserHealthPointPermissions().") )";
+					WHERE (hpcode IN (".$this->getUserHealthPointPermissions(true).") 
+					OR visithpcode IN (".$this->getUserHealthPointPermissions(true).") )";
 		if ($this->getIgnoredHealthPoints() != ""){
 			$sql .= " AND  hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
@@ -1645,9 +1645,9 @@ class API {
 		}
 		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
 		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
-		$sql .= sprintf(" WHERE ct.datedue < DATE_FORMAT(NOW(),'%%Y-%%m-%%d 00:00:00')");
+		$sql .= sprintf(" WHERE ct.datedue < DATE_FORMAT(NOW(),'%%Y-%%m-%%d 00:00:00')
+							AND ct.datedue > DATE_ADD(now(), INTERVAL -%d DAY)",$days);
 		$sql .= " ORDER BY datedue DESC";
-		
 		$tasks = array();
 		$result = $this->runSql($sql);
 		while($o = mysql_fetch_object($result)){

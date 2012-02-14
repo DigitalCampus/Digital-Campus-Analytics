@@ -7,7 +7,7 @@ $opts = array("days"=>$CONFIG->props['overdue.ignore']);
 if($USER->getProp('permissions.role') == 'hew' || $USER->getProp('permissions.role') == 'midwife'){
 	$opts['hpcodes'] = $USER->hpcode;
 } else {
-	$opts['hpcodes'] = $API->getUserHealthPointPermissions();
+	$opts['hpcodes'] = $API->getUserHealthPointPermissions(true);
 }
 
 $tasks = $API->getOverdueTasks($opts);

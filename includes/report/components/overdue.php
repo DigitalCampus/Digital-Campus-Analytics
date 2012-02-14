@@ -1,6 +1,6 @@
 <?php 
 
-$opts = array("days"=>$days,'hpcodes'=>$report->hpcodes);
+$opts = array("days"=>$CONFIG->props['overdue.ignore'],'hpcodes'=>$report->hpcodes);
 $tasks = $API->getOverdueTasks($opts);
 
 if(count($tasks)>0){
