@@ -1456,7 +1456,7 @@ class API {
 		$submitted = $this->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
 		$toupdate = array();
 		foreach($submitted->protocols as $s){
-			$toupdate[$s->Q_HEALTHPOINTID."/".$s->Q_USERID] = true;
+			$toupdate[$s->patienthpcode."/".$s->Q_USERID] = true;
 		}
 		
 		foreach($toupdate as $k=>$v){
@@ -1466,6 +1466,9 @@ class API {
 			$patient = $this->getPatient(array('hpcode'=>$hpcode,'patid'=>$userid));
 			// empty the cache for this patient 
 			$this->cacheDeleteTasks($userid,$hpcode);
+			
+			
+			
 			
 			$edd = "";
 			
@@ -1489,7 +1492,21 @@ class API {
 			// get their most recent EDD to enter delivery date 
 			if(!isset($patient->delivery) && count($patient->pnc)==0 && $edd != ''){
 				$this->cacheAddTask($userid, $hpcode, $edd, PROTOCOL_DELIVERY);
+				
+				// if they are due for Lab test
+				if(!isset($patient->labtest) && isset($patient->ancfirst)){
+					$date = new DateTime($patient->ancfirst->CREATEDON);
+					$date->add(new DateInterval('P4M'));
+				
+					//if this date is greater than the delivery, make it the day before delivery
+					if($date > $edd){
+						$date = new DateTime($edd);
+					}
+					$this->cacheAddTask($userid, $hpcode, $date->format('Y-m-d'), PROTOCOL_ANCLABTEST);
+				}
 			}
+			
+			
 			
 			// based on when due for first PNC
 			if($edd != "" && !isset($patient->delivery) && count($patient->pnc)==0){
@@ -1510,6 +1527,7 @@ class API {
 					$this->cacheAddTask($userid, $hpcode, $patient->pnc[count($patient->pnc)-1]->Q_APPOINTMENTDATE,PROTOCOL_PNC);
 				}
 			}
+			
 		}
 	}
 	
@@ -1530,7 +1548,7 @@ class API {
 		$submitted = $this->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
 		$toupdate = array();
 		foreach($submitted->protocols as $s){
-			$toupdate[$s->Q_HEALTHPOINTID."/".$s->Q_USERID] = true;
+			$toupdate[$s->patienthpcode."/".$s->Q_USERID] = true;
 		}
 	
 		foreach($toupdate as $k=>$v){
