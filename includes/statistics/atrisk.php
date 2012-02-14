@@ -1,51 +1,16 @@
 <?php 
 
-$userhealthpoints = $API->getHealthPoints();
-$currentHPname = "";
-$cohorthealthpoints = $API->getCohortHealthPoints();
-$districts = $API->getDistricts();
+$hpcodes = optional_param("hpcodes",$USER->hpcode,PARAM_TEXT);
+if($hpcodes == 'overall'){
+	$hpcodes = $API->getUserHealthPointPermissions();
+}
+
 $opts = array();
-$cohorthps = array();
-foreach ($cohorthealthpoints as $k=>$v){
-	array_push($cohorthps, $k);
-}
-$cohorthps = implode(',',$cohorthps);
-
-$hpcode = optional_param("hpcode",$USER->hpcode,PARAM_TEXT);
-
-$AverageArray = array();
-$ComparisonHPArray = array();
-foreach($districts as $d){
-	//get the hps for this district
-	$hps4district = $API->getHealthPointsForDistict($d->did);
-	$temp = array();
-	foreach($hps4district as $h){
-		array_push($temp,$h->hpcode);
-	}
-	$hps = implode(",",$temp);
-	$AverageArray[$hps] = $d->dname;
-	if($hpcode == $hps){
-		$currentHPname = $d->dname;
-	}
-}
-foreach($cohorthealthpoints as $hp){
-	$ComparisonHPArray[$hp->hpcode] = $hp->hpname;
-	if($hpcode == $hp->hpcode){
-		$currentHPname = $hp->hpname;
-	}
-}
-
-
-$currentopts = $opts;
-if($hpcode == 'overall'){
-	$currentopts['hpcodes'] = $cohorthps;
-	$currentHPname = "Overall";
-} else {
-	$currentopts['hpcodes'] = $hpcode;
-}
+$opts['hpcodes'] = $hpcodes;
+$currenthpname = getNameFromHPCodes($hpcodes);
 
 $ra = new RiskAssessment();
-$risks = $ra->getRiskStatistics($currentopts);
+$risks = $ra->getRiskStatistics($opts);
 
 
 $summary = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0);
@@ -59,9 +24,9 @@ foreach($risks as $k=>$v){
 <div class="comparison">
 <form action="" name="compareHealthPoint" method="get">
 	<p>Show:
-	<select name="hpcode">
+	<select name="hpcodes">
 		<?php 
-			outputSelectList($districts,$AverageArray,$ComparisonHPArray,$currentopts['hps']);
+			displayHealthPointSelectList($opts['hpcodes']);
 		?>
 	</select>
 	<input type="hidden" name="stat" value="atrisk">
@@ -98,7 +63,7 @@ if ($total == 0){
 			var options = {
 				width: <?php echo $viewopts['width']; ?>, 
 				height: <?php echo $viewopts['height']; ?>,
-				title: '<?php echo $currentHPname; ?>',
+				title: '<?php echo $currenthpname; ?>',
 				chartArea:{left:50,top:20,width:"90%",height:"75%"},
 			};
 	
@@ -113,31 +78,4 @@ if ($total == 0){
 
 <?php 
 } 
-function outputSelectList($districts,$AverageArray,$ComparisonHPArray,$selected){
-	if(count($districts) > 1){
-		if($selected == 'average'){
-			printf("<option value='overall' selected='selected'>Overall</option>");
-		} else {
-			printf("<option value='overall'>Overall</option>");
-		}
-		
-		printf("<option value='' disabled='disabled'>---</option>");
-	}
-	foreach($AverageArray as $k=>$v){
-		if(strcasecmp($selected,$k) == 0){
-			printf("<option value='%s' selected='selected'>%s</option>", $k,$v);
-		} else {
-			printf("<option value='%s'>%s</option>", $k,$v);
-		}
-	}
-	printf("<option value='' disabled='disabled'>---</option>");
-	
-	foreach($ComparisonHPArray as $k=>$v){
-		if(strcasecmp($selected,$k) == 0){
-			printf("<option value='%s' selected='selected'>%s</option>", $k,$v);
-		} else {
-			printf("<option value='%s'>%s</option>", $k,$v);
-		}
-	}
-}
 ?>

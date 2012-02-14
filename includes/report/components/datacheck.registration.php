@@ -24,8 +24,8 @@ if(count($unregistered)>0){
 							$o->protocol
 							);
 				printf("<td nowrap>%s<br/>%s</td>",displayAsEthioDate($d), date('D d M Y',$d));
-				printf("<td nowrap>%s (%s)</td>",$o->submittedname,$o->protocollocation);
-				echo "<td nowrap>".$o->patientlocation."/".$o->Q_USERID."</td>";
+				printf("<td nowrap>%s (%s)</td>",$o->submittedname,displayHealthPointName($o->protocolhpcode));
+				echo "<td nowrap>".displayHealthPointName($o->patienthpcode,$o->Q_USERID)."</td>";
 				echo "<td nowrap>".getstring($o->protocol)."</td>";
 				echo "</tr>";
 			}

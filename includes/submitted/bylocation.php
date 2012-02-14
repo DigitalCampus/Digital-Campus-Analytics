@@ -13,23 +13,23 @@ foreach($submitted->protocols as $s){
 	$d = date('d M Y',strtotime($s->datestamp));
 
 	if(array_key_exists($d,$summary)){
-		if(isset($summary[$d][$s->protocollocation])){
-			$summary[$d][$s->protocollocation] += 1;
+		if(isset($summary[$d][$s->protocolhpcode])){
+			$summary[$d][$s->protocolhpcode] += 1;
 		} else {
-			$summary[$d][$s->protocollocation] = 1;
+			$summary[$d][$s->protocolhpcode] = 1;
 		}
 	} else {
-		$summary[$d][$s->protocollocation] = 1;
+		$summary[$d][$s->protocolhpcode] = 1;
 	}	
 	
-	if(!in_array($s->protocollocation,$locations)){
-		array_push($locations, $s->protocollocation);
+	if(!in_array($s->protocolhpcode,$locations)){
+		array_push($locations, $s->protocolhpcode);
 	}
 }	
 
 foreach($healthpoints as $hp){
-	if(!in_array($hp->hpname,$locations)){
-		array_push($locations, $hp->hpname);
+	if(!in_array($hp->hpcode,$locations)){
+		array_push($locations, $hp->hpcode);
 	}
 }
 
@@ -50,7 +50,7 @@ sort($locations);
         data.addColumn('number', 'Total');
 		<?php 
         foreach($locations as $l){
-        	echo "data.addColumn('number', '".$l."');";
+        	echo "data.addColumn('number', '".displayHealthPointName($l)."');";
         }
         
         echo "data.addRows(".($days+1).");";

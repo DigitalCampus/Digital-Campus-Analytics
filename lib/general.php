@@ -49,7 +49,7 @@ function displayHealthPointSelectList($selected){
 function getNameFromHPCodes($hpcodes,$district = false){
 	global $API;
 	// set it to be overall - default
-	$name ='Overall';
+	$name = getstring('overall');
 	$hps = $API->getHealthPoints(true);
 	
 	$hpcodesArray = explode(',',$hpcodes);

@@ -31,7 +31,7 @@
 														date('D d M Y',strtotime($ancfollow[$x]->CREATEDON)), 
 														displayAsEthioDate(strtotime($ancfollow[$x]->CREATEDON)), 
 														$ancfollow[$x]->submittedname, 
-														$ancfollow[$x]->protocollocation);
+														displayHealthPointName($ancfollow[$x]->protocolhpcode));
 			}
 			echo "</td>";
 		}
@@ -51,7 +51,7 @@
 		for($x=0;$x <count($ancfollow); $x++ ){
 			$data[$x] = array(
 							'Q_USERID' => $ancfollow[$x]->Q_USERID,
-							'Q_HEALTHPOINTID'  => $ancfollow[$x]->patientlocation,
+							'Q_HEALTHPOINTID'  => displayHealthPointName($ancfollow[$x]->patienthpcode),
 							'Q_YEAROFBIRTH'  => $ancfollow[$x]->Q_YEAROFBIRTH,
 							'Q_AGE'  => $ancfollow[$x]->Q_AGE
 			);

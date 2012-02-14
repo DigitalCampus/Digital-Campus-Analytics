@@ -13,7 +13,7 @@ $TITLE = getString("patientmanager.title");
 if($hpcode != "" && $patientid != ""){
 	$patient = $API->getPatient(array('hpcode'=>$hpcode,'patid'=>$patientid));	
 	if (isset($patient) && $patient != false && $patient->regcomplete){
-		$TITLE = sprintf("%s %s - %s",$patient->patientlocation, $patient->Q_USERID, $patient->Q_USERNAME. " ". $patient->Q_USERFATHERSNAME);
+		$TITLE = sprintf("%s %s - %s",displayHealthPointName($patient->patienthpcode), $patient->Q_USERID, $patient->Q_USERNAME. " ". $patient->Q_USERFATHERSNAME);
 	} else if ($patient != false && !$patient->regcomplete) {
 		$TITLE = getstring("warning.patient.notregistered");
 	}
@@ -31,9 +31,9 @@ printf("<h2 class='printhide'>%s</h2>", getString("patientmanager.title"));
 		<?php 
 			foreach($healthposts as $hp){
 				if ($hpcode == $hp->hpcode){
-					printf("<option value='%s' selected='selected'>%s</option>",$hp->hpcode, $hp->hpname);
+					printf("<option value='%s' selected='selected'>%s</option>",$hp->hpcode, displayHealthPointName($hp->hpcode));
 				} else {
-					printf("<option value='%s'>%s</option>",$hp->hpcode, $hp->hpname);
+					printf("<option value='%s'>%s</option>",$hp->hpcode, displayHealthPointName($hp->hpcode));
 				}
 			}
 		?>

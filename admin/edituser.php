@@ -104,9 +104,9 @@ include_once('../includes/menu-admin.php');
 	<?php 
 	foreach($healthpoints as $hp){
 		if($user->hpid == $hp->hpid){
-			printf("<option value='%d' selected='selected'>%s</option>",$hp->hpid,$hp->hpname);
+			printf("<option value='%d' selected='selected'>%s</option>",$hp->hpid,displayHealthPointName($hp->hpcode));
 		} else {
-			printf("<option value='%d'>%s</option>",$hp->hpid,$hp->hpname);
+			printf("<option value='%d'>%s</option>",$hp->hpid,displayHealthPointName($hp->hpcode));
 		}
 	}
 	//echo "<pre>";

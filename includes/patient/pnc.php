@@ -31,7 +31,7 @@
 														date('D d M Y',strtotime($pnc[$x]->CREATEDON)), 
 														displayAsEthioDate(strtotime($pnc[$x]->CREATEDON)), 
 														$pnc[$x]->submittedname, 
-														$pnc[$x]->protocollocation);
+														displayHealthPointName($pnc[$x]->protocolhpcode));
 			}
 			echo "</td>";
 		}
@@ -51,7 +51,7 @@
 		for($x=0;$x <count($pnc); $x++ ){
 			$data[$x] = array(
 							'Q_USERID' => $pnc[$x]->Q_USERID,
-							'Q_HEALTHPOINTID'  => $pnc[$x]->patientlocation,
+							'Q_HEALTHPOINTID'  => displayHealthPointName($pnc[$x]->patienthpcode),
 							'Q_YEAROFBIRTH'  => $pnc[$x]->Q_YEAROFBIRTH,
 							'Q_AGE'  => $pnc[$x]->Q_AGE
 			);

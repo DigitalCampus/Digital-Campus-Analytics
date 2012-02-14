@@ -17,12 +17,12 @@
 																		date('D d M Y',strtotime($patient->ancfirst->CREATEDON)), 
 																		displayAsEthioDate(strtotime($patient->ancfirst->CREATEDON)), 
 																		$patient->ancfirst->submittedname, 
-																		$patient->ancfirst->protocollocation);?></td>
+																		displayHealthPointName($patient->ancfirst->protocolhpcode));?></td>
 </tr>
 <?php 
 	$rowArray = array(
 					'Q_USERID' => $patient->ancfirst->Q_USERID,
-					'Q_HEALTHPOINTID' => $patient->ancfirst->patientlocation,
+					'Q_HEALTHPOINTID' => displayHealthPointName($patient->ancfirst->patienthpcode),
 					'Q_YEAROFBIRTH' => $patient->ancfirst->Q_YEAROFBIRTH,
 					'Q_AGE' => $patient->ancfirst->Q_AGE
 					);

@@ -21,7 +21,7 @@ if(count($highrisk)>0){
 							$hr->userid,
 							PROTOCOL_REGISTRATION
 							);
-				echo "<td nowrap>".$hr->patientlocation."/".$hr->userid."</td>";
+				echo "<td nowrap>".displayHealthPointName($hr->patienthpcode,$hr->userid)."</td>";
 				echo "<td nowrap>";
 				if(trim($hr->patientname) == ""){
 					printf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));

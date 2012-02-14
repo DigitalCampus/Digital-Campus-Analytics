@@ -541,7 +541,7 @@ class RiskAssessment {
 	
 		$sql = sprintf("SELECT crc.*,
 							CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
-							php.hpname as patientlocation
+							crc.hpcode as patienthpcode
 						FROM cache_risk_category crc
 						INNER JOIN patientcurrent pc ON pc.hpcode = crc.hpcode AND pc.patid = crc.userid
 						INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
@@ -553,7 +553,6 @@ class RiskAssessment {
 		}
 		$sql .= ") cv ON cv.userid = crc.userid AND cv.hpcode = crc.hpcode";
 		$sql .= sprintf(" LEFT OUTER JOIN %s r ON (r.Q_USERID = crc.userid AND r.Q_HEALTHPOINTID = crc.hpcode)",TABLE_REGISTRATION);
-		$sql .= "INNER JOIN healthpoint php ON php.hpcode = crc.hpcode";
 		$sql .= " WHERE (pc.pcurrent = 1 OR pc.pcurrent IS NULL)";
 		$sql .= " AND riskcategory ='multiple'";
 		$sql .= " ORDER BY patientname ASC";

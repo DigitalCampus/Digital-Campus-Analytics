@@ -18,7 +18,7 @@
 															date('D d M Y',strtotime($anclabtest[$i]->CREATEDON)),
 															displayAsEthioDate(strtotime($anclabtest[$i]->CREATEDON)),
 															$anclabtest[$i]->submittedname,
-															$anclabtest[$i]->protocollocation);
+															displayHealthPointName($anclabtest[$i]->protocolhpcode));
 			}
 			echo "</td>";
 			echo "<td class='rrcell'></td>";
@@ -44,7 +44,7 @@
 		for($i=0;$i <count($anclabtest); $i++ ){
 			echo "<td class='rdcell'>";
 			if (isset($anclabtest[$i])){
-				echo $anclabtest[$i]->patientlocation;
+				echo displayHealthPointName($anclabtest[$i]->patienthpcode);
 			}
 			echo "</td>";
 			echo "<td class='rrcell'></td>";

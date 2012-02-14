@@ -11,7 +11,7 @@
 																		date('D d M Y',strtotime($patient->CREATEDON)), 
 																		displayAsEthioDate(strtotime($patient->CREATEDON)), 
 																		$patient->submittedname, 
-																		$patient->protocollocation);?></td>
+																		displayHealthPointName($patient->protocolhpcode));?></td>
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_NAME');?></td>
@@ -23,7 +23,7 @@
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_HEALTHPOINTID');?></td>
-	<td class="rdcell"><?php echo $patient->patientlocation; ?></td>
+	<td class="rdcell"><?php echo displayHealthPointName($patient->patienthpcode); ?></td>
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('dob');?><br/><?php echo getstring('ethiocal');?></td>

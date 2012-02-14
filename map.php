@@ -57,13 +57,13 @@ $dayopts = Array(7,14,31);
         ?>
       	var marker<?php echo $hp->hpid; ?> = new google.maps.Marker({
       	      position: new google.maps.LatLng(<?php echo $hp->locationlat.",".$hp->locationlng; ?>),
-      	      title:"<?php echo $hp->hpname; ?>",
+      	      title:"<?php echo displayHealthPointName($hp->hpcode); ?>",
       	      map: map,
       	      icon: '<?php echo $CONFIG->homeAddress; ?>images/mapicons/hospital-building.png'
       	 });
 
       	var infowindow<?php echo $hp->hpid; ?> = new google.maps.InfoWindow({
-      	    content: "<?php echo $hp->hpname; ?>"
+      	    content: "<?php echo displayHealthPointName($hp->hpcode); ?>"
       	});
 
       	google.maps.event.addListener(marker<?php echo $hp->hpid; ?>, 'click', function() {

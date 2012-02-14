@@ -30,7 +30,7 @@ $healthposts = $API->getHealthPosts();
       ?>
     	var marker = new google.maps.Marker({
     	      position: new google.maps.LatLng(<?php echo $hp->locationlat.",".$hp->locationlng; ?>),
-    	      title:"<?php echo $hp->hpname; ?>",
+    	      title:"<?php echo displayHealthPointName($hp->hpcode); ?>",
     	      map: map,
     	      icon: '<?php echo $CONFIG->homeAddress; ?>images/mapicons/hospital-building.png'
     	 });

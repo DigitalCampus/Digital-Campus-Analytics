@@ -22,13 +22,13 @@
 																		date('D d M Y',strtotime($patient->delivery->CREATEDON)),
 																		displayAsEthioDate(strtotime($patient->delivery->CREATEDON)),
 																		$patient->delivery->submittedname,
-																		$patient->delivery->protocollocation);
+																		displayHealthPointName($patient->delivery->protocolhpcode));
 	?></td>
 </tr>
 <?php 
 	$rowArray = array(
 					'Q_USERID' => $patient->delivery->Q_USERID,
-					'Q_HEALTHPOINTID' => $patient->delivery->patientlocation,
+					'Q_HEALTHPOINTID' => displayHealthPointName($patient->delivery->patienthpcode),
 					'Q_YEAROFBIRTH' => $patient->delivery->Q_YEAROFBIRTH,
 					'Q_AGE' => $patient->delivery->Q_AGE
 					);

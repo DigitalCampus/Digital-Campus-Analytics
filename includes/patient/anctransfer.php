@@ -18,7 +18,7 @@
 														date('D d M Y',strtotime($anctransfer[$i]->CREATEDON)), 
 														displayAsEthioDate(strtotime($anctransfer[$i]->CREATEDON)), 
 														$anctransfer[$i]->submittedname, 
-														$anctransfer[$i]->protocollocation);
+														displayHealthPointName($anctransfer[$i]->protocolhpcode));
 			}
 			echo "</td>";
 			echo "<td class='rrcell'></td>";
@@ -44,7 +44,7 @@
 		for($i=0;$i <count($anctransfer); $i++ ){
 			echo "<td class='rdcell'>";
 			if (isset($anctransfer[$i])){
-				echo $anctransfer[$i]->patientlocation;
+				echo displayHealthPointName($anctransfer[$i]->patienthpcode);
 			}
 			echo "</td>";
 			echo "<td class='rrcell'></td>";

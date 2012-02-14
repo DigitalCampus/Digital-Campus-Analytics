@@ -5,7 +5,6 @@ $summary = array();
 $i = 0;
 foreach($cohort as $c){
 	$summary[$i] = new stdClass();
-	$summary[$i]->hpname = $c->hpname;
 	$summary[$i]->hpcode = $c->hpcode;
 	$opts=array('startdate'=>$report->startDate->format('Y-m-d 00:00:00'),'enddate'=>$report->endDate->format('Y-m-d 23:59:59'),'hpcodes'=>$c->hpcode,'limit'=>'0');
 	$nondefaulters = $API->getANC1Defaulters($opts);
@@ -27,7 +26,7 @@ foreach($cohort as $c){
 		<?php 
 			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc1']);
 			foreach($summary as $s){
-				printf("data.addRow(['%s',%d,%d]);",$s->hpname,$s->count,$CONFIG->props['target.anc1']);	
+				printf("data.addRow(['%s',%d,%d]);",displayHealthPointName($s->hpcode),$s->count,$CONFIG->props['target.anc1']);	
 			}
 			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc1']);
 		?>

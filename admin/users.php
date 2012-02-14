@@ -31,8 +31,8 @@ $users = $API->getUsers(true);
 		echo "<tr class='n'>";
 		echo "<td nowrap>".$u->username."</td>";
 		echo "<td nowrap>".$u->firstname." ".$u->lastname."</td>";
-		echo "<td nowrap>".$u->hpname."</td>";
-		echo "<td nowrap>".$u->dname."</td>";
+		echo "<td nowrap>".displayHealthPointName($u->hpcode)."</td>";
+		echo "<td nowrap>".getstring('district.id.'.$u->did)."</td>";
 		echo "<td nowrap><a href='edituser.php?userid=".$u->userid."'>[Edit]</a></td>";
 		echo "</tr>";
 	}

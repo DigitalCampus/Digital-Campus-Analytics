@@ -18,7 +18,7 @@ if(count($tasks)>0){
 			$d = strtotime($t->datedue);
 			echo "<tr class='n'>";
 			echo "<td nowrap>".displayAsEthioDate($d)."<br/>". date('D d M Y',$d)."</td>";
-			echo "<td nowrap>".$t->patientlocation."/".$t->userid."</td>";
+			echo "<td nowrap>".displayHealthPointName($t->patienthpcode,$t->userid)."</td>";
 			echo "<td nowrap>";
 			if(trim($t->patientname) == ""){
 				printf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));

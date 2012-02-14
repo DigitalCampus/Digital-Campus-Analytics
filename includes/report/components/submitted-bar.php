@@ -5,7 +5,6 @@ $summary = array();
 $i = 0;
 foreach($cohort as $c){
 	$summary[$i] = new stdClass();
-	$summary[$i]->hpname = $c->hpname;
 	$summary[$i]->hpcode = $c->hpcode;
 	$opts=array('startdate'=>$report->startDate->format('Y-m-d 00:00:00'),'enddate'=>$report->endDate->format('Y-m-d 23:59:59'),'hpcodes'=>$c->hpcode,'limit'=>'0');
 	$submitted = $API->getProtocolsSubmitted_Cache($opts);
@@ -25,7 +24,7 @@ foreach($cohort as $c){
         data.addColumn('number', 'Number submitted');
 		<?php 
 			foreach($summary as $s){
-				printf("data.addRow(['%s',%d]);",$s->hpname,$s->count);	
+				printf("data.addRow(['%s',%d]);",displayHealthPointName($s->hpcode),$s->count);	
 			}
 		?>
 		

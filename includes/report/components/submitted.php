@@ -25,7 +25,7 @@ if(count($submitted->protocols)>0){
 							);
 				echo "<td nowrap>".displayAsEthioDate($d)."<br/>". date('D d M Y',$d)."</td>";
 				echo "<td nowrap>".$s->submittedname."</td>";
-				echo "<td nowrap>".$s->patientlocation."/".$s->Q_USERID."</td>";
+				echo "<td nowrap>".displayHealthPointName($s->patienthpcode,$s->Q_USERID)."</td>";
 				echo "<td nowrap>";
 				if(trim($s->patientname) == ""){
 					printf("<span class='error'>%s</span>",getstring("warning.patient.notregistered"));

@@ -130,7 +130,8 @@ class API {
 						u.user_uri,
 						hp.hpname,
 						hp.hpcode,
-						d.dname
+						d.dname,
+						d.did
 			 		FROM user u
 					LEFT OUTER JOIN healthpoint hp ON u.hpid = hp.hpid
 					LEFT OUTER JOIN district d ON hp.did = d.did
@@ -144,7 +145,8 @@ class API {
 						u.user_uri,
 						hp.hpname,
 						hp.hpcode,
-						d.dname
+						d.dname,
+						d.did
 			 		FROM user u
 					LEFT OUTER JOIN healthpoint hp ON u.hpid = hp.hpid
 					LEFT OUTER JOIN district d ON hp.did = d.did
@@ -452,9 +454,7 @@ class API {
 	}
 	
 	function getPatient($opts=array()){
-		$sql = "SELECT 	pathp.hpcode,
-						pathp.hpname as patientlocation,
-						hp.hpname as protocollocation,
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
 						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						Q_AGE,
@@ -487,13 +487,12 @@ class API {
 						Q_YEAROFBIRTH,
 						_URI,
 						_CREATION_DATE AS CREATEDON
-				FROM ".TABLE_REGISTRATION." r
-				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
-				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
+				FROM ".TABLE_REGISTRATION." p
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
+				WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 
 	    $result = $this->runSql($sql);
@@ -539,9 +538,7 @@ class API {
 	
 	
 	private function getPatientANCFirst($opts=array()){
-		$sql = "SELECT 	pathp.hpcode,
-						pathp.hpname as patientlocation,
-						hp.hpname as protocollocation,
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
 						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
@@ -623,13 +620,12 @@ class API {
 						Q_YEAROFBIRTH,
 						Q_YOUNGESTCHILD,
 						_CREATION_DATE AS CREATEDON
-				FROM ".TABLE_ANCFIRST." r
-				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
-				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
+				FROM ".TABLE_ANCFIRST." p
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
+				WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions()."))" ;
 		
 		$result = $this->runSql($sql);
@@ -657,9 +653,7 @@ class API {
 	}
 	
 	private function getPatientANCFollow($opts=array()){
-		$sql = "SELECT 	pathp.hpcode,
-						pathp.hpname as patientlocation,
-						hp.hpname as protocollocation,
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
 						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
@@ -719,13 +713,12 @@ class API {
 						Q_WEIGHT,
 						Q_YEAROFBIRTH,
 						_CREATION_DATE AS CREATEDON
-				FROM ".TABLE_ANCFOLLOW." r
-				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
-				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
+				FROM ".TABLE_ANCFOLLOW." p
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' AND r.Q_USERID='".$opts['patid']."'";
+				WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' AND p.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
@@ -741,9 +734,7 @@ class API {
 	}
 	
 	private function getPatientANCTransfer($opts=array()){
-		$sql = "SELECT 	pathp.hpcode,
-						pathp.hpname as patientlocation,
-						hp.hpname as protocollocation,
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
 						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
@@ -781,13 +772,12 @@ class API {
 						Q_YEAROFBIRTH,
 						Q_YOUNGESTCHILD,
 						_CREATION_DATE AS CREATEDON
-				FROM ".TABLE_ANCTRANSFER." r
-				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
-				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
+				FROM ".TABLE_ANCTRANSFER." p
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
+				WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
@@ -821,9 +811,7 @@ class API {
 	}
 	
 	private function getPatientANCLabTest($opts=array()){
-		$sql = "SELECT 	pathp.hpcode,
-						pathp.hpname as patientlocation,
-						hp.hpname as protocollocation,
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
 						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
@@ -845,13 +833,12 @@ class API {
 						Q_USERID,
 						Q_YEAROFBIRTH,
 						_CREATION_DATE AS CREATEDON
-				FROM ".TABLE_ANCLABTEST." r
-				INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
-				INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
+				FROM ".TABLE_ANCLABTEST." p
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
+				WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
@@ -868,9 +855,7 @@ class API {
 	}
 	
 	private function getPatientDelivery($opts=array()){
-		$sql = "SELECT 	pathp.hpcode,
-						pathp.hpname as patientlocation,
-						hp.hpname as protocollocation,
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
 						hp.hpcode as protocolhpcode,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						_URI,
@@ -923,12 +908,11 @@ class API {
 						Q_YEAROFBIRTH,
 						_CREATION_DATE AS CREATEDON
 				FROM ".TABLE_DELIVERY." p
-				INNER JOIN healthpoint pathp ON pathp.hpcode = p.Q_HEALTHPOINTID
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-				WHERE pathp.hpcode = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
+				WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
@@ -980,9 +964,7 @@ class API {
 	}
 	
 	private function getPatientPNC($opts=array()){
-		$sql = "SELECT 	pathp.hpcode,
-							pathp.hpname as patientlocation,
-							hp.hpname as protocollocation,
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
 							hp.hpcode as protocolhpcode,
 							CONCAT(u.firstname,' ',u.lastname) as submittedname,
 							_URI,
@@ -1029,13 +1011,12 @@ class API {
 							Q_VITASUPPL,
 							Q_YEAROFBIRTH,
 							_CREATION_DATE AS CREATEDON
-					FROM ".TABLE_PNC." r
-					INNER JOIN healthpoint pathp ON pathp.hpcode = r.Q_HEALTHPOINTID
-					INNER JOIN user u ON r._CREATOR_URI_USER = u.user_uri 
+					FROM ".TABLE_PNC." p
+					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-					WHERE pathp.hpcode = '".$opts['hpcode']."' and r.Q_USERID='".$opts['patid']."'";
+					WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= " AND (pathp.hpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions()."))" ;
 	
 		$result = $this->runSql($sql);
@@ -1131,11 +1112,8 @@ class API {
 					p._CREATION_DATE as datestamp,
 					p.Q_USERID,
 					CONCAT(p.Q_USERNAME,' ',p.Q_USERFATHERSNAME,' ',p.Q_USERGRANDFATHERSNAME) as patientname,
-					p.Q_HEALTHPOINTID,
-					php.hpcode as patienthpcode,
+					p.Q_HEALTHPOINTID as patienthpcode,
 					hp.hpcode as protocolhpcode,
-					php.hpname as patientlocation,
-					hp.hpname as protocollocation,
 					'".PROTOCOL_REGISTRATION."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					u.userid,
@@ -1147,8 +1125,7 @@ class API {
 					u.user_uri 
 				FROM ".TABLE_REGISTRATION." p 
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		if(isset($days)){
 			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
 		} else {
@@ -1163,11 +1140,8 @@ class API {
 					p._CREATION_DATE as datestamp,
 					p.Q_USERID,
 					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
-					p.Q_HEALTHPOINTID,
-					php.hpcode as patienthpcode,
+					p.Q_HEALTHPOINTID as patienthpcode,
 					hp.hpcode as protocolhpcode,
-					php.hpname as patientlocation,
-					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCFIRST."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					u.userid,
@@ -1180,8 +1154,7 @@ class API {
 				FROM ".TABLE_ANCFIRST." p 
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		if(isset($days)){
 			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
 		} else {
@@ -1194,11 +1167,8 @@ class API {
 					p._CREATION_DATE as datestamp,
 					p.Q_USERID,
 					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
-					p.Q_HEALTHPOINTID,
-					php.hpcode as patienthpcode,
+					p.Q_HEALTHPOINTID as patienthpcode,
 					hp.hpcode as protocolhpcode,
-					php.hpname as patientlocation,
-					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCFOLLOW."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					u.userid,
@@ -1211,8 +1181,7 @@ class API {
 				FROM ".TABLE_ANCFOLLOW." p 
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		if(isset($days)){
 			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
 		} else {
@@ -1226,11 +1195,8 @@ class API {
 					p._CREATION_DATE as datestamp,
 					p.Q_USERID,
 					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
-					p.Q_HEALTHPOINTID,
-					php.hpcode as patienthpcode,
+					p.Q_HEALTHPOINTID as patienthpcode,
 					hp.hpcode as protocolhpcode,
-					php.hpname as patientlocation,
-					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCLABTEST."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					u.userid,
@@ -1243,8 +1209,7 @@ class API {
 				FROM ".TABLE_ANCLABTEST." p 
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		if(isset($days)){
 			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
 		} else {
@@ -1257,11 +1222,8 @@ class API {
 					p._CREATION_DATE as datestamp,
 					p.Q_USERID,
 					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
-					p.Q_HEALTHPOINTID,
-					php.hpcode as patienthpcode,
+					p.Q_HEALTHPOINTID as patienthpcode,
 					hp.hpcode as protocolhpcode,
-					php.hpname as patientlocation,
-					hp.hpname as protocollocation,
 					'".PROTOCOL_ANCTRANSFER."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					u.userid,
@@ -1274,8 +1236,7 @@ class API {
 				FROM ".TABLE_ANCTRANSFER." p 
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-				INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-				INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		if(isset($days)){
 			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
 		} else {
@@ -1289,11 +1250,8 @@ class API {
 						p._CREATION_DATE as datestamp,
 						p.Q_USERID,
 						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
-						p.Q_HEALTHPOINTID,
-						php.hpcode as patienthpcode,
+						p.Q_HEALTHPOINTID as patienthpcode,
 						hp.hpcode as protocolhpcode,
-						php.hpname as patientlocation,
-						hp.hpname as protocollocation,
 						'".PROTOCOL_DELIVERY."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						u.userid,
@@ -1306,8 +1264,7 @@ class API {
 					FROM ".TABLE_DELIVERY." p 
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-					INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		if(isset($days)){
 			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
 		} else {
@@ -1321,11 +1278,8 @@ class API {
 						p._CREATION_DATE as datestamp,
 						p.Q_USERID,
 						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
-						p.Q_HEALTHPOINTID,
-						php.hpcode as patienthpcode,
+						p.Q_HEALTHPOINTID as patienthpcode,
 						hp.hpcode as protocolhpcode,
-						php.hpname as patientlocation,
-						hp.hpname as protocollocation,
 						'".PROTOCOL_PNC."' as protocol,
 						CONCAT(u.firstname,' ',u.lastname) as submittedname,
 						u.userid,
@@ -1338,8 +1292,7 @@ class API {
 					FROM ".TABLE_PNC." p 
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-					INNER JOIN healthpoint php ON php.hpcode = p.Q_HEALTHPOINTID";
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		if(isset($days)){
 			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
 		} else {
@@ -1415,18 +1368,15 @@ class API {
 		$sql .= "	SELECT 	cv.visitdate as datestamp,
 							cv.userid AS Q_USERID,
 							CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
-							php.hpcode as patienthpcode,
+							cv.hpcode as patienthpcode,
 							hp.hpcode as protocolhpcode,
-							php.hpname as patientlocation,
-							hp.hpname as protocollocation,
 							cv.protocol,
 							CONCAT(u.firstname,' ',u.lastname) as submittedname,
 							cv.user_uri 
 					FROM cache_visit cv 
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = cv.userid AND r.Q_HEALTHPOINTID = cv.hpcode)
 					INNER JOIN user u ON cv.user_uri = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
-					INNER JOIN healthpoint php ON php.hpcode = cv.hpcode";
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		if(isset($days)){
 			$sql .= sprintf(" WHERE cv.visitdate >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
 		} else {
@@ -1642,8 +1592,7 @@ class API {
 						ct.datedue,
 						ct.userid,
 						CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
-						ct.hpcode,
-						php.hpname as patientlocation,
+						ct.hpcode as patienthpcode,
 						ct.protocol
 					FROM cache_tasks ct 
 				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
@@ -1658,7 +1607,6 @@ class API {
 		}
 		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
 		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
-		$sql .= " INNER JOIN healthpoint php ON php.hpcode = ct.hpcode";
 		$sql .= sprintf(" WHERE ct.datedue >= DATE_FORMAT(NOW(),'%%Y-%%m-%%d 00:00:00')
 					AND ct.datedue < DATE_ADD(now(), INTERVAL +%d DAY)",$days);
 		$sql .= " ORDER BY datedue ASC";
@@ -1682,8 +1630,7 @@ class API {
 						ct.datedue,
 						ct.userid,
 						CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
-						ct.hpcode,
-						php.hpname as patientlocation,
+						ct.hpcode as patienthpcode,
 						ct.protocol
 					FROM cache_tasks ct 
 				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
@@ -1698,7 +1645,6 @@ class API {
 		}
 		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
 		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
-		$sql .= " INNER JOIN healthpoint php ON php.hpcode = ct.hpcode";
 		$sql .= sprintf(" WHERE ct.datedue < DATE_FORMAT(NOW(),'%%Y-%%m-%%d 00:00:00')");
 		$sql .= " ORDER BY datedue DESC";
 		
@@ -1721,8 +1667,7 @@ class API {
 					ct.datedue,
 					ct.userid,
 					CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
-					ct.hpcode,
-					php.hpname as patientlocation,
+					ct.hpcode as patienthpcode,
 					ct.protocol
 				FROM cache_tasks ct 
 					INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
@@ -1737,7 +1682,6 @@ class API {
 		}
 		$sql .= ") cv ON cv.userid = ct.userid AND cv.hpcode = ct.hpcode" ;
 		$sql .= " LEFT OUTER JOIN ".TABLE_REGISTRATION." R ON ct.userid = R.Q_USERID AND ct.hpcode = R.Q_HEALTHPOINTID";
-		$sql .= " INNER JOIN healthpoint php ON php.hpcode = ct.hpcode";
 		$sql .= sprintf(" WHERE ct.datedue >= DATE_FORMAT(NOW(),'%%Y-%%m-%%d 00:00:00')
 						AND ct.datedue < DATE_ADD(now(), INTERVAL +%d DAY)",$days);
 		$sql .= sprintf(" AND protocol='%s'",PROTOCOL_DELIVERY);
