@@ -57,19 +57,14 @@ if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.ro
 </div>
 <div class="kpi">
 	<div class="kpititle"><?php echo getstring('mobile.kpi.protocols'); ?></div>
-	<div class="kpiscore"><?php echo $nosubmittedthismonth->count; ?></div>
-	<div class="kpichange">
-	<?php 
-		$change = $nosubmittedthismonth->count - $nosubmittedpreviousmonth->count;
-	 	if ($change > 0){
-	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d</span>",'images/increase.png',$change);
-	 	} else if ($change == 0){
-	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0</span>",'images/equal.png',$change);
-	 	} else if ($change < 0){
-	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d</span>",'images/decrease.png',$change);
-	 	}
-	?>
-	</div>
+	<div class="kpiscore"><?php 
+			$change = $nosubmittedthismonth->count - $nosubmittedpreviousmonth->count;
+			if ($change > 0){
+				printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
+			} 
+			echo $nosubmittedthismonth->count;
+	?></div>
+	<div class="kpichange"><?php echo $nosubmittedpreviousmonth->count; ?></div>
 	<div class="kpitarget"><?php 
 			// multiply the target no of protocosl by the number of hpcodes
 			echo $CONFIG->props['target.protocols']*count(explode(',',$opts['hpcodes'])); ?></div>
@@ -77,37 +72,27 @@ if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.ro
 </div>
 <div class="kpi">
 	<div class="kpititle"><?php echo getstring('mobile.kpi.anc1'); ?></div>
-	<div class="kpiscore"><?php echo $anc1thismonth[0]->nondefaulters; ?>%</div>
-	<div class="kpichange">
-	<?php 
+	<div class="kpiscore"><?php 
 		$change = $anc1thismonth[0]->nondefaulters - $anc1previousmonth[0]->nondefaulters;
-	 	if ($change > 0){
-	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d%%</span>",'images/increase.png',$change);
-	 	} else if ($change == 0){
-	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0%%</span>",'images/equal.png',$change);
-	 	} else if ($change < 0){
-	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d%%</span>",'images/decrease.png',$change);
-	 	}
-	?>
-	</div>
+		if ($change > 0){
+			printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
+		}
+		echo $anc1thismonth[0]->nondefaulters; 
+	?>%</div>
+	<div class="kpichange"><?php echo $anc1previousmonth[0]->nondefaulters; ?>%</div>
 	<div class="kpitarget"><?php echo $CONFIG->props['target.anc1']; ?>%</div>
 	<div style="clear:both;"></div>
 </div>
 <div class="kpi">
 	<div class="kpititle"><?php echo getstring('mobile.kpi.anc2'); ?></div>
-	<div class="kpiscore"><?php echo $anc2thismonth[0]->nondefaulters; ?>%</div>
-	<div class="kpichange">
-	<?php 
+	<div class="kpiscore"><?php 
 		$change = $anc2thismonth[0]->nondefaulters - $anc2previousmonth[0]->nondefaulters;
-	 	if ($change > 0){
-	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d%%</span>",'images/increase.png',$change);
-	 	} else if ($change == 0){
-	 		printf("<span class='equal'><img src='%s'class='kpichange'/> 0%%</span>",'images/equal.png',$change);
-	 	} else if ($change < 0){
-	 		printf("<span class='decrease'><img src='%s' class='kpichange'/> %d%%</span>",'images/decrease.png',$change);
-	 	}
-	?>
-	</div>
+		if ($change > 0){
+			printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
+		}
+		echo $anc2thismonth[0]->nondefaulters; 
+	?>%</div>
+	<div class="kpichange"><?php echo $anc2previousmonth[0]->nondefaulters; ?>%</div>
 	<div class="kpitarget"><?php echo $CONFIG->props['target.anc2']; ?>%</div>
 	<div style="clear:both;"></div>
 </div>
