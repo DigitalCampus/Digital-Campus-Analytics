@@ -29,13 +29,13 @@ $LANG['datacheck.unregistered.none'] = 'All users have been registered';
 $LANG['datacheck.unregistered.title'] = 'Unregistered Users';
 $LANG['datacheck.view.info'] = 'View info';
 
-$LANG['day.1'] = 'Mon';
-$LANG['day.2'] = 'Tue';
-$LANG['day.3'] = 'Wed';
-$LANG['day.4'] = 'Thu';
-$LANG['day.5'] = 'Fri';
-$LANG['day.6'] = 'Sat';
-$LANG['day.7'] = 'Sun';
+$LANG['day.1'] = 'ሰኒ';
+$LANG['day.2'] = 'ሰሉስ';
+$LANG['day.3'] = 'ሮብዕ';
+$LANG['day.4'] = 'ሓሙስ';
+$LANG['day.5'] = 'ዓርቢ';
+$LANG['day.6'] = 'ቀዳም';
+$LANG['day.7'] = 'ሰንበት';
 
 $LANG['district.id.1'] = 'ሕንጣሎዋጅራት District';
 $LANG['district.id.2'] = 'ክልተኣወላዕሎ District';
