@@ -9,17 +9,23 @@ header('Content-type:application/json;charset:utf-8');
 $username = optional_param('username','',PARAM_TEXT);
 $password = optional_param('password','',PARAM_TEXT);
 
+$tasks = array();
+
 if($username == ""){
 	$error = new stdClass();
 	$error->error = "You must supply a username";
-	echo json_encode($error);
-	die;
+	array_push($tasks, $error);
 }
 
 if($password == ""){
 	$error = new stdClass();
 	$error->error = "You must supply a password";
-	echo json_encode($error);
+	array_push($tasks, $error);
+	
+}
+
+if($username == "" || $password == ""){
+	echo json_encode($tasks);
 	die;
 }
 
