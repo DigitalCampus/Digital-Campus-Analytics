@@ -18,7 +18,7 @@ if($USER->getProp('permissions.role') == 'hew' || $USER->getProp('permissions.ro
 	$opts['hpcodes'] = optional_param('hpcodes',$API->getUserHealthPointPermissions(),PARAM_TEXT);
 }
 
-if($opts['hpcodes'] == 'overall'){
+if($opts['hpcodes'] == 'all'){
 	$opts['hpcodes'] = $API->getUserHealthPointPermissions();
 }
 

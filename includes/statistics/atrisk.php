@@ -1,7 +1,7 @@
 <?php 
 
 $hpcodes = optional_param("hpcodes",$USER->hpcode,PARAM_TEXT);
-if($hpcodes == 'overall'){
+if($hpcodes == 'all'){
 	$hpcodes = $API->getUserHealthPointPermissions();
 }
 

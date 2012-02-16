@@ -9,14 +9,14 @@ $hpcodes = optional_param("hpcodes",$USER->hpcode,PARAM_TEXT);
 $hpcomparecodes = optional_param("hpcomparecodes",$API->getCohortHealthPoints(true),PARAM_TEXT);
 
 $currentopts = $opts;
-if($hpcodes == 'overall'){
+if($hpcodes == 'all'){
 	$hpcodes = $API->getUserHealthPointPermissions();
 }
 $currentopts['hpcodes'] = $hpcodes;
 $currentHPname = getNameFromHPCodes($hpcodes);
 
 $compareopts = $opts;
-if($hpcomparecodes == 'overall'){
+if($hpcomparecodes == 'all'){
 	$hpcomparecodes = $API->getUserHealthPointPermissions();
 }
 $compareopts['hpcodes'] = $hpcomparecodes;

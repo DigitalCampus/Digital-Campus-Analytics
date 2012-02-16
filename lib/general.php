@@ -20,10 +20,10 @@ function displayHealthPointSelectList($selected){
 	
 	
 	if(count($districts) > 1){
-		if($selected == 'overall'){
-			printf("<option value='overall' selected='selected'>%s</option>",getstring('overall'));
+		if($selected == 'all'){
+			printf("<option value='all' selected='selected'>%s</option>",getstring('report.all'));
 		} else {
-			printf("<option value='overall'>%s</option>",getstring('overall'));
+			printf("<option value='all'>%s</option>",getstring('report.all'));
 		}
 	
 		printf("<option value='' disabled='disabled'>---</option>");
@@ -48,8 +48,8 @@ function displayHealthPointSelectList($selected){
 
 function getNameFromHPCodes($hpcodes,$district = false){
 	global $API;
-	// set it to be overall - default
-	$name = getstring('overall');
+	// set it to be all - default
+	$name = getstring('report.all');
 	$hps = $API->getHealthPoints(true);
 	
 	$hpcodesArray = explode(',',$hpcodes);

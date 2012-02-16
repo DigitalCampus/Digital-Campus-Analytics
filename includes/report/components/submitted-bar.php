@@ -6,7 +6,7 @@ $i = 0;
 foreach($cohort as $c){
 	$summary[$i] = new stdClass();
 	$summary[$i]->hpcode = $c->hpcode;
-	$opts=array('startdate'=>$report->startDate->format('Y-m-d 00:00:00'),'enddate'=>$report->endDate->format('Y-m-d 23:59:59'),'hpcodes'=>$c->hpcode,'limit'=>'0');
+	$opts=array('startdate'=>$report->start,'enddate'=>$report->end,'hpcodes'=>$c->hpcode,'limit'=>'0');
 	$submitted = $API->getProtocolsSubmitted_Cache($opts);
 	$summary[$i]->count = $submitted->count;
 	//print_r($submitted);

@@ -2,22 +2,19 @@
 include_once "config.php";
 $PAGE = "report";
 include_once "includes/header.php";
+include_once "data/report-periods.php";
+print_r($reportperiod);
+$days = 30;
 
-$today = new DateTime();
-$report = new stdClass();
-$days = optional_param("days",31,PARAM_INT);
-$report->hpcodes = optional_param("hpcodes",$USER->hpcode,PARAM_TEXT);
 $submit = optional_param("submit","",PARAM_TEXT);
 $reporttype = optional_param("reporttype","healthpost",PARAM_TEXT);
-$date = optional_param("date",$today->format('d-M-Y'),PARAM_TEXT);
+$reportid = optional_param("reportid","2004-12",PARAM_TEXT);
 
-//work out start and end dates for report (based on the date given)
-$reportdate = new DateTime($date);
+$report = $reportperiod[$reportid];
+$report->hpcodes = optional_param("hpcodes",$USER->hpcode,PARAM_TEXT);
 
-$report->startDate = new DateTime($reportdate->format('01-M-Y 00:00:00'));
-$report->endDate = new DateTime(lastOfMonth($reportdate)." 23:59:59");
 
-if($report->hpcodes == 'overall'){
+if($report->hpcodes == 'all'){
 	$report->hpcodes = $API->getUserHealthPointPermissions();
 }
 
@@ -37,16 +34,10 @@ $currenthpname = getNameFromHPCodes($report->hpcodes);
 		<option value="supervisor">Supervisor</option>
 		<option value="midwife">Midwife</option>
 	</select>
-	<select name="date">
+	<select name="reportid">
 	<?php 
-		$d = new DateTime();
-		for($i=0;$i<7;$i++){
-			if($d->format('M Y') == $reportdate->format('M Y')){
-				printf ("<option value='%s' selected='selected'>%s</option>",$d->format('d-M-Y'),$d->format('M Y'));
-			} else {
-				printf ("<option value='%s'>%s</option>",$d->format('d-M-Y'),$d->format('M Y'));
-			}
-			$d->sub(new DateInterval('P1M'));
+		foreach($reportperiod as $rpm=>$v){
+			printf("<option value='%s'>%s</option>",$rpm,$v->text);
 		}
 	?>
 	</select>

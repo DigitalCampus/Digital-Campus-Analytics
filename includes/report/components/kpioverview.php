@@ -1,15 +1,10 @@
 <?php
 
 
-$previousstartdate = clone $report->startDate;
-$previousstartdate->sub(new DateInterval('P1M'));
-
-$previousenddate = new DateTime(lastOfMonth($previousstartdate)." 23:59:59");
-
 $opts = array();
 $opts['hpcodes'] = $report->hpcodes;
-$opts['startdate'] = $report->startDate->format('Y-m-d 00:00:00');
-$opts['enddate'] = $report->endDate->format('Y-m-d 23:59:59');
+$opts['startdate'] = $report->start;
+$opts['enddate'] = $report->end;
 
 $anc1thismonth = $API->getANC1Defaulters($opts);
 $anc2thismonth = $API->getANC2Defaulters($opts);
@@ -19,8 +14,8 @@ $pnc1thismonth = $API->getPNC1Defaulters($opts);
 
 $opts = array();
 $opts['hpcodes'] = $report->hpcodes;
-$opts['startdate'] = $previousstartdate->format('Y-m-d 00:00:00');
-$opts['enddate'] = $previousenddate->format('Y-m-d 23:59:59');
+$opts['startdate'] =  $report->prevstart;
+$opts['enddate'] = $report->prevend;
 
 $anc1previousmonth = $API->getANC1Defaulters($opts);
 $anc2previousmonth= $API->getANC2Defaulters($opts);
@@ -31,8 +26,8 @@ $pnc1previousmonth = $API->getPNC1Defaulters($opts);
 ?>
 <div class="kpireportheader" style="width:50%">
 	<div class="kpireportheadertitle">&nbsp;</div>
-	<div class="kpireportheadertitle"><?php echo $report->startDate->format('M Y')?></div>
-	<div class="kpireportheadertitle"><?php echo $previousstartdate->format('M Y')?></div>
+	<div class="kpireportheadertitle"><?php echo $report->text?></div>
+	<div class="kpireportheadertitle"><?php echo $report->prevtext?></div>
 	<div class="kpireportheadertitle">Change</div>
 	<div class="kpireportheadertitle">Target</div>
 	<div style="clear:both;"></div>
