@@ -13,7 +13,7 @@ $curdate = "";
 foreach($deliveries as $delivery){
 	$d = strtotime($delivery->datedue);
 	if($curdate != $d){
-		printf("<div class='taskdate'>%s (%s)</div>",displayAsEthioDate($d),date('d M Y',$d));
+		printf("<div class='taskdate'>%s <small>(%s)</small></div>",displayAsEthioDate($d),date('d M Y',$d));
 	}
 	$curdate = $d;
 	
