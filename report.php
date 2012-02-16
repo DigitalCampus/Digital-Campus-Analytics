@@ -3,12 +3,15 @@ include_once "config.php";
 $PAGE = "report";
 include_once "includes/header.php";
 include_once "data/report-periods.php";
-print_r($reportperiod);
+
 $days = 30;
+$today = new DateTime();
+
+$ethioToday = gregorianToEthio($today->format('Y'),$today->format('m'),$today->format('d'));
 
 $submit = optional_param("submit","",PARAM_TEXT);
 $reporttype = optional_param("reporttype","healthpost",PARAM_TEXT);
-$reportid = optional_param("reportid","2004-12",PARAM_TEXT);
+$reportid = optional_param("reportid",$ethioToday['year']."-".$ethioToday['month'],PARAM_TEXT);
 
 $report = $reportperiod[$reportid];
 $report->hpcodes = optional_param("hpcodes",$USER->hpcode,PARAM_TEXT);
@@ -37,7 +40,11 @@ $currenthpname = getNameFromHPCodes($report->hpcodes);
 	<select name="reportid">
 	<?php 
 		foreach($reportperiod as $rpm=>$v){
-			printf("<option value='%s'>%s</option>",$rpm,$v->text);
+			if ($reportid == $rpm){
+				printf("<option value='%s' selected='selected'>%s</option>",$rpm,$v->text);
+			} else {
+				printf("<option value='%s'>%s</option>",$rpm,$v->text);
+			}
 		}
 	?>
 	</select>
