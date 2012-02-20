@@ -34,11 +34,11 @@ $pnc1previousmonth = $API->getPNC1Defaulters($opts);
 </div>
 <div class="kpireport" style="width:50%">
 	<div class="kpireporttitle"><a href="kpi.php?kpi=submitted">Protocols Submitted</a></div>
-	<div class="kpireportscore"><?php echo $nosubmittedthismonth->count; ?></div>
-	<div class="kpireportscore"><?php echo $nosubmittedpreviousmonth->count; ?></div>
+	<div class="kpireportscore"><?php echo $nosubmittedthismonth->count['total']; ?></div>
+	<div class="kpireportscore"><?php echo $nosubmittedpreviousmonth->count['total']; ?></div>
 	<div class="kpireportchange">
 	<?php 
-		$change = $nosubmittedthismonth->count - $nosubmittedpreviousmonth->count;
+		$change = $nosubmittedthismonth->count['total'] - $nosubmittedpreviousmonth->count['total'];
 	 	if ($change > 0){
 	 		printf("<span class='increase'><img src='%s' class='kpichange'/></span>",'images/increase.png',$change);
 	 	} else if ($change == 0){
@@ -48,9 +48,51 @@ $pnc1previousmonth = $API->getPNC1Defaulters($opts);
 	 	}
 	?>
 	</div>
-	<div class="kpireporttarget">--</div>
+	<div class="kpireporttarget"><?php echo $CONFIG->props['target.protocols']*count(explode(',',$opts['hpcodes']));?></div>
 	<div style="clear:both;"></div>
 </div>
+
+
+<div class="kpireport" style="width:50%">
+	<div class="kpireporttitle"><a href="kpi.php?kpi=submitted">ANC1 Submitted</a></div>
+	<div class="kpireportscore"><?php echo $nosubmittedthismonth->count[PROTOCOL_ANCFIRST]; ?></div>
+	<div class="kpireportscore"><?php echo $nosubmittedpreviousmonth->count[PROTOCOL_ANCFIRST]; ?></div>
+	<div class="kpireportchange">
+	<?php 
+		$change = $nosubmittedthismonth->count[PROTOCOL_ANCFIRST] - $nosubmittedpreviousmonth->count[PROTOCOL_ANCFIRST];
+	 	if ($change > 0){
+	 		printf("<span class='increase'><img src='%s' class='kpichange'/></span>",'images/increase.png',$change);
+	 	} else if ($change == 0){
+	 		printf("<span class='equal'><img src='%s' class='kpichange'/></span>",'images/equal.png',$change);
+	 	} else if ($change < 0){
+	 		printf("<span class='decrease'><img src='%s' class='kpichange'/></span>",'images/decrease.png',$change);
+	 	}
+	?>
+	</div>
+	<div class="kpireporttarget"><?php echo $CONFIG->props['target.anc1submitted']*count(explode(',',$opts['hpcodes']));?></div>
+	<div style="clear:both;"></div>
+</div>
+
+<div class="kpireport" style="width:50%">
+	<div class="kpireporttitle"><a href="kpi.php?kpi=submitted">ANC Follow Up Submitted</a></div>
+	<div class="kpireportscore"><?php echo $nosubmittedthismonth->count[PROTOCOL_ANCFOLLOW]; ?></div>
+	<div class="kpireportscore"><?php echo $nosubmittedpreviousmonth->count[PROTOCOL_ANCFOLLOW]; ?></div>
+	<div class="kpireportchange">
+	<?php 
+		$change = $nosubmittedthismonth->count[PROTOCOL_ANCFOLLOW] - $nosubmittedpreviousmonth->count[PROTOCOL_ANCFOLLOW];
+	 	if ($change > 0){
+	 		printf("<span class='increase'><img src='%s' class='kpichange'/></span>",'images/increase.png',$change);
+	 	} else if ($change == 0){
+	 		printf("<span class='equal'><img src='%s' class='kpichange'/></span>",'images/equal.png',$change);
+	 	} else if ($change < 0){
+	 		printf("<span class='decrease'><img src='%s' class='kpichange'/></span>",'images/decrease.png',$change);
+	 	}
+	?>
+	</div>
+	<div class="kpireporttarget"><?php echo $CONFIG->props['target.ancfollowsubmitted']*count(explode(',',$opts['hpcodes']));?></div>
+	<div style="clear:both;"></div>
+</div>
+
 <div class="kpireport" style="width:50%">
 	<div class="kpireporttitle"><a href="kpi.php?kpi=anc1defaulters">ANC1 on time</a></div>
 	<div class="kpireportscore"><?php echo $anc1thismonth[0]->nondefaulters; ?>%</div>

@@ -1384,7 +1384,6 @@ class API {
 			$sql .= sprintf(" AND cv.visitdate <= '%s'",$enddate);
 		}
 		
-		
 		$sql .= ") a ";
 		$sql .= "WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= "OR a.protocolhpcode IN (".$this->getUserHealthPointPermissions().")) " ;
@@ -1398,18 +1397,21 @@ class API {
 		$sql .= "ORDER BY datestamp DESC";
 		
 		//query to get the total no of records
-		$countsql = "SELECT COUNT(*) AS norecords FROM (".$sql.") a;";
+		$countsql = "SELECT COUNT(*) AS norecords, protocol FROM (".$sql.") a group by protocol;";
 		
 		$countres = $this->runSql($countsql);
 		
 		$submitted = new stdClass();
 		
-		$submitted->count = 0;
+		$submitted->count['total'] = 0;
+		$submitted->count[PROTOCOL_ANCFIRST] = 0;
+		$submitted->count[PROTOCOL_ANCFOLLOW] = 0;
 		while($row = mysql_fetch_object($countres)){
-			$submitted->count = $row->norecords;
+			$submitted->count[$row->protocol] = $row->norecords;
+			$submitted->count['total'] += $row->norecords;
 		}
 		
-		$submitted->start = max(min($submitted->count-1,$start),0);
+		$submitted->start = max(min($submitted->count['total']-1,$start),0);
 		$submitted->limit = $limit;
 		$start = $submitted->start;
 		

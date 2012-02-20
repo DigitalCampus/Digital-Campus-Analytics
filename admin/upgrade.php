@@ -224,6 +224,18 @@ if ($currentDBversion < 9){
 	echo "Upgraded to version 9\n";
 }
 
+if ($currentDBversion < 10){
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+				('target.anc1submitted', '12', 'Target number of ANC 1 visits submitted per health post per month')";
+	$API->runSql($sql);
+	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
+					('target.ancfollowsubmitted', '36', 'Target number of ANC Follow up visits submitted per health post per month')";
+	$API->runSql($sql);
+	//now update the db version prop
+	$API->setSystemProperty('database.version','10');
+	echo "Upgraded to version 10\n";
+}
+
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";

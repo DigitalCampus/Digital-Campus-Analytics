@@ -28,15 +28,14 @@ $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 $anc1thismonth = $API->getANC1Defaulters($opts);
 $anc2thismonth = $API->getANC2Defaulters($opts);
 $nosubmittedthismonth = $API->getProtocolsSubmitted_Cache($opts);
-//$tt1thismonth = $API->getTT1Defaulters($opts);
 
 $opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
 $opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
+$opts['protocol'] = '';
 
 $anc1previousmonth = $API->getANC1Defaulters($opts);
 $anc2previousmonth= $API->getANC2Defaulters($opts);
 $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
-//$tt1previousmonth = $API->getTT1Defaulters($opts);
 
 if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.role') != 'midwife'){
 ?>
@@ -55,21 +54,54 @@ if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.ro
 	<div class="kpitarget"><?php echo getstring('mobile.kpi.heading.target'); ?></div>
 	<div style="clear:both;"></div>
 </div>
+<!-- Total protocols -->
 <div class="kpi">
 	<div class="kpititle"><?php echo getstring('mobile.kpi.protocols'); ?></div>
 	<div class="kpiscore"><?php 
-			$change = $nosubmittedthismonth->count - $nosubmittedpreviousmonth->count;
+			$change = $nosubmittedthismonth->count['total'] - $nosubmittedpreviousmonth->count['total'];
 			if ($change > 0){
 				printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
 			} 
-			echo $nosubmittedthismonth->count;
+			echo $nosubmittedthismonth->count['total'];
 	?></div>
-	<div class="kpichange"><?php echo $nosubmittedpreviousmonth->count; ?></div>
+	<div class="kpichange"><?php echo $nosubmittedpreviousmonth->count['total']; ?></div>
 	<div class="kpitarget"><?php 
 			// multiply the target no of protocosl by the number of hpcodes
 			echo $CONFIG->props['target.protocols']*count(explode(',',$opts['hpcodes'])); ?></div>
 	<div style="clear:both;"></div>
 </div>
+
+<!-- ANC first protocols -->
+<div class="kpi">
+	<div class="kpititle"><?php echo getstring('mobile.kpi.anc1submitted'); ?></div>
+	<div class="kpiscore"><?php 
+		$change = $nosubmittedthismonth->count[PROTOCOL_ANCFIRST] - $nosubmittedpreviousmonth->count[PROTOCOL_ANCFIRST];
+		if ($change > 0){
+			printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
+		}
+		echo $nosubmittedthismonth->count[PROTOCOL_ANCFIRST];
+	?></div>
+	<div class="kpichange"><?php echo $nosubmittedpreviousmonth->count[PROTOCOL_ANCFIRST]; ?></div>
+	<div class="kpitarget"><?php echo $CONFIG->props['target.anc1submitted']*count(explode(',',$opts['hpcodes'])); ?></div>
+	<div style="clear:both;"></div>
+</div>
+
+<!-- ANC follow up protocols -->
+<div class="kpi">
+	<div class="kpititle"><?php echo getstring('mobile.kpi.ancfollowsubmitted'); ?></div>
+	<div class="kpiscore"><?php 
+		$change = $nosubmittedthismonth->count[PROTOCOL_ANCFOLLOW] - $nosubmittedpreviousmonth->count[PROTOCOL_ANCFOLLOW];
+		if ($change > 0){
+			printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
+		}
+		echo $nosubmittedthismonth->count[PROTOCOL_ANCFOLLOW]; 
+	?></div>
+	<div class="kpichange"><?php echo $nosubmittedpreviousmonth->count[PROTOCOL_ANCFOLLOW]; ?></div>
+	<div class="kpitarget"><?php echo $CONFIG->props['target.ancfollowsubmitted']*count(explode(',',$opts['hpcodes'])); ?></div>
+	<div style="clear:both;"></div>
+</div>
+
+<!-- ANC1 on time -->
 <div class="kpi">
 	<div class="kpititle"><?php echo getstring('mobile.kpi.anc1'); ?></div>
 	<div class="kpiscore"><?php 
@@ -83,6 +115,8 @@ if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.ro
 	<div class="kpitarget"><?php echo $CONFIG->props['target.anc1']; ?>%</div>
 	<div style="clear:both;"></div>
 </div>
+
+<!-- ANC2 on time -->
 <div class="kpi">
 	<div class="kpititle"><?php echo getstring('mobile.kpi.anc2'); ?></div>
 	<div class="kpiscore"><?php 
