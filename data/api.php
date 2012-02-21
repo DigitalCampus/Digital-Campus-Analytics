@@ -73,6 +73,14 @@ class API {
 		
 		// TODO update & cache KPI figures?
 		
+		// run the data checks and update accordingly
+		$dc = new DataCheck();
+		if($dc->summary()>0){
+			$this->setSystemProperty('datacheck.errors','true');
+		} else {
+			$this->setSystemProperty('datacheck.errors','false');
+		}
+		
 		$this->setSystemProperty('cron.lastrun',time());
 	}
 	
