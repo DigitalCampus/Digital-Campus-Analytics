@@ -394,7 +394,7 @@ class DataCheck {
 		global $API;
 		$report = array();
 		
-		$sql = "SELECT 
+		$sql = sprintf("SELECT 
 					cv.hpcode as patienthpcode,
 					cv.visithpcode as protocolhpcode,
 					cv.userid,
@@ -402,10 +402,10 @@ class DataCheck {
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					cv.visitdate as datestamp
 		 		FROM cache_visit cv
-				LEFT OUTER JOIN (SELECT * FROM cache_visit WHERE protocol='protocol.ancfirst') cvfirst ON cv.userid = cvfirst.userid AND cv.hpcode = cvfirst.hpcode
+				LEFT OUTER JOIN (SELECT * FROM cache_visit WHERE protocol='%s') cvfirst ON cv.userid = cvfirst.userid AND cv.hpcode = cvfirst.hpcode
 				INNER JOIN user u ON cv.user_uri = u.user_uri
-				WHERE (cv.protocol='protocol.registration' OR cv.protocol='protocol.ancfollow')
-				AND cvfirst.pathpid is null";
+				WHERE (cv.protocol='%s' OR cv.protocol='%s')
+				AND cvfirst.pathpid is null",PROTOCOL_ANCFIRST,PROTOCOL_REGISTRATION,PROTOCOL_ANCFOLLOW);
 		$sql .= " AND (cv.hpcode IN (".$API->getUserHealthPointPermissions(true).")" ;
 		$sql .= " OR cv.visithpcode IN (".$API->getUserHealthPointPermissions(true).")) " ;
 		if($API->getIgnoredHealthPoints() != ""){
