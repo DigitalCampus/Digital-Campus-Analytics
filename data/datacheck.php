@@ -9,6 +9,7 @@ class DataCheck {
 		$total = 0;
 		$total += count($this->unregistered());
 		$total += count($this->duplicates());
+		$total += count($this->missingANCFirst());
 		if($total >0){
 			return true;
 		} else {
@@ -265,8 +266,8 @@ class DataCheck {
 					FROM ".TABLE_PNC." i
 					INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
-		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
+		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions(true).")" ;
+		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions(true).")) " ;
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
 		}
@@ -387,5 +388,43 @@ class DataCheck {
 			}
 		
 		}
+	}
+	
+	function missingANCFirst($opts=array()){
+		global $API;
+		$report = array();
+		
+		$sql = "SELECT 
+					cv.hpcode as patienthpcode,
+					cv.visithpcode as protocolhpcode,
+					cv.userid,
+					cv.protocol,
+					CONCAT(u.firstname,' ',u.lastname) as submittedname,
+					cv.visitdate as datestamp
+		 		FROM cache_visit cv
+				LEFT OUTER JOIN (SELECT * FROM cache_visit WHERE protocol='protocol.ancfirst') cvfirst ON cv.userid = cvfirst.userid AND cv.hpcode = cvfirst.hpcode
+				INNER JOIN user u ON cv.user_uri = u.user_uri
+				WHERE (cv.protocol='protocol.registration' OR cv.protocol='protocol.ancfollow')
+				AND cvfirst.pathpid is null";
+		$sql .= " AND (cv.hpcode IN (".$API->getUserHealthPointPermissions(true).")" ;
+		$sql .= " OR cv.visithpcode IN (".$API->getUserHealthPointPermissions(true).")) " ;
+		if($API->getIgnoredHealthPoints() != ""){
+			$sql .= " AND cv.hpcode NOT IN (".$API->getIgnoredHealthPoints().")";
+		}
+		if(array_key_exists('hpcodes',$opts)){
+			$sql .= " AND  (cv.hpcode IN ( ".$opts['hpcodes'].")";
+			$sql .= " OR cv.visithpcode IN (".$opts['hpcodes']."))";
+		}
+
+		$sql .= " ORDER BY u.firstname, u.lastname ASC";
+		
+		$result = $API->runSql($sql);
+		if(!$result){
+			return;
+		}
+		while($row = mysql_fetch_object($result)){
+			array_push($report,$row);
+		}
+		return $report;
 	}
 }
