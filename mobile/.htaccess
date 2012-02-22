@@ -1,1 +1,9 @@
 AddType text/cache-manifest .manifest
+AddType text/cache-manifest .appcache
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/cache-manifest "access plus 0 seconds"
+</IfModule>
+
+

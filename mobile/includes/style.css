@@ -17,6 +17,8 @@ body {
 
 a:hover, a:visited, a {
     color: #444444;
+    text-decoration:underline;
+    cursor:pointer;
 }
 
 li {

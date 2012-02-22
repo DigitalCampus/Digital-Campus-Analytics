@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html manifest="./DigitalCampusAnalytics.appcache">
+<head>
+    <title>Health Analytics</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <link rel="StyleSheet" href="includes/style.css" type="text/css" media="screen">
+    <script type="text/javascript" src="includes/lib/jqmobi-0.9.6/jq.mobi.min.js"></script>
+    <script type="text/javascript" src="includes/database.js"></script>
+    <script type="text/javascript" src="includes/script.js"></script>
+    <script type="text/javascript">
+    	function init(){
+    		showStatistics();
+    		showUsername();
+    	}
+    </script>
+</head>
+<body onload="init()">
+<div id="page">
+	<div id="header">
+		<div id="header-logo">
+			<img style="vertical-align:middle" src="images/dclogo.png"/>
+		</div>
+		<div id="header-title">
+			<h1>Health Analytics</h1>
+		</div>
+		<div id="header-right">
+			<div id="langchange">
+				<!-- form action="" method="post" name="langform" id="langform">
+				<select name="lang" onchange="document.langform.submit();">
+				
+				</select>
+				</form -->
+			</div>
+			<div id="logininfo">
+				Not logged in
+			</div>
+		</div>
+		<div style="clear:both;"></div>
+	</div> <!-- end #header -->
+	<div id="menu">
+		<a onclick="showStatistics()">Statistics</a>
+		| 
+		<a onclick="showDeliveries()">Deliveries</a> 
+		| 
+		<a onclick="showTasks()">Tasks</a>
+		| 
+		<a onclick="showOverdue()">Overdue</a>
+	</div>
+	<div id="content">
+	</div> <!-- end #content -->
+</div> <!-- end #page -->
+</body>
+</html>
