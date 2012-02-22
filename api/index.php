@@ -8,7 +8,6 @@ $password = optional_param('password',null,PARAM_TEXT);
 $method = optional_param('method',null,PARAM_TEXT);
 
 $error = new stdClass();
-
 // check login
 if(!userLogin($username,$password)){
 	$error->error = $MSG;
@@ -26,16 +25,14 @@ if ($method == 'login'){
 	$response = new stdClass();
 	$response->result = true;
 	echo json_encode($response);
-	die;
-}
-
-if ($method == 'gettasks'){
-	$tasks = $API->getTasksDue();
+} else if ($method == 'gettasks'){
+	$tasks = $API->getTasksDue(array('days'=>30));
 	echo json_encode($tasks);
-	die;
+} else {
+	$error->error = array("Method not available");
+	echo json_encode($error);
 }
 
-$error->error = array("Method not available");
-echo json_encode($error);
-die;
+scriptFooter("info","api",$method.": ".$_SERVER["REQUEST_URI"]);
+
 ?>

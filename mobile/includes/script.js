@@ -23,6 +23,32 @@ function showTasks(){
 		return;
 	}
 	$('#content').empty();
+	$('#content').append("<h2>Loading tasks...</h2>");
+	
+	displayTasks(store.get('tasks'));
+}
+
+function displayTasks(data){
+	$('#content').empty();
+	$('#content').append("<h2>Tasks Due</h2>");
+	if(data == null || data.length == 0){
+		$('#content').append("No current tasks");
+		return;
+	} 
+	var curdate = "";
+	for (var i=0; i<data.length; i++){
+		// show data header
+		if(data[i].datedue != curdate){
+			$('#content').append("<div class='taskdate'>"+data[i].datedue+"</div>");
+			curdate = data[i].datedue;
+		}
+		var task = $('<div>').addClass('task');
+		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
+		
+		task.append("<div style='clear:both;'></div>");
+		$('#content').append(task);
+		
+	}
 }
 
 function showOverdue(){
@@ -72,17 +98,21 @@ function login(){
 		   type:'POST',
 		   url:API_URL,
 		   headers:{},
-		   dataType:'application/json',
+		   dataType:'json',
 		   data:{'method':'login','username':username,'password':password}, 
 		   success:function(data){
 			   //check for any error messages
-			   var response = $.parseJSON(data);
-			   if(response.error){
-				   alert(response.error[0]);
+			   if(data.error){
+				   alert(data.error[0]);
 				   return;
 			   }
-			   if(response.result){
+			   if(data.result){
 				   // save username and password
+				   store.set('username',$('#username').val());
+				   store.set('password',$('#password').val());
+				   showUsername();
+				   showTasks();
+				   dataUpdate();
 			   }
 		   }, 
 		   error:function(data){
@@ -106,4 +136,27 @@ function showUsername(){
 	} else {
 		$('#logininfo').text("Not logged in");
 	}
+}
+
+function dataUpdate(){
+	if(!loggedIn()){
+		return;
+	}
+	
+	// Get the tasks from remote server
+	$.ajax({
+		   type:'POST',
+		   url:API_URL,
+		   headers:{},
+		   dataType:'json',
+		   data:{'method':'gettasks','username':store.get('username'),'password':store.get('password')}, 
+		   success:function(data){
+			   //check for any error messages
+			   if(data && !data.error){
+				   store.set('tasks',data);
+			   }
+		   }, 
+		   error:function(data){
+		   }
+		});
 }

@@ -4,13 +4,16 @@
     <title>Health Analytics</title>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
     <link rel="StyleSheet" href="includes/style.css" type="text/css" media="screen">
-    <script type="text/javascript" src="includes/lib/jqmobi-0.9.6/jq.mobi.min.js"></script>
+    <script type="text/javascript" src="includes/lib/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="includes/database.js"></script>
     <script type="text/javascript" src="includes/script.js"></script>
+    <script type="text/javascript" src="includes/lang.js"></script>
     <script type="text/javascript">
     	function init(){
     		showStatistics();
     		showUsername();
+    		dataUpdate();
+    		changeInterfaceLang();
     	}
     </script>
 </head>
@@ -21,30 +24,29 @@
 			<img style="vertical-align:middle" src="images/dclogo.png"/>
 		</div>
 		<div id="header-title">
-			<h1>Health Analytics</h1>
+			<h1 id="mobile_app_title" name="lang"></h1>
 		</div>
 		<div id="header-right">
 			<div id="langchange">
-				<!-- form action="" method="post" name="langform" id="langform">
-				<select name="lang" onchange="document.langform.submit();">
-				
+				<select id="changelang" onchange="changeLang()">
+					<option value="EN">English</option>
+					<option value="TI">Tigrinyan</option>
 				</select>
-				</form -->
 			</div>
 			<div id="logininfo">
-				Not logged in
+			not logged in
 			</div>
 		</div>
 		<div style="clear:both;"></div>
 	</div> <!-- end #header -->
 	<div id="menu">
-		<a onclick="showStatistics()">Statistics</a>
+		<a onclick="showStatistics()" id="menu_kpi" name="lang"></a>
 		| 
-		<a onclick="showDeliveries()">Deliveries</a> 
+		<a onclick="showDeliveries()" id="menu_deliveries" name="lang"></a> 
 		| 
-		<a onclick="showTasks()">Tasks</a>
+		<a onclick="showTasks()" id="menu_tasks" name="lang"></a>
 		| 
-		<a onclick="showOverdue()">Overdue</a>
+		<a onclick="showOverdue()" id="menu_overdue" name="lang"></a>
 	</div>
 	<div id="content">
 	</div> <!-- end #content -->

@@ -1,13 +1,14 @@
 CACHE MANIFEST
-# v17
+# v18
 
 CACHE:
 includes/style.css
 includes/script.js
 includes/database.js
+includes/lang.js
 
 includes/lib/flotr2.min.js
-includes/lib/jqmobi-0.9.6/jq.mobi.min.js
+includes/lib/jquery-1.7.1.min.js
 
 images/dclogo.png
 images/decrease.png

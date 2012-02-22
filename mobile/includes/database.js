@@ -2,7 +2,6 @@
 var store = new Store();
 store.init();
 
-
 function Store(){
 	
 	this.init = function(){
@@ -13,15 +12,17 @@ function Store(){
 			localStorage.setItem('deliveries', null);
 			localStorage.setItem('overdue', null);
 			localStorage.setItem('lastupdate', null);
+			localStorage.setItem('lang', 'EN');
 		}
 	}
 	
 	this.get = function(key){
-		return localStorage.getItem(key);
+		var value = localStorage.getItem(key);
+	    return value && JSON.parse(value);
 	}
 	
 	this.set = function(key,value){
-		localStorage.setItem(key,value);
+		localStorage.setItem(key,JSON.stringify(value));
 	}
 	
 	this.clear = function(){
