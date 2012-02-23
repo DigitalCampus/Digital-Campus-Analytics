@@ -5,7 +5,9 @@ CACHE:
 includes/style.css
 includes/script.js
 includes/database.js
-includes/lang.js
+includes/i8n.js
+includes/lang/en.js
+includes/lang/ti.js
 
 includes/lib/flotr2.min.js
 includes/lib/jquery-1.7.1.min.js
