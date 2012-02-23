@@ -1,40 +1,39 @@
 
 var API_URL = "/scorecard/api/";
+var PAGE = "";
+var DATA_CACHE_EXPIRY = 1; // no of hours before the data should be updated from server;
+var LOGIN_EXPIRY = 14; // no days before the user needs to log in again
 
-function showStatistics(){
+function showPage(page){
 	if(!loggedIn()){
 		showLogin();
 		return;
 	}
+	dataUpdate();
+	PAGE = page;
 	$('#content').empty();
+	if(page == 'tasks'){
+		$('#content').append("<h2 name='lang' id='page_title_tasks'>"+getString('page_title_tasks')+"</h2>");
+		$('#content').append("<h2 id='loading'>Loading...</h2>");
+		displayTasks(store.get('tasks'));
+	} else if(page == 'kpi'){
+		$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
+		$('#content').append("<h2 id='loading'>Loading...</h2>");
+	} else if(page == 'deliveries'){
+		$('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");
+		$('#content').append("<h2 id='loading'>Loading...</h2>");
+	} else if(page == 'overdue'){
+		$('#content').append("<h2 name='lang' id='page_title_overdue'>"+getString('page_title_overdue')+"</h2>");
+		$('#content').append("<h2 id='loading'>Loading...</h2>");
+	}
 }
 
-function showDeliveries(){
-	if(!loggedIn()){
-		showLogin();
-		return;
-	}
-	$('#content').empty();
-}
-
-function showTasks(){
-	if(!loggedIn()){
-		showLogin();
-		return;
-	}
-	$('#content').empty();
-	$('#content').append("<h2>Loading tasks...</h2>");
-	
-	displayTasks(store.get('tasks'));
-}
 
 function displayTasks(data){
-	$('#content').empty();
-	$('#content').append("<h2>Tasks Due</h2>");
 	if(data == null || data.length == 0){
-		$('#content').append("No current tasks");
 		return;
 	} 
+	$('#loading').remove();
 	var curdate = "";
 	for (var i=0; i<data.length; i++){
 		// show data header
@@ -51,25 +50,21 @@ function displayTasks(data){
 	}
 }
 
-function showOverdue(){
-	if(!loggedIn()){
-		showLogin();
-		return;
-	}
-	$('#content').empty();
+function displayKPI(data){
+	
 }
 
 function showLogin(){
 	$('#content').empty();
-	$('#content').append("<h1>Login</h1>");
+	$('#content').append("<h1 name='lang' id='page_title_login'>"+getString('page_title_login')+"</h1>");
 	
 	$('#content').append("<div class='formblock'>" +
-		"<div class='formlabel'>Username:</div>" +
+		"<div class='formlabel' name='lang' id='login_username'>"+getString('login_username')+"</div>" +
 		"<div class='formfield'><input type='text' name='username' id='username'></input></div>" +
 		"</div>");
 	
 	$('#content').append("<div class='formblock'>"+
-		"<div class='formlabel'>Password</div>" +
+		"<div class='formlabel'name='lang' id='login_password'>"+getString('login_password')+"</div>" +
 		"<div class='formfield'><input type='password' name='password' id='password'></input></div>" +
 		"</div>");
 	
@@ -111,7 +106,7 @@ function login(){
 				   store.set('username',$('#username').val());
 				   store.set('password',$('#password').val());
 				   showUsername();
-				   showTasks();
+				   showPage('tasks');
 				   dataUpdate();
 			   }
 		   }, 
@@ -132,16 +127,20 @@ function showUsername(){
 	$('#logininfo').empty();
 	if(store.get('username') != null){
 		$('#logininfo').text(store.get('username') + " ");
-		$('#logininfo').append("<a onclick='logout()'>Logout</a>");
-	} else {
-		$('#logininfo').text("Not logged in");
-	}
+		$('#logininfo').append("<a onclick='logout()' name='lang' id='logout'>"+getString('logout')+"</a>");
+	} 
 }
 
 function dataUpdate(){
 	if(!loggedIn()){
 		return;
 	}
+	// check when last update made, return if too early
+	var now = new Date();
+	var lastupdate = new Date(store.get('lastupdate'));
+	if(lastupdate > now.addHours(-DATA_CACHE_EXPIRY)){
+		return;
+	} 
 	
 	// Get the tasks from remote server
 	$.ajax({
@@ -154,9 +153,26 @@ function dataUpdate(){
 			   //check for any error messages
 			   if(data && !data.error){
 				   store.set('tasks',data);
+				   if(PAGE == 'tasks'){
+					   displayTasks(store.get('tasks'));
+				   }
+				   store.set('lastupdate',Date());
+				   setUpdated();
 			   }
 		   }, 
 		   error:function(data){
+			   if(PAGE == 'tasks'){
+				   displayTasks(store.get('tasks'));
+			   }
 		   }
 		});
+}
+
+function setUpdated(){
+	$('#last_update').text(store.get('lastupdate'));
+}
+
+Date.prototype.addHours= function(h){
+    this.setHours(this.getHours()+h);
+    return this;
 }

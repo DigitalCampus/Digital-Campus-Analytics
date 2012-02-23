@@ -12,6 +12,7 @@ function Store(){
 			localStorage.setItem('deliveries', null);
 			localStorage.setItem('overdue', null);
 			localStorage.setItem('lastupdate', null);
+			localStorage.setItem('lastlogin', null);
 			localStorage.setItem('lang', 'EN');
 		}
 	}

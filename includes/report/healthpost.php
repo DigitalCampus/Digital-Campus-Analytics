@@ -17,6 +17,9 @@ include_once('components/deliveries.php');
 printf("<h3>%s</h3>", getString("report.highrisk"));
 include_once('components/highrisk.php');
 
+printf("<h3>%s</h3>", getString("report.submitted.range",array($report->text)));
+include_once('components/submitted-range.php');
+
 printf("<h3>%s</h3>", getString("report.submitted",array($days)));
 include_once('components/submitted.php');
 

@@ -12,10 +12,10 @@
     <script type="text/javascript" src="includes/lang/ti.js"></script>
     <script type="text/javascript">
     	function init(){
-    		showStatistics();
+    		showPage('kpi');
     		showUsername();
-    		dataUpdate();
     		changeInterfaceLang();
+    		setUpdated();
     	}
     </script>
 </head>
@@ -36,22 +36,24 @@
 				</select>
 			</div>
 			<div id="logininfo">
-			not logged in
 			</div>
 		</div>
 		<div style="clear:both;"></div>
 	</div> <!-- end #header -->
 	<div id="menu">
-		<a onclick="showStatistics()" id="menu_kpi" name="lang"></a>
+		<a onclick="showPage('kpi')" id="menu_kpi" name="lang"></a>
 		| 
-		<a onclick="showDeliveries()" id="menu_deliveries" name="lang"></a> 
+		<a onclick="showPage('deliveries')" id="menu_deliveries" name="lang"></a> 
 		| 
-		<a onclick="showTasks()" id="menu_tasks" name="lang"></a>
+		<a onclick="showPage('tasks')" id="menu_tasks" name="lang"></a>
 		| 
-		<a onclick="showOverdue()" id="menu_overdue" name="lang"></a>
+		<a onclick="showPage('overdue')" id="menu_overdue" name="lang"></a>
 	</div>
 	<div id="content">
 	</div> <!-- end #content -->
+	<div id="footer">
+		Data last downloaded: <span id="last_update">-/-</span>
+	</div>
 </div> <!-- end #page -->
 </body>
 </html>
