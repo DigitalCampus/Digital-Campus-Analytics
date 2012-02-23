@@ -461,6 +461,7 @@ $LANG['report.submitted'] = 'Protocols Submitted (last %d days)';
 $LANG['report.submitted.bar'] = 'Protocols Submitted (%s)';
 $LANG['report.submitted.none'] = 'No protocols submitted in last %d days';
 $LANG['report.submitted.range'] = 'Protocols Submitted (%s)';
+$LANG['report.submitted.range.none'] = 'No protocols submitted during %s';
 $LANG['report.tasksdue'] = 'Protocols due (next %d days)';
 $LANG['report.tasksdue.none'] = 'No protocols due';
 $LANG['report.title'] = 'Reports';

@@ -48,6 +48,6 @@ if(count($submitted->protocols)>0){
 
 <?php 
 } else {
-	echo getstring('report.submitted.none',$days);
+	echo getstring('report.submitted.range.none',array($report->text));
 }
 ?>
