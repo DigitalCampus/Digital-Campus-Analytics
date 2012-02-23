@@ -76,6 +76,14 @@ function showLogin(){
 function loggedIn(){
 	if(store.get('username') == null){
 		return false;
+	} 
+	// check when last login made
+	var now = new Date();
+	var lastlogin = new Date(store.get('lastlogin'));
+	
+	if(lastlogin.addDays(LOGIN_EXPIRY) < now){
+		logout();
+		return false;
 	} else {
 		return true;
 	}
@@ -105,6 +113,7 @@ function login(){
 				   // save username and password
 				   store.set('username',$('#username').val());
 				   store.set('password',$('#password').val());
+				   store.set('lastlogin',Date());
 				   showUsername();
 				   showPage('tasks');
 				   dataUpdate();
@@ -174,5 +183,10 @@ function setUpdated(){
 
 Date.prototype.addHours= function(h){
     this.setHours(this.getHours()+h);
+    return this;
+}
+
+Date.prototype.addDays= function(d){
+    this.setDate(this.getDate()+d);
     return this;
 }
