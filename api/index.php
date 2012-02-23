@@ -28,6 +28,9 @@ if ($method == 'login'){
 } else if ($method == 'gettasks'){
 	$tasks = $API->getTasksDue(array('days'=>30));
 	echo json_encode($tasks);
+} else if ($method == 'getdeliveries'){
+	$deliveries = $API->getDeliveriesDue(array('days'=>30));
+	echo json_encode($deliveries);
 } else {
 	$error->error = array("Method not available");
 	echo json_encode($error);

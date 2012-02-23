@@ -22,6 +22,7 @@ function showPage(page){
 	} else if(page == 'deliveries'){
 		$('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");
 		$('#content').append("<h2 id='loading'>Loading...</h2>");
+		displayDeliveries(store.get('deliveries'));
 	} else if(page == 'overdue'){
 		$('#content').append("<h2 name='lang' id='page_title_overdue'>"+getString('page_title_overdue')+"</h2>");
 		$('#content').append("<h2 id='loading'>Loading...</h2>");
@@ -30,6 +31,40 @@ function showPage(page){
 
 
 function displayTasks(data){
+	if(data == null || data.length == 0){
+		return;
+	} 
+	$('#loading').remove();
+	var curdate = "";
+	for (var i=0; i<data.length; i++){
+		// show data header
+		if(data[i].datedue != curdate){
+			//convert to Ethio date
+			var date = convertDate(data[i].datedue);
+			$('#content').append("<div class='taskdate'>"+date['ethio']+" <small>("+date['greg'] +")</small>"+"</div>");
+			curdate = data[i].datedue;
+		}
+		if(data[i].patientname){
+			var pname = data[i].patientname;
+		} else {
+			var pname = "<span class='error'>Patient not registered</span>";
+		}
+		var task = $('<div>').addClass('task');
+		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
+		var patient = $('<div>').addClass('taskright').html(pname);
+		patient.append($('<br>'));
+		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)))
+		task.append(patient);
+//		/printf("<div class='taskright'>%s<br/><small>%s</small></div>",$task->patientname,displayHealthPointName($task->patienthpcode,$task->userid));
+		
+		
+		task.append("<div style='clear:both;'></div>");
+		$('#content').append(task);
+		
+	}
+}
+
+function displayDeliveries(data){
 	if(data == null || data.length == 0){
 		return;
 	} 
@@ -50,9 +85,6 @@ function displayTasks(data){
 	}
 }
 
-function displayKPI(data){
-	
-}
 
 function showLogin(){
 	$('#content').empty();
@@ -172,6 +204,31 @@ function dataUpdate(){
 		   error:function(data){
 			   if(PAGE == 'tasks'){
 				   displayTasks(store.get('tasks'));
+			   }
+		   }
+		});
+	
+	// Get the deliveries from remote server
+	$.ajax({
+		   type:'POST',
+		   url:API_URL,
+		   headers:{},
+		   dataType:'json',
+		   data:{'method':'getdeliveries','username':store.get('username'),'password':store.get('password')}, 
+		   success:function(data){
+			   //check for any error messages
+			   if(data && !data.error){
+				   store.set('deliveries',data);
+				   if(PAGE == 'deliveries'){
+					   displayTasks(store.get('deliveries'));
+				   }
+				   store.set('lastupdate',Date());
+				   setUpdated();
+			   }
+		   }, 
+		   error:function(data){
+			   if(PAGE == 'deliveries'){
+				   displayTasks(store.get('deliveries'));
 			   }
 		   }
 		});

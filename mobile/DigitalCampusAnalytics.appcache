@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# v18
+# v19
 
 CACHE:
 includes/style.css
@@ -11,6 +11,9 @@ includes/lang/ti.js
 
 includes/lib/flotr2.min.js
 includes/lib/jquery-1.7.1.min.js
+includes/lib/jquery.calendars.min.js
+includes/lib/jquery.calendars.plus.min.js
+includes/lib/jquery.calendars.ethiopian.min.js
 
 images/dclogo.png
 images/decrease.png
