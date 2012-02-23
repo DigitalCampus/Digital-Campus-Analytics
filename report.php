@@ -4,7 +4,7 @@ $PAGE = "report";
 include_once "includes/header.php";
 include_once "data/report-periods.php";
 
-$days = 30;
+$days = optional_param('days',30,PARAM_INT);
 $today = new DateTime();
 
 $ethioToday = gregorianToEthio($today->format('Y'),$today->format('m'),$today->format('d'));
