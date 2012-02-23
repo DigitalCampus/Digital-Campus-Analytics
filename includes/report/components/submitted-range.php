@@ -3,6 +3,7 @@ $opts = array();
 $opts['hpcodes'] = $report->hpcodes;
 $opts['startdate'] = $report->start;
 $opts['enddate'] = $report->end;
+$opts['limit'] = 'all';
 
 $submitted = $API->getProtocolsSubmitted_Cache($opts);
 if(count($submitted->protocols)>0){

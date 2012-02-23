@@ -1,5 +1,10 @@
 <?php
-$opts=array('days'=>$days,'hpcodes'=>$report->hpcodes);
+$opts = array();
+$opts['hpcodes'] = $report->hpcodes;
+$opts['days'] = $days;
+$opts['limit'] = 'all';
+
+
 $submitted = $API->getProtocolsSubmitted_Cache($opts);
 if(count($submitted->protocols)>0){
 ?>
