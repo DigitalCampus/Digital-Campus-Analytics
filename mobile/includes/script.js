@@ -18,14 +18,14 @@ function showPage(page){
 		displayTasks(store.get('tasks'));
 	} else if(page == 'kpi'){
 		$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
-		$('#content').append("<h2 id='loading'>Loading...</h2>");
+		$('#content').append("<h2 id='loading'>Not yet implemented</h2>");
 	} else if(page == 'deliveries'){
 		$('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");
 		$('#content').append("<h2 id='loading'>Loading...</h2>");
 		displayDeliveries(store.get('deliveries'));
 	} else if(page == 'overdue'){
 		$('#content').append("<h2 name='lang' id='page_title_overdue'>"+getString('page_title_overdue')+"</h2>");
-		$('#content').append("<h2 id='loading'>Loading...</h2>");
+		$('#content').append("<h2 id='loading'>Not yet implemented.</h2>");
 	}
 }
 
@@ -53,10 +53,15 @@ function displayTasks(data){
 		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
 		var patient = $('<div>').addClass('taskright').html(pname);
 		patient.append($('<br>'));
-		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)))
+		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)+'/'+data[i].userid))
 		task.append(patient);
-//		/printf("<div class='taskright'>%s<br/><small>%s</small></div>",$task->patientname,displayHealthPointName($task->patienthpcode,$task->userid));
 		
+		//add risk info 
+		if(data[i].risk != 'none'){
+			task.append("<div class='taskhighrisk'><img src='images/red-dot.png'/></div>");
+		} else {
+			task.append("<div class='taskhighrisk'></div>");
+		}
 		
 		task.append("<div style='clear:both;'></div>");
 		$('#content').append(task);
@@ -73,12 +78,32 @@ function displayDeliveries(data){
 	for (var i=0; i<data.length; i++){
 		// show data header
 		if(data[i].datedue != curdate){
-			$('#content').append("<div class='taskdate'>"+data[i].datedue+"</div>");
+			var date = convertDate(data[i].datedue);
+			$('#content').append("<div class='taskdate'>"+date['ethio']+" <small>("+date['greg'] +")</small>"+"</div>");
 			curdate = data[i].datedue;
 		}
+		if(data[i].patientname){
+			var pname = data[i].patientname;
+		} else {
+			var pname = "<span class='error'>Patient not registered</span>";
+		}
 		var task = $('<div>').addClass('task');
-		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
+		var patient = $('<div>').addClass('deltaskleft').html(pname);
+		patient.append($('<br>'));
+		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)+'/'+data[i].userid))
+		task.append(patient);
+		var risk = $('<div>').addClass('deltaskright');
+		var category = $('<span>').attr('name','risk.category.'+ data[i].risk.category).text(getString('risk.category.'+ data[i].risk.category));
+		risk.append(category);
+		var risks = $('<ul>');
 		
+		for(var j=0; j<data[i].risk.risks.length; j++){
+			var r = $('<li>').attr('name','risk.factor.'+ data[i].risk.risks[j]).text(getString('risk.factor.'+ data[i].risk.risks[j]));
+			risks.append(r);
+		}
+		
+		risk.append(risks);
+		task.append(risk);
 		task.append("<div style='clear:both;'></div>");
 		$('#content').append(task);
 		
@@ -147,8 +172,7 @@ function login(){
 				   store.set('password',$('#password').val());
 				   store.set('lastlogin',Date());
 				   showUsername();
-				   showPage('tasks');
-				   dataUpdate();
+				   showPage('kpi');
 			   }
 		   }, 
 		   error:function(data){
@@ -158,10 +182,13 @@ function login(){
 }
 
 function logout(){
-	store.clear();
-	store.init();
-	showLogin();
-	showUsername();
+	var lo = confirm('Are you sure you want to log out?\n\nYou will need an active connection to log in again.');
+	if(lo){
+		store.clear();
+		store.init();
+		showLogin();
+		showUsername();
+	}
 }
 
 function showUsername(){

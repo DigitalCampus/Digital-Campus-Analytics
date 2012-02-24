@@ -24,6 +24,9 @@ function changeInterfaceLang(){
 	$('[name^=healthpoint]').each(function(index){
 		$(this).text(getString($(this).attr('name')));
 	});
+	$('[name^=risk]').each(function(index){
+		$(this).text(getString($(this).attr('name')));
+	});
 }
 
 function changeLang(){
@@ -45,6 +48,3 @@ function convertDate(date){
 					ec.formatDate('Y');
 	return date;
 }
-
-
-

@@ -27,9 +27,21 @@ if ($method == 'login'){
 	echo json_encode($response);
 } else if ($method == 'gettasks'){
 	$tasks = $API->getTasksDue(array('days'=>30));
+	//add risk factors
+	$ra = new RiskAssessment();
+	foreach($tasks as $t){
+		$risks = $ra->getRisks_Cache($t->patienthpcode, $t->userid);
+		$t->risk = $risks->category;
+	}
 	echo json_encode($tasks);
 } else if ($method == 'getdeliveries'){
+	//add risk factors
+	$ra = new RiskAssessment();
 	$deliveries = $API->getDeliveriesDue(array('days'=>30));
+	foreach($deliveries as $d){
+		$risks = $ra->getRisks_Cache($d->patienthpcode, $d->userid);
+		$d->risk = $risks;
+	}
 	echo json_encode($deliveries);
 } else {
 	$error->error = array("Method not available");
