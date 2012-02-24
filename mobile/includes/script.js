@@ -12,20 +12,20 @@ function showPage(page){
 	dataUpdate();
 	PAGE = page;
 	$('#content').empty();
+	$('#grayout').show();
 	if(page == 'tasks'){
 		$('#content').append("<h2 name='lang' id='page_title_tasks'>"+getString('page_title_tasks')+"</h2>");
-		$('#content').append("<h2 id='loading'>Loading...</h2>");
 		displayTasks(store.get('tasks'));
 	} else if(page == 'kpi'){
 		$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
 		$('#content').append("<h2 id='loading'>Not yet implemented</h2>");
+		$('#grayout').hide();
 	} else if(page == 'deliveries'){
 		$('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");
-		$('#content').append("<h2 id='loading'>Loading...</h2>");
 		displayDeliveries(store.get('deliveries'));
 	} else if(page == 'overdue'){
 		$('#content').append("<h2 name='lang' id='page_title_overdue'>"+getString('page_title_overdue')+"</h2>");
-		$('#content').append("<h2 id='loading'>Not yet implemented.</h2>");
+		displayOverdue(store.get('overdue'));
 	}
 }
 
@@ -34,7 +34,6 @@ function displayTasks(data){
 	if(data == null || data.length == 0){
 		return;
 	} 
-	$('#loading').remove();
 	var curdate = "";
 	for (var i=0; i<data.length; i++){
 		// show data header
@@ -53,7 +52,8 @@ function displayTasks(data){
 		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
 		var patient = $('<div>').addClass('taskright').html(pname);
 		patient.append($('<br>'));
-		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)+'/'+data[i].userid))
+		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)));
+		patient.append($('<small>').text('/'+data[i].userid));
 		task.append(patient);
 		
 		//add risk info 
@@ -67,13 +67,13 @@ function displayTasks(data){
 		$('#content').append(task);
 		
 	}
+	$('#grayout').hide();
 }
 
 function displayDeliveries(data){
 	if(data == null || data.length == 0){
 		return;
 	} 
-	$('#loading').remove();
 	var curdate = "";
 	for (var i=0; i<data.length; i++){
 		// show data header
@@ -90,7 +90,8 @@ function displayDeliveries(data){
 		var task = $('<div>').addClass('task');
 		var patient = $('<div>').addClass('deltaskleft').html(pname);
 		patient.append($('<br>'));
-		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)+'/'+data[i].userid))
+		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)));
+		patient.append($('<small>').text('/'+data[i].userid));
 		task.append(patient);
 		var risk = $('<div>').addClass('deltaskright');
 		var category = $('<span>').attr('name','risk.category.'+ data[i].risk.category).text(getString('risk.category.'+ data[i].risk.category));
@@ -108,10 +109,51 @@ function displayDeliveries(data){
 		$('#content').append(task);
 		
 	}
+	$('#grayout').hide();
 }
 
+function displayOverdue(data){
+	if(data == null || data.length == 0){
+		return;
+	} 
+	var curdate = "";
+	for (var i=0; i<data.length; i++){
+		// show data header
+		if(data[i].datedue != curdate){
+			//convert to Ethio date
+			var date = convertDate(data[i].datedue);
+			$('#content').append("<div class='taskdate'>"+date['ethio']+" <small>("+date['greg'] +")</small>"+"</div>");
+			curdate = data[i].datedue;
+		}
+		if(data[i].patientname){
+			var pname = data[i].patientname;
+		} else {
+			var pname = "<span class='error'>Patient not registered</span>";
+		}
+		var task = $('<div>').addClass('task');
+		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
+		var patient = $('<div>').addClass('taskright').html(pname);
+		patient.append($('<br>'));
+		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)));
+		patient.append($('<small>').text('/'+data[i].userid));
+		task.append(patient);
+		
+		//add risk info 
+		if(data[i].risk != 'none'){
+			task.append("<div class='taskhighrisk'><img src='images/red-dot.png'/></div>");
+		} else {
+			task.append("<div class='taskhighrisk'></div>");
+		}
+		
+		task.append("<div style='clear:both;'></div>");
+		$('#content').append(task);
+		
+	}
+	$('#grayout').hide();
+}
 
 function showLogin(){
+	$('#menu').hide();
 	$('#content').empty();
 	$('#content').append("<h1 name='lang' id='page_title_login'>"+getString('page_title_login')+"</h1>");
 	
@@ -154,6 +196,7 @@ function login(){
 		return;
 	}
 	
+	$('#grayout').show();
 	$.ajax({
 		   type:'POST',
 		   url:API_URL,
@@ -172,10 +215,12 @@ function login(){
 				   store.set('password',$('#password').val());
 				   store.set('lastlogin',Date());
 				   showUsername();
+				   $('#menu').show();
 				   showPage('kpi');
 			   }
 		   }, 
 		   error:function(data){
+			   $('#grayout').hide();
 			   alert("No connection available. You need to be online to log in.");
 		   }
 		});
@@ -247,7 +292,7 @@ function dataUpdate(){
 			   if(data && !data.error){
 				   store.set('deliveries',data);
 				   if(PAGE == 'deliveries'){
-					   displayTasks(store.get('deliveries'));
+					   displayDeliveries(store.get('deliveries'));
 				   }
 				   store.set('lastupdate',Date());
 				   setUpdated();
@@ -255,7 +300,32 @@ function dataUpdate(){
 		   }, 
 		   error:function(data){
 			   if(PAGE == 'deliveries'){
-				   displayTasks(store.get('deliveries'));
+				   displayDeliveries(store.get('deliveries'));
+			   }
+		   }
+		});
+	
+	// Get the overdue from remote server
+	$.ajax({
+		   type:'POST',
+		   url:API_URL,
+		   headers:{},
+		   dataType:'json',
+		   data:{'method':'getoverdue','username':store.get('username'),'password':store.get('password')}, 
+		   success:function(data){
+			   //check for any error messages
+			   if(data && !data.error){
+				   store.set('overdue',data);
+				   if(PAGE == 'overdue'){
+					   displayOverdue(store.get('overdue'));
+				   }
+				   store.set('lastupdate',Date());
+				   setUpdated();
+			   }
+		   }, 
+		   error:function(data){
+			   if(PAGE == 'overdue'){
+				   displayOverdue(store.get('overdue'));
 			   }
 		   }
 		});

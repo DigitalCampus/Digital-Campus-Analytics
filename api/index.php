@@ -34,6 +34,15 @@ if ($method == 'login'){
 		$t->risk = $risks->category;
 	}
 	echo json_encode($tasks);
+} else if ($method == 'getoverdue'){
+	$tasks = $API->getOverdueTasks(array('days'=>30));
+	//add risk factors
+	$ra = new RiskAssessment();
+	foreach($tasks as $t){
+		$risks = $ra->getRisks_Cache($t->patienthpcode, $t->userid);
+		$t->risk = $risks->category;
+	}
+	echo json_encode($tasks);
 } else if ($method == 'getdeliveries'){
 	//add risk factors
 	$ra = new RiskAssessment();
