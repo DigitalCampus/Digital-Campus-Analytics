@@ -253,7 +253,7 @@ class API {
 	}
 	
 	// returns comma separated list of the hpcodes the current user is allowed to view
-	function getUserHealthPointPermissions($returnsql=false){
+	function getUserHealthPointPermissions($returnsql=false, $returnarray= false){
 		global $USER;
 		
 		if($USER->getProp('permissions.admin') == 'true'){
@@ -284,6 +284,9 @@ class API {
 		$temp = array();
 		while($o = mysql_fetch_object($result)){
 			array_push($temp,$o->hpcode);
+		}
+		if($returnarray){
+			return $temp;
 		}
 		$hpcodes = implode(",",$temp);
 		
@@ -1424,10 +1427,10 @@ class API {
 		$start = $submitted->start;
 		
 		//add a limit if necessary
-		if($limit != 'all'){
+		if($limit == 0 || $limit != 'all'){
 			$sql .= " LIMIT ".$start.",".$limit;
 		}
-		
+
 		$submitted->protocols = array();
 		$result = $this->runSql($sql);
 		

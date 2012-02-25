@@ -18,8 +18,7 @@ function showPage(page){
 		displayTasks(store.get('tasks'));
 	} else if(page == 'kpi'){
 		$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
-		$('#content').append("<h2 id='loading'>Not yet implemented</h2>");
-		$('#grayout').hide();
+		displayKPIs(store.get('kpis'));
 	} else if(page == 'deliveries'){
 		$('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");
 		displayDeliveries(store.get('deliveries'));
@@ -149,6 +148,39 @@ function displayOverdue(data){
 		$('#content').append(task);
 		
 	}
+	$('#grayout').hide();
+}
+
+function displayKPIs(data){
+	if(data == null || data.length == 0){
+		return;
+	} 
+	
+	if(data.districts && data.districts.length >0 && data.hps.length >0){
+		var sel = $('<select>').attr('id','hpcodes');
+		for(var d=0; d< data.districts.length; d++){
+			var opt = $('<option>').attr('name','district.id.'+data.districts[d].did).attr('value',data.districts[d].did).text(getString('district.id.'+data.districts[d].did));
+			sel.append(opt);
+		}
+		sel.append("<option value='' disabled='disabled'>---</option>");
+		for(var d=0; d< data.hps.length; d++){
+			var opt = $('<option>').attr('name','healthpoint.id.'+data.hps[d]).attr('value',data.hps[d]).text(getString('healthpoint.id.'+data.hps[d]));
+			sel.append(opt);
+		}
+		$('#content').append(sel);
+	}
+	$('#content').append("<div class='kpiheader'>" +
+							"<div class='kpiscore' name='lang' id='kpi.heading.thismonth'>"+getString('kpi.heading.thismonth')+"</div>" + 
+							"<div class='kpichange' name='lang' id='kpi.heading.previousmonth'>"+getString('kpi.heading.previousmonth')+"</div>" +
+							"<div class='kpitarget' name='lang' id='kpi.heading.target'>"+getString('kpi.heading.target')+"</div>" +
+						"</div>");
+	//show submitted
+	
+	
+	//show anc1 submitted
+	
+	//show anc2 submitted
+	
 	$('#grayout').hide();
 }
 
@@ -326,6 +358,31 @@ function dataUpdate(){
 		   error:function(data){
 			   if(PAGE == 'overdue'){
 				   displayOverdue(store.get('overdue'));
+			   }
+		   }
+		});
+	
+	// Get KPIs from remote server
+	$.ajax({
+		   type:'POST',
+		   url:API_URL,
+		   headers:{},
+		   dataType:'json',
+		   data:{'method':'getkpis','username':store.get('username'),'password':store.get('password')}, 
+		   success:function(data){
+			   //check for any error messages
+			   if(data && !data.error){
+				   store.set('kpis',data);
+				   if(PAGE == 'kpi'){
+					   displayKPIs(store.get('kpis'));
+				   }
+				   store.set('lastupdate',Date());
+				   setUpdated();
+			   }
+		   }, 
+		   error:function(data){
+			   if(PAGE == 'kpi'){
+				   displayKPIs(store.get('kpis'));
 			   }
 		   }
 		});

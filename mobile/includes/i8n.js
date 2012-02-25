@@ -27,6 +27,9 @@ function changeInterfaceLang(){
 	$('[name^=risk]').each(function(index){
 		$(this).text(getString($(this).attr('name')));
 	});
+	$('[name^=district]').each(function(index){
+		$(this).text(getString($(this).attr('name')));
+	});
 }
 
 function changeLang(){

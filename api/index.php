@@ -52,7 +52,39 @@ if ($method == 'login'){
 		$d->risk = $risks;
 	}
 	echo json_encode($deliveries);
+} else if ($method == 'getkpis'){
+	$kpi = new stdClass();
+	if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.role') != 'midwife'){
+		$kpi->districts = $API->getDistricts();
+	}
+	$kpi->hps = $API->getUserHealthPointPermissions(false,true);
+	$datetoday = new DateTime();
+	
+	$datemonthago = new DateTime();
+	$datemonthago->sub(new DateInterval('P1M'));
+	
+	$date2monthago = new DateTime();
+	$date2monthago->sub(new DateInterval('P2M'));
+	foreach($kpi->hps as $hp){
+		$opts['hpcodes'] = $hp;
+		$opts['limit'] = 0;
+		$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
+		$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
+		$kpi->anc1thismonth[$hp] = $API->getANC1Defaulters($opts);
+		$kpi->anc2thismonth[$hp] = $API->getANC2Defaulters($opts);
+		$kpi->submittedthismonth[$hp] = $API->getProtocolsSubmitted_Cache($opts);
+		
+		$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
+		$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
+		
+		$kpi->anc1prevmonth[$hp] = $API->getANC1Defaulters($opts);
+		$kpi->anc2prevmonth[$hp] = $API->getANC2Defaulters($opts);
+		$kpi->submittedprevmonth[$hp] = $API->getProtocolsSubmitted_Cache($opts);
+		
+	}
+	echo json_encode($kpi);
 } else {
+
 	$error->error = array("Method not available");
 	echo json_encode($error);
 }
