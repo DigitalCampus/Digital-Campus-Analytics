@@ -137,6 +137,7 @@ div.kpi {
 	border: 1px solid #ccc;	
 	padding:5px;
 	margin:5px;
+	clear:both;
 }
 
 
@@ -147,6 +148,7 @@ div.kpiheader {
 	padding:0px 5px;
 	margin:5px;
 	font-size:80%;
+	clear:both;
 }
 
 div.kpiscore {

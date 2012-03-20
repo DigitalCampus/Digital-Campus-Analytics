@@ -17,7 +17,6 @@ function showPage(page){
 		$('#content').append("<h2 name='lang' id='page_title_tasks'>"+getString('page_title_tasks')+"</h2>");
 		displayTasks(store.get('tasks'));
 	} else if(page == 'kpi'){
-		$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
 		displayKPIs(store.get('kpis'));
 	} else if(page == 'deliveries'){
 		$('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");
@@ -155,6 +154,7 @@ function displayKPIs(data){
 	if(data == null || data.length == 0){
 		return;
 	} 
+	$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
 	
 	if(data.districts && data.districts.length >0 && data.hps.length >0){
 		var sel = $('<select>').attr('id','hpcodes');
@@ -173,9 +173,14 @@ function displayKPIs(data){
 							"<div class='kpiscore' name='lang' id='kpi.heading.thismonth'>"+getString('kpi.heading.thismonth')+"</div>" + 
 							"<div class='kpichange' name='lang' id='kpi.heading.previousmonth'>"+getString('kpi.heading.previousmonth')+"</div>" +
 							"<div class='kpitarget' name='lang' id='kpi.heading.target'>"+getString('kpi.heading.target')+"</div>" +
-						"</div>");
+						"<div style='clear:both;'></div></div>");
 	//show submitted
-	
+	$('#content').append("<div class='kpi'>" +
+			"<div class='kpititle' name='lang' id='kpi.heading.thismonth'>"+getString('kpi.heading.thismonth')+"</div>" + 
+			"<div class='kpiscore' name='lang' id='kpi.heading.thismonth'>"+getString('kpi.heading.thismonth')+"</div>" + 
+			"<div class='kpichange' name='lang' id='kpi.heading.previousmonth'>"+getString('kpi.heading.previousmonth')+"</div>" +
+			"<div class='kpitarget' name='lang' id='kpi.heading.target'>"+getString('kpi.heading.target')+"</div>" +
+		"<div style='clear:both;'></div></div>");
 	
 	//show anc1 submitted
 	
