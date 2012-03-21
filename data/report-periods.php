@@ -42,7 +42,7 @@ if($today > $temp->setDate(2012, 7, 8)){
 }
 
 // report Q4 2004
-if($today > $temp->setDate(2012, 4, 9)){
+if($today > $temp->setDate(2012, 6, 8)){
 	$rpm = new stdClass();
 	$rpm->text = getstring('ethio.month.8'). " 2004 - ". getstring('ethio.month.10'). " 2004";
 	$rpm->start = $date->setDate(2012, 4, 9)->format('Y-m-d 00:00:00');

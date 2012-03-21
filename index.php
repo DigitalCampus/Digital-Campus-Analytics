@@ -3,7 +3,7 @@ include_once "config.php";
 $PAGE="index";
 $HEADER = "<script type='text/javascript' src='https://www.google.com/jsapi'></script>";
 $HEADER .= '<script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>';
-$BODY_ATT = 'onunload="GUnload()" onload="initialize()"';
+//$BODY_ATT = 'onunload="GUnload()" onload="initialize()"';
 
 include_once "includes/header.php";
 $days = optional_param("days",31,PARAM_INT);

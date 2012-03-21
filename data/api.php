@@ -1365,7 +1365,11 @@ class API {
 			return false;
 		}
 		if(array_key_exists('limit',$opts)){
-			$limit = max(0,$opts['limit']);
+			if(is_numeric($opts['limit'])){
+				$limit = max(0,$opts['limit']);
+			} else {
+				$limit = $opts['limit'];
+			}
 		} else {
 			$limit = DEFAULT_LIMIT;
 		}
@@ -1427,7 +1431,7 @@ class API {
 		$start = $submitted->start;
 		
 		//add a limit if necessary
-		if($limit == 0 || $limit != 'all'){
+		if($limit != 'all'){
 			$sql .= " LIMIT ".$start.",".$limit;
 		}
 
