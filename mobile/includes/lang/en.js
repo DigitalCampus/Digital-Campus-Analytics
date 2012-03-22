@@ -8,7 +8,7 @@ lang['EN']['ethio.day.4'] = 'Thu';
 lang['EN']['ethio.day.5'] = 'Fri';
 lang['EN']['ethio.day.6'] = 'Sat';
 
-
+lang['EN']['district.id.all'] = 'All';
 lang['EN']['district.id.1'] = 'Hinatalo wajerat District';
 lang['EN']['district.id.2'] = 'Kilteawelaelo District';
 lang['EN']['district.id.3'] = 'Testing';
@@ -47,6 +47,12 @@ lang['EN']['healthpoint.id.50004'] = "Hiwane health centre";
 lang['EN']['healthpoint.id.50005'] = "Negash health centre";
 lang['EN']['healthpoint.id.70001'] = "Ayder Referal Hospital";
 lang['EN']['healthpoint.id.9999'] = "Practice only";
+
+lang['EN']['kpi.heading.previousmonth'] = 'Previous month';
+lang['EN']['kpi.heading.target'] = 'Target';
+lang['EN']['kpi.heading.thismonth'] = 'This month';
+
+lang['EN']['kpi.submitted'] = 'Protocols Submitted';
 
 lang['EN']['login_username'] = 'Username:';
 lang['EN']['login_password'] = 'Password:';

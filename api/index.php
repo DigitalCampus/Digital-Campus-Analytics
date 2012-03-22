@@ -24,6 +24,7 @@ if($method == null){
 if ($method == 'login'){
 	$response = new stdClass();
 	$response->result = true;
+	$response->homehp = $USER->hpcode;
 	echo json_encode($response);
 } else if ($method == 'gettasks'){
 	$tasks = $API->getTasksDue(array('days'=>30));
@@ -54,10 +55,7 @@ if ($method == 'login'){
 	echo json_encode($deliveries);
 } else if ($method == 'getkpis'){
 	$kpi = new stdClass();
-	if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.role') != 'midwife'){
-		$kpi->districts = $API->getDistricts();
-	}
-	$kpi->hps = $API->getUserHealthPointPermissions(false,true);
+	
 	$datetoday = new DateTime();
 	
 	$datemonthago = new DateTime();
@@ -65,6 +63,58 @@ if ($method == 'login'){
 	
 	$date2monthago = new DateTime();
 	$date2monthago->sub(new DateInterval('P2M'));
+	
+	if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.role') != 'midwife'){
+		$kpi->districts = $API->getDistricts();
+		
+		if(count($kpi->districts) > 1){
+			$opts['hpcodes'] = $API->getUserHealthPointPermissions();
+			$opts['limit'] = 0;
+			$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
+			$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
+			$kpi->anc1thismonth['all'] = $API->getANC1Defaulters($opts);
+			$kpi->anc2thismonth['all'] = $API->getANC2Defaulters($opts);
+			$temp = $API->getProtocolsSubmitted_Cache($opts);
+			$temp->protocols = array();
+			$kpi->submittedthismonth['all'] = $temp;
+				
+			$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
+			$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
+				
+			$kpi->anc1prevmonth['all'] = $API->getANC1Defaulters($opts);
+			$kpi->anc2prevmonth['all'] = $API->getANC2Defaulters($opts);
+			$kpi->submittedprevmonth['all'] = $API->getProtocolsSubmitted_Cache($opts);
+		}
+		
+		// add the summaries for each district
+		foreach($kpi->districts as $d){
+			//echo $d->did;
+			$hps4district = $API->getHealthPointsForDistict($d->did);
+			$temp = array();
+			foreach($hps4district as $h){
+				array_push($temp,$h->hpcode);
+			}
+			$hps = implode(",",$temp);
+			$opts['hpcodes'] = $hps;
+			$opts['limit'] = 0;
+			$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
+			$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
+			$kpi->anc1thismonth[$d->did] = $API->getANC1Defaulters($opts);
+			$kpi->anc2thismonth[$d->did] = $API->getANC2Defaulters($opts);
+			$temp = $API->getProtocolsSubmitted_Cache($opts);
+			$temp->protocols = array();
+			$kpi->submittedthismonth[$d->did] = $temp;
+			
+			$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
+			$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
+			
+			$kpi->anc1prevmonth[$d->did] = $API->getANC1Defaulters($opts);
+			$kpi->anc2prevmonth[$d->did] = $API->getANC2Defaulters($opts);
+			$kpi->submittedprevmonth[$d->did] = $API->getProtocolsSubmitted_Cache($opts);
+		}
+	}
+	$kpi->hps = $API->getUserHealthPointPermissions(false,true);
+	
 	foreach($kpi->hps as $hp){
 		$opts['hpcodes'] = $hp;
 		$opts['limit'] = 0;
@@ -72,7 +122,9 @@ if ($method == 'login'){
 		$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 		$kpi->anc1thismonth[$hp] = $API->getANC1Defaulters($opts);
 		$kpi->anc2thismonth[$hp] = $API->getANC2Defaulters($opts);
-		$kpi->submittedthismonth[$hp] = $API->getProtocolsSubmitted_Cache($opts);
+		$temp = $API->getProtocolsSubmitted_Cache($opts);
+		$temp->protocols = array();
+		$kpi->submittedthismonth[$hp] = $temp;
 		
 		$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
 		$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');

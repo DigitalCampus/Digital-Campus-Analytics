@@ -272,7 +272,8 @@ class API {
 			//otherwise can only see the date from the hpid in their user table record (hpid) 
 			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid = %d",$USER->hpid);
 		}
-
+		$sql .= " ORDER BY hpname ASC";
+		
 		if($returnsql){
 			return $sql;
 		}
@@ -1406,8 +1407,7 @@ class API {
 			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
 		if(array_key_exists('hpcodes',$opts)){
-			$sql .= " AND  (a.patienthpcode IN (".$opts['hpcodes'].")";
-			$sql .= " OR a.protocolhpcode IN (".$opts['hpcodes']."))";
+			$sql .= " AND a.protocolhpcode IN (".$opts['hpcodes'].")";
 		}
 		$sql .= "ORDER BY datestamp DESC";
 		
@@ -1421,6 +1421,8 @@ class API {
 		$submitted->count['total'] = 0;
 		$submitted->count[PROTOCOL_ANCFIRST] = 0;
 		$submitted->count[PROTOCOL_ANCFOLLOW] = 0;
+		$submitted->count[PROTOCOL_DELIVERY] = 0;
+		$submitted->count[PROTOCOL_PNC] = 0;
 		while($row = mysql_fetch_object($countres)){
 			$submitted->count[$row->protocol] = $row->norecords;
 			$submitted->count['total'] += $row->norecords;
@@ -1436,8 +1438,8 @@ class API {
 		}
 
 		$submitted->protocols = array();
-		$result = $this->runSql($sql);
 		
+		$result = $this->runSql($sql);
 		while($row = mysql_fetch_object($result)){
 			array_push($submitted->protocols,$row);
 		}
@@ -1483,10 +1485,7 @@ class API {
 			$patient = $this->getPatient(array('hpcode'=>$hpcode,'patid'=>$userid));
 			// empty the cache for this patient 
 			$this->cacheDeleteTasks($userid,$hpcode);
-			
-			
-			
-			
+
 			$edd = "";
 			
 			// based on ANC First, are they due for ANC follow up 

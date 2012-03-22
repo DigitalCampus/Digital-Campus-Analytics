@@ -8,6 +8,7 @@ function Store(){
 		if (!localStorage) {
 			localStorage.setItem('username', null);
 			localStorage.setItem('password', null);
+			localStorage.setItem('homehp', null);
 			localStorage.setItem('kpis', null);
 			localStorage.setItem('tasks', null);
 			localStorage.setItem('deliveries', null);

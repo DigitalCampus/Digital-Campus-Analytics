@@ -1,7 +1,7 @@
 
 var API_URL = "/scorecard/api/";
 var PAGE = "";
-var DATA_CACHE_EXPIRY = 1; // no of hours before the data should be updated from server;
+var DATA_CACHE_EXPIRY = 1; // no of mins before the data should be updated from server;
 var LOGIN_EXPIRY = 14; // no days before the user needs to log in again
 
 function showPage(page){
@@ -151,14 +151,24 @@ function displayOverdue(data){
 }
 
 function displayKPIs(data){
+	$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
 	if(data == null || data.length == 0){
+		$('#content').append("no data to show");
+		$('#grayout').hide();
 		return;
 	} 
-	$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
 	
 	if(data.districts && data.districts.length >0 && data.hps.length >0){
-		var sel = $('<select>').attr('id','hpcodes');
-		for(var d=0; d< data.districts.length; d++){
+		var seldiv = $('<div>').attr('id','hpcodeselect');
+		var sel = $('<select>').attr('id','hpcodes').attr('onchange','updateKPIDisplay()');
+		
+		if(data.districts.length > 1){
+			var opt = $('<option>').attr('name','district.id.all').attr('value','all').text(getString('district.id.all'));
+			sel.append(opt);
+			sel.append("<option value='' disabled='disabled'>---</option>");
+		}
+		
+		for(var d=0; d < data.districts.length; d++){
 			var opt = $('<option>').attr('name','district.id.'+data.districts[d].did).attr('value',data.districts[d].did).text(getString('district.id.'+data.districts[d].did));
 			sel.append(opt);
 		}
@@ -167,7 +177,8 @@ function displayKPIs(data){
 			var opt = $('<option>').attr('name','healthpoint.id.'+data.hps[d]).attr('value',data.hps[d]).text(getString('healthpoint.id.'+data.hps[d]));
 			sel.append(opt);
 		}
-		$('#content').append(sel);
+		seldiv.append(sel)
+		$('#content').append(seldiv);
 	}
 	$('#content').append("<div class='kpiheader'>" +
 							"<div class='kpiscore' name='lang' id='kpi.heading.thismonth'>"+getString('kpi.heading.thismonth')+"</div>" + 
@@ -176,17 +187,33 @@ function displayKPIs(data){
 						"<div style='clear:both;'></div></div>");
 	//show submitted
 	$('#content').append("<div class='kpi'>" +
-			"<div class='kpititle' name='lang' id='kpi.heading.thismonth'>"+getString('kpi.heading.thismonth')+"</div>" + 
-			"<div class='kpiscore' name='lang' id='kpi.heading.thismonth'>"+getString('kpi.heading.thismonth')+"</div>" + 
-			"<div class='kpichange' name='lang' id='kpi.heading.previousmonth'>"+getString('kpi.heading.previousmonth')+"</div>" +
-			"<div class='kpitarget' name='lang' id='kpi.heading.target'>"+getString('kpi.heading.target')+"</div>" +
+			"<div class='kpititle' name='lang' id='kpi.submitted'>"+getString('kpi.submitted')+"</div>" + 
+			"<div class='kpiscore' name='lang' id='kpi_submitted_thismonth'></div>" + 
+			"<div class='kpichange' name='lang' id='kpi_submitted_previousmonth'></div>" +
+			"<div class='kpitarget' name='lang' id='kpi_submitted_target'></div>" +
 		"<div style='clear:both;'></div></div>");
 	
 	//show anc1 submitted
 	
 	//show anc2 submitted
 	
+	
+	// now populate the field based on selected HP.
+	updateKPIDisplay();
 	$('#grayout').hide();
+}
+
+function updateKPIDisplay(){
+	var hpcodes = $('#hpcodes').val(); 
+	if(!hpcodes){
+		hpcodes = store.get('homehp');
+	}
+	var data = store.get('kpis');
+	if(!data){
+		return;
+	}
+	$('#kpi_submitted_thismonth').text(data.submittedthismonth[hpcodes].count['total']);
+	$('#kpi_submitted_previousmonth').text(data.submittedprevmonth[hpcodes].count['total']);
 }
 
 function showLogin(){
@@ -218,7 +245,7 @@ function loggedIn(){
 	var lastlogin = new Date(store.get('lastlogin'));
 	
 	if(lastlogin.addDays(LOGIN_EXPIRY) < now){
-		logout();
+		logout(true);
 		return false;
 	} else {
 		return true;
@@ -251,6 +278,7 @@ function login(){
 				   store.set('username',$('#username').val());
 				   store.set('password',$('#password').val());
 				   store.set('lastlogin',Date());
+				   store.set('homehp',data.homehp);
 				   showUsername();
 				   $('#menu').show();
 				   showPage('kpi');
@@ -263,14 +291,22 @@ function login(){
 		});
 }
 
-function logout(){
-	var lo = confirm('Are you sure you want to log out?\n\nYou will need an active connection to log in again.');
-	if(lo){
+function logout(force){
+	if(force){
 		store.clear();
 		store.init();
 		showLogin();
 		showUsername();
+	} else {
+		var lo = confirm('Are you sure you want to log out?\n\nYou will need an active connection to log in again.');
+		if(lo){
+			store.clear();
+			store.init();
+			showLogin();
+			showUsername();
+		}
 	}
+	
 }
 
 function showUsername(){
@@ -288,7 +324,7 @@ function dataUpdate(){
 	// check when last update made, return if too early
 	var now = new Date();
 	var lastupdate = new Date(store.get('lastupdate'));
-	if(lastupdate > now.addHours(-DATA_CACHE_EXPIRY)){
+	if(lastupdate > now.addMins(-DATA_CACHE_EXPIRY)){
 		return;
 	} 
 	
@@ -379,7 +415,7 @@ function dataUpdate(){
 			   if(data && !data.error){
 				   store.set('kpis',data);
 				   if(PAGE == 'kpi'){
-					   displayKPIs(store.get('kpis'));
+					   showPage('kpi');
 				   }
 				   store.set('lastupdate',Date());
 				   setUpdated();
@@ -387,7 +423,7 @@ function dataUpdate(){
 		   }, 
 		   error:function(data){
 			   if(PAGE == 'kpi'){
-				   displayKPIs(store.get('kpis'));
+				   showPage('kpi');
 			   }
 		   }
 		});
@@ -395,6 +431,11 @@ function dataUpdate(){
 
 function setUpdated(){
 	$('#last_update').text(store.get('lastupdate'));
+}
+
+Date.prototype.addMins= function(m){
+    this.setTime(this.getTime() + (m*60000));
+    return this;
 }
 
 Date.prototype.addHours= function(h){
