@@ -47,19 +47,20 @@ function displayTasks(data){
 			var pname = "<span class='error'>Patient not registered</span>";
 		}
 		var task = $('<div>').addClass('task');
+		
+		// high risk indicator
+		if(data[i].risk != 'none'){
+			task.append("<div class='taskhighrisk'><img src='images/red-dot-small.png'/></div>");
+		} else {
+			task.append("<div class='taskhighrisk'>&nbsp;</div>");
+		}
+		
 		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
 		var patient = $('<div>').addClass('taskright').html(pname);
 		patient.append($('<br>'));
 		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)));
 		patient.append($('<small>').text('/'+data[i].userid));
-		task.append(patient);
-		
-		//add risk info 
-		if(data[i].risk != 'none'){
-			task.append("<div class='taskhighrisk'><img src='images/red-dot.png'/></div>");
-		} else {
-			task.append("<div class='taskhighrisk'></div>");
-		}
+		task.append(patient);		
 		
 		task.append("<div style='clear:both;'></div>");
 		$('#content').append(task);
@@ -129,19 +130,20 @@ function displayOverdue(data){
 			var pname = "<span class='error'>Patient not registered</span>";
 		}
 		var task = $('<div>').addClass('task');
+		
+		//add risk info 
+		if(data[i].risk != 'none'){
+			task.append("<div class='taskhighrisk'><img src='images/red-dot-small.png'/></div>");
+		} else {
+			task.append("<div class='taskhighrisk'>&nbsp;</div>");
+		}
+		
 		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
 		var patient = $('<div>').addClass('taskright').html(pname);
 		patient.append($('<br>'));
 		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)));
 		patient.append($('<small>').text('/'+data[i].userid));
 		task.append(patient);
-		
-		//add risk info 
-		if(data[i].risk != 'none'){
-			task.append("<div class='taskhighrisk'><img src='images/red-dot.png'/></div>");
-		} else {
-			task.append("<div class='taskhighrisk'></div>");
-		}
 		
 		task.append("<div style='clear:both;'></div>");
 		$('#content').append(task);
@@ -197,6 +199,7 @@ function displayKPIs(data){
 			"<div style='clear:both;'></div></div>");
 	}
 	
+	$('#content').append("<h2 name='lang' id='page_title_risk'>"+getString('page_title_risk')+"</h2>");
 	// now populate the field based on selected HP.
 	updateKPIDisplay();
 	$('#grayout').hide();

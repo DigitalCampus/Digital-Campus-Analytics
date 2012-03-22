@@ -74,6 +74,7 @@ lang['EN']['page_title_deliveries'] = 'Deliveries';
 lang['EN']['page_title_kpis'] = 'Statistics';
 lang['EN']['page_title_login'] = 'Login';
 lang['EN']['page_title_overdue'] = 'Overdue';
+lang['EN']['page_title_risk'] = 'Risk Distribution';
 lang['EN']['page_title_tasks'] = 'Tasks Due';
 
 lang['EN']['protocol.ancfirst'] = 'ANC First';
