@@ -185,18 +185,17 @@ function displayKPIs(data){
 							"<div class='kpichange' name='lang' id='kpi.heading.previousmonth'>"+getString('kpi.heading.previousmonth')+"</div>" +
 							"<div class='kpitarget' name='lang' id='kpi.heading.target'>"+getString('kpi.heading.target')+"</div>" +
 						"<div style='clear:both;'></div></div>");
-	//show submitted
-	$('#content').append("<div class='kpi'>" +
-			"<div class='kpititle' name='lang' id='kpi.submitted'>"+getString('kpi.submitted')+"</div>" + 
-			"<div class='kpiscore' name='lang' id='kpi_submitted_thismonth'></div>" + 
-			"<div class='kpichange' name='lang' id='kpi_submitted_previousmonth'></div>" +
-			"<div class='kpitarget' name='lang' id='kpi_submitted_target'></div>" +
-		"<div style='clear:both;'></div></div>");
 	
-	//show anc1 submitted
+	var submitted = new Array('total','ancfirst','ancfollow','delivery','pnc');
 	
-	//show anc2 submitted
-	
+	for(var i=0; i<submitted.length; i++){
+		$('#content').append("<div class='kpi'>" +
+				"<div class='kpititle' name='lang' id='kpi_"+submitted[i]+"_submitted'>"+getString('kpi_'+submitted[i]+'_submitted')+"</div>" + 
+				"<div class='kpiscore'><img src='images/increase.png' class='kpichange' id='kpi_"+submitted[i]+"_submitted_increase'/> <span id='kpi_"+submitted[i]+"_submitted_thismonth'></span></div>" + 
+				"<div class='kpichange' id='kpi_"+submitted[i]+"_submitted_previousmonth'></div>" +
+				"<div class='kpitarget' id='kpi_"+submitted[i]+"_submitted_target'></div>" +
+			"<div style='clear:both;'></div></div>");
+	}
 	
 	// now populate the field based on selected HP.
 	updateKPIDisplay();
@@ -212,8 +211,22 @@ function updateKPIDisplay(){
 	if(!data){
 		return;
 	}
-	$('#kpi_submitted_thismonth').text(data.submittedthismonth[hpcodes].count['protocol.total']);
-	$('#kpi_submitted_previousmonth').text(data.submittedprevmonth[hpcodes].count['protocol.total']);
+	
+	var submitted = new Array('total','ancfirst','ancfollow','delivery','pnc');
+	
+	for(var i=0; i<submitted.length; i++){
+		$('#kpi_'+submitted[i]+'_submitted_thismonth').text(data.submittedthismonth[hpcodes].count['protocol.'+submitted[i]]);
+		$('#kpi_'+submitted[i]+'_submitted_previousmonth').text(data.submittedprevmonth[hpcodes].count['protocol.'+submitted[i]]);
+		$('#kpi_'+submitted[i]+'_submitted_target').text(data.submittedprevmonth[hpcodes].target['protocol.'+submitted[i]]);
+		console.log(data.submittedthismonth[hpcodes].count['protocol.'+submitted[i]]);
+		console.log(data.submittedprevmonth[hpcodes].count['protocol.'+submitted[i]]);
+		console.log('--');
+		if(parseInt(data.submittedthismonth[hpcodes].count['protocol.'+submitted[i]]) > parseInt(data.submittedprevmonth[hpcodes].count['protocol.'+submitted[i]])){
+			$('#kpi_'+submitted[i]+'_submitted_increase').show();
+		} else {
+			$('#kpi_'+submitted[i]+'_submitted_increase').hide();
+		}
+	}
 }
 
 function showLogin(){

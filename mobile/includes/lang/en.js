@@ -52,7 +52,11 @@ lang['EN']['kpi.heading.previousmonth'] = 'Previous month';
 lang['EN']['kpi.heading.target'] = 'Target';
 lang['EN']['kpi.heading.thismonth'] = 'This month';
 
-lang['EN']['kpi.submitted'] = 'Protocols Submitted';
+lang['EN']['kpi_ancfirst_submitted'] = 'ANC1 Submitted';
+lang['EN']['kpi_ancfollow_submitted'] = 'ANC Follow Up Submitted';
+lang['EN']['kpi_delivery_submitted'] = 'Delivery Submitted';
+lang['EN']['kpi_pnc_submitted'] = 'PNC Submitted';
+lang['EN']['kpi_total_submitted'] = 'Total Submitted';
 
 lang['EN']['login_username'] = 'Username:';
 lang['EN']['login_password'] = 'Password:';
@@ -79,6 +83,7 @@ lang['EN']['protocol.anctransfer'] = 'ANC Transfer';
 lang['EN']['protocol.delivery'] = 'Delivery';
 lang['EN']['protocol.pnc'] = 'PNC';
 lang['EN']['protocol.registration'] = 'Registration';
+lang['EN']['protocol.total'] = 'Total';
 
 
 

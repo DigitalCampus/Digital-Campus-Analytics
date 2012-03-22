@@ -41,7 +41,7 @@ class API {
 	    $this->DB = false;
 	} 
 	
-	function cron($days){
+	function cron($days, $showlog = false){
 		global $CONFIG;
 		$this->updatePatients();
 		
@@ -50,6 +50,7 @@ class API {
 		if($logdays > 0){
 			$sql = sprintf("DELETE FROM log WHERE logtime < DATE_ADD(NOW(), INTERVAL -%d DAY)",$logdays);
 			$this->runSql($sql);
+			echo "archived log\n";
 		}
 		
 		// update & cache which HPs the patients have visited
@@ -58,18 +59,24 @@ class API {
 		
 		foreach($submitted->protocols as $s){
 			$this->cacheAddPatientHealthPointVisit($s->Q_USERID,$s->patienthpcode,$s->protocolhpcode,$s->datestamp,$s->protocol,$s->user_uri);
+			if($showlog){
+				echo "added visit\n";
+			}
 		}
 		
 		// update & cache task list
 		$this->cacheTasksDue($days);
+		echo "cached tasks due\n";
 		
 		// remove any really old overdue tasks based on the ignore policy
 		$sql = sprintf("DELETE FROM cache_tasks
 						WHERE datedue < DATE_ADD(NOW(), INTERVAL -%d DAY)",$CONFIG->props['overdue.ignore']);
 		$this->runSql($sql);
+		echo "removed old overdue tasks\n";
 		
 		// update & cache patient risk factors
 		$this->cacheRisks($days);
+		echo "cached risks\n";
 		
 		// TODO update & cache KPI figures?
 		

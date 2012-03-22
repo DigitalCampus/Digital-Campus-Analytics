@@ -77,7 +77,7 @@ if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.ro
 	<div class="kpiscore"><?php 
 		$change = $nosubmittedthismonth->count[PROTOCOL_ANCFIRST] - $nosubmittedpreviousmonth->count[PROTOCOL_ANCFIRST];
 		if ($change > 0){
-			printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
+			printf("<span class='increase'><img src='%s' class='kpichange'/> </span>",'images/increase.png');
 		}
 		echo $nosubmittedthismonth->count[PROTOCOL_ANCFIRST];
 	?></div>
@@ -92,7 +92,7 @@ if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.ro
 	<div class="kpiscore"><?php 
 		$change = $nosubmittedthismonth->count[PROTOCOL_ANCFOLLOW] - $nosubmittedpreviousmonth->count[PROTOCOL_ANCFOLLOW];
 		if ($change > 0){
-			printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
+			printf("<span class='increase'><img src='%s' class='kpichange'/> </span>",'images/increase.png');
 		}
 		echo $nosubmittedthismonth->count[PROTOCOL_ANCFOLLOW]; 
 	?></div>
@@ -107,7 +107,7 @@ if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.ro
 	<div class="kpiscore"><?php 
 		$change = $anc1thismonth[0]->nondefaulters - $anc1previousmonth[0]->nondefaulters;
 		if ($change > 0){
-			printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
+			printf("<span class='increase'><img src='%s' class='kpichange'/> </span>",'images/increase.png');
 		}
 		echo $anc1thismonth[0]->nondefaulters; 
 	?>%</div>
@@ -122,7 +122,7 @@ if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.ro
 	<div class="kpiscore"><?php 
 		$change = $anc2thismonth[0]->nondefaulters - $anc2previousmonth[0]->nondefaulters;
 		if ($change > 0){
-			printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
+			printf("<span class='increase'><img src='%s' class='kpichange'/> </span>",'images/increase.png');
 		}
 		echo $anc2thismonth[0]->nondefaulters; 
 	?>%</div>

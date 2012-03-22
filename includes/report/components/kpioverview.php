@@ -9,8 +9,6 @@ $opts['enddate'] = $report->end;
 $anc1thismonth = $API->getANC1Defaulters($opts);
 $anc2thismonth = $API->getANC2Defaulters($opts);
 $nosubmittedthismonth = $API->getProtocolsSubmitted_Cache($opts);
-//$tt1thismonth = $API->getTT1Defaulters($opts);
-//$pnc1thismonth = $API->getPNC1Defaulters($opts);
 
 $opts = array();
 $opts['hpcodes'] = $report->hpcodes;
@@ -20,8 +18,6 @@ $opts['enddate'] = $report->prevend;
 $anc1previousmonth = $API->getANC1Defaulters($opts);
 $anc2previousmonth= $API->getANC2Defaulters($opts);
 $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
-//$tt1previousmonth = $API->getTT1Defaulters($opts);
-//$pnc1previousmonth = $API->getPNC1Defaulters($opts);
 
 ?>
 <div class="kpireportheader" style="width:50%">
