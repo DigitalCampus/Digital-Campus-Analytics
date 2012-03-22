@@ -4,7 +4,7 @@ $summary = array();
 $opts = array('days'=>$days,'limit'=>'all');
 $submitted = $API->getProtocolsSubmitted_Cache($opts);
 
-printf("<h3>%s</h3>",getstring('submitted.total.count',array($submitted->count['total'],$days)));
+printf("<h3>%s</h3>",getstring('submitted.total.count',array($submitted->count['protocol.total'],$days)));
 
 foreach($submitted->protocols as $s){
 	$d = date('d M Y',strtotime($s->datestamp));

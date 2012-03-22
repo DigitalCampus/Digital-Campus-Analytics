@@ -82,6 +82,7 @@ class KPI {
 				$summary[$date->format('M-Y')] = new stdClass;
 				$summary[$date->format('M-Y')]->defaulters = 0;
 				$summary[$date->format('M-Y')]->nondefaulters = 0;
+				$summary[$date->format('M-Y')]->target = $CONFIG->props['target.anc1'];
 				$date->add(new DateInterval('P1M'));
 			}
 				
@@ -99,6 +100,7 @@ class KPI {
 			$summary[0] = new stdClass();
 			$summary[0]->defaulters = 0;
 			$summary[0]->nondefaulters = 0;
+			$summary[0]->target = $CONFIG->props['target.anc1'];
 			// otherwise we're only interested in the total over the dates given
 			while($row = mysql_fetch_array($results)){
 				if ($row['createdate'] > $row['ANC1DUEBY'] ){
@@ -225,6 +227,7 @@ class KPI {
 				$summary[$date->format('M-Y')] = new stdClass;
 				$summary[$date->format('M-Y')]->defaulters = 0;
 				$summary[$date->format('M-Y')]->nondefaulters = 0;
+				$summary[$date->format('M-Y')]->target = $CONFIG->props['target.anc2'];
 				$date->add(new DateInterval('P1M'));
 			}
 	
@@ -242,6 +245,7 @@ class KPI {
 			$summary[0] = new stdClass();
 			$summary[0]->defaulters = 0;
 			$summary[0]->nondefaulters = 0;
+			$summary[0]->target = $CONFIG->props['target.anc2'];
 			// otherwise we're only interested in the total over the dates given
 			while($row = mysql_fetch_array($results)){
 				if ($row['createdate'] > $row['ANC2_DUE_BY_START'] && $row['createdate'] < $row['ANC2_DUE_BY_END']){

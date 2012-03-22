@@ -1356,6 +1356,7 @@ class API {
 	}
 	
 	function getProtocolsSubmitted_Cache($opts=array()){
+		global $CONFIG;
 		if(array_key_exists('days',$opts)){
 			$days = max(0,$opts['days']);
 		} else if(array_key_exists('startdate',$opts) && array_key_exists('enddate',$opts)) {
@@ -1418,17 +1419,25 @@ class API {
 		
 		$submitted = new stdClass();
 		
-		$submitted->count['total'] = 0;
+		$submitted->count['protocol.total'] = 0;
 		$submitted->count[PROTOCOL_ANCFIRST] = 0;
 		$submitted->count[PROTOCOL_ANCFOLLOW] = 0;
 		$submitted->count[PROTOCOL_DELIVERY] = 0;
 		$submitted->count[PROTOCOL_PNC] = 0;
 		while($row = mysql_fetch_object($countres)){
 			$submitted->count[$row->protocol] = $row->norecords;
-			$submitted->count['total'] += $row->norecords;
+			$submitted->count['protocol.total'] += $row->norecords;
 		}
 		
-		$submitted->start = max(min($submitted->count['total']-1,$start),0);
+		//add in the targets
+		$nohps = count(explode(',',$opts['hpcodes']));
+		$submitted->target['protocol.total'] = $CONFIG->props['target.protocols']*$nohps;
+		$submitted->target[PROTOCOL_ANCFIRST] = $CONFIG->props['target.anc1submitted']*$nohps;
+		$submitted->target[PROTOCOL_ANCFOLLOW] = $CONFIG->props['target.ancfollowsubmitted']*$nohps;
+		$submitted->target[PROTOCOL_DELIVERY] = $CONFIG->props['target.deliverysubmitted']*$nohps;
+		$submitted->target[PROTOCOL_PNC] = $CONFIG->props['target.pncsubmitted']*$nohps;
+		
+		$submitted->start = max(min($submitted->count['protocol.total']-1,$start),0);
 		$submitted->limit = $limit;
 		$start = $submitted->start;
 		

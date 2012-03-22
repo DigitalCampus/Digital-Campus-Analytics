@@ -38,10 +38,10 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 </div>
 <div class="kpi">
 	<div class="kpititle"><a href="kpi.php?kpi=submitted">Protocols Submitted</a></div>
-	<div class="kpiscore"><?php echo $nosubmittedthismonth->count['total']; ?></div>
+	<div class="kpiscore"><?php echo $nosubmittedthismonth->count['protocol.total']; ?></div>
 	<div class="kpichange">
 	<?php 
-		$change = $nosubmittedthismonth->count['total'] - $nosubmittedpreviousmonth->count['total'];
+		$change = $nosubmittedthismonth->count['protocol.total'] - $nosubmittedpreviousmonth->count['protocol.total'];
 	 	if ($change > 0){
 	 		printf("<span class='increase'><img src='%s'class='kpichange'/> +%d</span>",'images/increase.png',$change);
 	 	} else if ($change == 0){

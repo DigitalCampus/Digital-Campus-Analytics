@@ -58,13 +58,13 @@ if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.ro
 <div class="kpi">
 	<div class="kpititle"><?php echo getstring('mobile.kpi.protocols'); ?></div>
 	<div class="kpiscore"><?php 
-			$change = $nosubmittedthismonth->count['total'] - $nosubmittedpreviousmonth->count['total'];
+			$change = $nosubmittedthismonth->count['protocol.total'] - $nosubmittedpreviousmonth->count['protocol.total'];
 			if ($change > 0){
 				printf("<span class='increase'><img src='%s'class='kpichange'/> </span>",'images/increase.png');
 			} 
-			echo $nosubmittedthismonth->count['total'];
+			echo $nosubmittedthismonth->count['protocol.total'];
 	?></div>
-	<div class="kpichange"><?php echo $nosubmittedpreviousmonth->count['total']; ?></div>
+	<div class="kpichange"><?php echo $nosubmittedpreviousmonth->count['protocol.total']; ?></div>
 	<div class="kpitarget"><?php 
 			// multiply the target no of protocosl by the number of hpcodes
 			echo $CONFIG->props['target.protocols']*count(explode(',',$opts['hpcodes'])); ?></div>

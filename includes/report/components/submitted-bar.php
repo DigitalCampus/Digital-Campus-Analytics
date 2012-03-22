@@ -8,7 +8,7 @@ foreach($cohort as $c){
 	$summary[$i]->hpcode = $c->hpcode;
 	$opts=array('startdate'=>$report->start,'enddate'=>$report->end,'hpcodes'=>$c->hpcode,'limit'=>'0');
 	$submitted = $API->getProtocolsSubmitted_Cache($opts);
-	$summary[$i]->count = $submitted->count['total'];
+	$summary[$i]->count = $submitted->count['protocol.total'];
 	//print_r($submitted);
 	$i++;
 }

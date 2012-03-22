@@ -2,7 +2,7 @@
 	$opts = array('days'=>$days,'start'=>$start,'limit'=>$limit);
 	$submitted = $API->getProtocolsSubmitted_Cache($opts);
 	
-	printf("<h3>%s</h3>",getstring('submitted.total.count',array($submitted->count['total'],$days)));
+	printf("<h3>%s</h3>",getstring('submitted.total.count',array($submitted->count['protocol.total'],$days)));
 	
 	
 	$hasnext = false;
@@ -10,7 +10,7 @@
 	
 	$newnext = 0;
 	$newprev = 0;
-	if($submitted->start+$submitted->limit <= $submitted->count['total']){
+	if($submitted->start+$submitted->limit <= $submitted->count['protocol.total']){
 		$hasnext = true;
 		$newnext = max($submitted->start + $submitted->limit,0);
 		$nextlink = sprintf("%skpi.php?kpi=submitted&view=%s&days=%d&start=%d",$CONFIG->homeAddress,$view,$days,$newnext);
@@ -22,7 +22,7 @@
 		$prevlink = sprintf("%skpi.php?kpi=submitted&view=%s&days=%d&start=%d",$CONFIG->homeAddress,$view,$days,$newprev);
 	}
 
-	if($submitted->count['total'] > 0){
+	if($submitted->count['protocol.total'] > 0){
 ?>
 
 <table class="taskman">
@@ -35,7 +35,7 @@
 		<td colspan="3">
 			<?php 
 				$a = $submitted->start+1;
-				$b = min($submitted->count['total'],$submitted->start+$submitted->limit);
+				$b = min($submitted->count['protocol.total'],$submitted->start+$submitted->limit);
 				echo getstring('table.nav.title',array($a,$b));
 			 ?>
 		</td>

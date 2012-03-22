@@ -212,8 +212,8 @@ function updateKPIDisplay(){
 	if(!data){
 		return;
 	}
-	$('#kpi_submitted_thismonth').text(data.submittedthismonth[hpcodes].count['total']);
-	$('#kpi_submitted_previousmonth').text(data.submittedprevmonth[hpcodes].count['total']);
+	$('#kpi_submitted_thismonth').text(data.submittedthismonth[hpcodes].count['protocol.total']);
+	$('#kpi_submitted_previousmonth').text(data.submittedprevmonth[hpcodes].count['protocol.total']);
 }
 
 function showLogin(){

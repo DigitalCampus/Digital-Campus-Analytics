@@ -149,6 +149,7 @@ $LANG['protocol.anctransfer'] = 'ANC Transfer';
 $LANG['protocol.delivery'] = 'Delivery';
 $LANG['protocol.pnc'] = 'PNC';
 $LANG['protocol.registration'] = 'Registration';
+$LANG['protocol.total'] = 'Total';
 $LANG['protocollocation'] = 'Protocol Submitted at';
 $LANG['protocolsubmitted'] = 'Protocol submitted on/by';
 $LANG['Q_ABDOMINALPAIN'] = 'Abdominal pain or cramps';
