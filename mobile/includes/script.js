@@ -1,8 +1,8 @@
 
 var API_URL = "/scorecard/api/";
 var PAGE = "";
-var DATA_CACHE_EXPIRY = 1; // no of mins before the data should be updated from server;
-var LOGIN_EXPIRY = 14; // no days before the user needs to log in again
+var DATA_CACHE_EXPIRY = 360; // no of mins before the data should be updated from server;
+var LOGIN_EXPIRY = 7; // no days before the user needs to log in again
 
 function showPage(page){
 	if(!loggedIn()){
@@ -156,7 +156,7 @@ function displayOverdue(data){
 }
 
 function displayKPIs(data){
-	$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
+	
 	if(data == null || data.length == 0){
 		$('#grayout').hide();
 		return;
@@ -184,6 +184,9 @@ function displayKPIs(data){
 		seldiv.append(sel)
 		$('#content').append(seldiv);
 	}
+	
+	$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
+	
 	$('#content').append("<div class='kpiheader'>" +
 							"<div class='kpiscore' name='lang' id='kpi.heading.thismonth'>"+getString('kpi.heading.thismonth')+"</div>" + 
 							"<div class='kpichange' name='lang' id='kpi.heading.previousmonth'>"+getString('kpi.heading.previousmonth')+"</div>" +
@@ -202,6 +205,15 @@ function displayKPIs(data){
 	}
 	
 	$('#content').append("<h2 name='lang' id='page_title_risk'>"+getString('page_title_risk')+"</h2>");
+	
+	var risk = new Array('multiple','single','unavoidable','none');
+	for(var i=0; i<risk.length; i++){
+		$('#content').append("<div class='risk'>" +
+								"<div class='risktitle' name='lang' id='risk_"+risk[i]+"'>"+getString('risk_'+risk[i])+"</div>" +
+								"<div class='risktotal' id='risk_count_"+risk[i]+"'></div>" +
+								"<div class='risktotal' id='risk_percent_"+risk[i]+"'></div>" +
+							"<div style='clear:both;'></div></div>");
+	}
 	// now populate the fields.
 	updateKPIDisplay();
 	$('#grayout').hide();
@@ -223,14 +235,21 @@ function updateKPIDisplay(){
 		$('#kpi_'+submitted[i]+'_submitted_thismonth').text(data.submittedthismonth[hpcodes].count['protocol.'+submitted[i]]);
 		$('#kpi_'+submitted[i]+'_submitted_previousmonth').text(data.submittedprevmonth[hpcodes].count['protocol.'+submitted[i]]);
 		$('#kpi_'+submitted[i]+'_submitted_target').text(data.submittedprevmonth[hpcodes].target['protocol.'+submitted[i]]);
-		console.log(data.submittedthismonth[hpcodes].count['protocol.'+submitted[i]]);
-		console.log(data.submittedprevmonth[hpcodes].count['protocol.'+submitted[i]]);
-		console.log('--');
 		if(parseInt(data.submittedthismonth[hpcodes].count['protocol.'+submitted[i]]) > parseInt(data.submittedprevmonth[hpcodes].count['protocol.'+submitted[i]])){
 			$('#kpi_'+submitted[i]+'_submitted_increase').show();
 		} else {
 			$('#kpi_'+submitted[i]+'_submitted_increase').hide();
 		}
+	}
+	
+	var riskcount = data.riskcount[hpcodes];
+	for(var key in riskcount){
+		$('#risk_count_'+key).text(riskcount[key]);
+	}
+	
+	var riskpc = data.riskpercent[hpcodes];
+	for(var key in riskpc){
+		$('#risk_percent_'+key).text("(" + riskpc[key] + "%)");
 	}
 }
 

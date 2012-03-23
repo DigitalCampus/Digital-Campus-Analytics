@@ -85,11 +85,14 @@ if ($method == 'login'){
 			$risks = $ra->getRiskStatistics($opts);
 			// add in risks
 			$riskcount = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>0);
-			$riskpercent = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>0);
+			$riskpercent = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>100);
 			
 			foreach($risks as $k=>$v){
 				$riskcount[$k] = $v;
 				$riskcount['total'] += $v;
+			}
+			foreach($risks as $k=>$v){
+				$riskpercent[$k] = round($riskcount[$k]*100/$riskcount['total']);
 			}
 			$kpi->riskcount['all'] = $riskcount;
 			$kpi->riskpercent['all'] = $riskpercent;
@@ -110,6 +113,7 @@ if ($method == 'login'){
 			$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 			$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 			$temp = $API->getProtocolsSubmitted_Cache($opts);
+			
 			$temp->protocols = array();
 			$kpi->submittedthismonth[$d->did] = $temp;
 			
@@ -117,6 +121,21 @@ if ($method == 'login'){
 			$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
 
 			$kpi->submittedprevmonth[$d->did] = $API->getProtocolsSubmitted_Cache($opts);
+			
+			// add in risks
+			$risks = $ra->getRiskStatistics($opts);
+			$riskcount = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>0);
+			$riskpercent = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>100);
+				
+			foreach($risks as $k=>$v){
+				$riskcount[$k] = $v;
+				$riskcount['total'] += $v;
+			}
+			foreach($risks as $k=>$v){
+				$riskpercent[$k] = round($riskcount[$k]*100/$riskcount['total']);
+			}
+			$kpi->riskcount[$d->did] = $riskcount;
+			$kpi->riskpercent[$d->did] = $riskpercent;
 		}
 	}
 	$kpi->hps = $API->getUserHealthPointPermissions(false,true);
@@ -134,6 +153,21 @@ if ($method == 'login'){
 		$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
 		$kpi->submittedprevmonth[$hp] = $API->getProtocolsSubmitted_Cache($opts);
 		
+		// add in risks
+		$risks = $ra->getRiskStatistics($opts);
+		$riskcount = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>0);
+		$riskpercent = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>100);
+		
+		foreach($risks as $k=>$v){
+			$riskcount[$k] = $v;
+			$riskcount['total'] += $v;
+		}
+		foreach($risks as $k=>$v){
+			$riskpercent[$k] = round($riskcount[$k]*100/$riskcount['total']);
+		}
+		$kpi->riskcount[$hp] = $riskcount;
+		$kpi->riskpercent[$hp] = $riskpercent;
+		
 	}
 	echo json_encode($kpi);
 } else {
@@ -143,5 +177,6 @@ if ($method == 'login'){
 }
 
 scriptFooter("info","api",$method.": ".$_SERVER["REQUEST_URI"]);
+
 
 ?>

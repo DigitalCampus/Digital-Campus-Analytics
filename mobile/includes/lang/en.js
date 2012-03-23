@@ -50,7 +50,7 @@ lang['EN']['healthpoint.id.9999'] = "Practice only";
 
 lang['EN']['kpi.heading.previousmonth'] = 'Previous month';
 lang['EN']['kpi.heading.target'] = 'Target';
-lang['EN']['kpi.heading.thismonth'] = 'This month';
+lang['EN']['kpi.heading.thismonth'] = 'Past month';
 
 lang['EN']['kpi_ancfirst_submitted'] = 'ANC1 Submitted';
 lang['EN']['kpi_ancfollow_submitted'] = 'ANC Follow Up Submitted';
@@ -71,7 +71,7 @@ lang['EN']['menu_overdue'] = 'Overdue';
 lang['EN']['menu_tasks'] = 'Tasks';
 
 lang['EN']['page_title_deliveries'] = 'Deliveries';
-lang['EN']['page_title_kpis'] = 'Statistics';
+lang['EN']['page_title_kpis'] = 'Performance Indicators';
 lang['EN']['page_title_login'] = 'Login';
 lang['EN']['page_title_overdue'] = 'Overdue';
 lang['EN']['page_title_risk'] = 'Risk Distribution';
@@ -86,7 +86,10 @@ lang['EN']['protocol.pnc'] = 'PNC';
 lang['EN']['protocol.registration'] = 'Registration';
 lang['EN']['protocol.total'] = 'Total';
 
-
+lang['EN']['risk_multiple'] = 'Multiple high-risk factors';
+lang['EN']['risk_none'] = 'No high-risk factors';
+lang['EN']['risk_single'] = 'Single high-risk factor';
+lang['EN']['risk_unavoidable'] = 'Unavoidable high-risk factor: first pregnancy';
 
 lang['EN']['risk.factor.Q_ABDOMINALPAIN'] = 'Abdominal pain';
 lang['EN']['risk.factor.Q_ABORTION'] = 'Previous abortion';

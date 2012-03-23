@@ -74,6 +74,10 @@ lang['TI']['protocol.delivery'] = 'ወሊድ';
 lang['TI']['protocol.pnc'] = 'ክትትል ድሕሪ ወሊድ';
 lang['TI']['protocol.registration'] = 'ምዝገባ';
 
+lang['TI']['risk_multiple'] = 'ክልተን ልዕሊኡን ምስ ጥንሲ ዝተዛመዱ ምልክታት ልዑል ሓደጋ/ ስግኣት ኣለዉ';
+lang['TI']['risk_none'] = 'ምስ ጥንሲ ዝተዛመደ ምልክት ልዑል ሓደጋ/ ስግኣት የለን';
+lang['TI']['risk_single'] = 'ሓደ ምስ ጥንሲ ዝተዛመደ ምልክት ልዑል ሓደጋ/ ስግኣት ጥራሕ ኣሎ';
+lang['TI']['risk_unavoidable'] = 'ክተቅርዮ ዘይትኽዕል (Unavoidable) ምልክት ልዑል ሓደጋ/ ስግኣት ጥንሲ: በኹሪ/ፈላማይ ጥንሲ';
 
 lang['TI']['risk.factor.Q_ABDOMINALPAIN'] = ' ቃንዛ ወይ ቁርፀት ከብዲ';
 lang['TI']['risk.factor.Q_ABORTION'] = 'ሕሉፍ ታሪክ ምንፃል ጥንሲ ';
