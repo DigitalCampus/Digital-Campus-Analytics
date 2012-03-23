@@ -3,7 +3,7 @@
  * cron for running various scheduled tasks
  */
 
-// TODO - extend max execution time?
+set_time_limit(0);
 
 require_once "../config.php";
 header("Content-Type: text/plain; charset=UTF-8");

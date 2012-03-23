@@ -373,7 +373,7 @@ class DataCheck {
 		
 		
 			if(count($age)>1 || count($yob) >1 ){
-				printf("<a href='patient.php?hpcode=%d&patientid=%d'>%s</a>",$p->patienthpcode,$p->Q_USERID,displayHealthPointName($p->patienthpcode,$p->Q_USERID));
+				printf("(%d) <a href='patient.php?hpcode=%d&patientid=%d'>%s</a>",$p->patienthpcode,$p->patienthpcode,$p->Q_USERID,displayHealthPointName($p->patienthpcode,$p->Q_USERID));
 				echo "<ul>";
 				foreach($age as $k=>$v){
 					printf("<li>Age on %s: %d</li>",getstring($v),$k);

@@ -24,7 +24,7 @@ $dc = new DataCheck();
 			foreach ($unregistered as $d){
 				echo "<tr class='n'>";
 				echo "<td nowrap>".$d->submittedname." at ".displayHealthPointName($d->protocolhpcode)."</td>";
-				echo "<td nowrap>".displayHealthPointName($d->patienthpcode,$d->Q_USERID)."</td>";
+				echo "<td nowrap>(".$d->patienthpcode.") ".displayHealthPointName($d->patienthpcode,$d->Q_USERID)."</td>";
 				echo "<td nowrap>".getstring($d->protocol)."</td>";
 				echo "</tr>";
 			}
@@ -55,7 +55,7 @@ $dc = new DataCheck();
 			foreach ($dup as $d){
 				echo "<tr class='n'>";
 				echo "<td nowrap>".$d->submittedname." at ".displayHealthPointName($d->protocolhpcode)."</td>";
-				echo "<td nowrap>".displayHealthPointName($d->patienthpcode,$d->Q_USERID)."</td>";
+				echo "<td nowrap>(".$d->patienthpcode.") ".displayHealthPointName($d->patienthpcode,$d->Q_USERID)."</td>";
 				echo "<td nowrap>".getstring($d->protocol);
 				if(isset($d->Q_FOLLOWUPNO)){
 					echo " ".$d->Q_FOLLOWUPNO;
