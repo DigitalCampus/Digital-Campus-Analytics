@@ -73,8 +73,6 @@ if ($method == 'login'){
 			$opts['limit'] = 0;
 			$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 			$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
-			$kpi->anc1thismonth['all'] = $API->getANC1Defaulters($opts);
-			$kpi->anc2thismonth['all'] = $API->getANC2Defaulters($opts);
 			$temp = $API->getProtocolsSubmitted_Cache($opts);
 			$temp->protocols = array();
 			$kpi->submittedthismonth['all'] = $temp;
@@ -82,8 +80,6 @@ if ($method == 'login'){
 			$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
 			$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
 				
-			$kpi->anc1prevmonth['all'] = $API->getANC1Defaulters($opts);
-			$kpi->anc2prevmonth['all'] = $API->getANC2Defaulters($opts);
 			$kpi->submittedprevmonth['all'] = $API->getProtocolsSubmitted_Cache($opts);
 			
 			$risks = $ra->getRiskStatistics($opts);
@@ -113,17 +109,13 @@ if ($method == 'login'){
 			$opts['limit'] = 0;
 			$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 			$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
-			$kpi->anc1thismonth[$d->did] = $API->getANC1Defaulters($opts);
-			$kpi->anc2thismonth[$d->did] = $API->getANC2Defaulters($opts);
 			$temp = $API->getProtocolsSubmitted_Cache($opts);
 			$temp->protocols = array();
 			$kpi->submittedthismonth[$d->did] = $temp;
 			
 			$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
 			$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
-			
-			$kpi->anc1prevmonth[$d->did] = $API->getANC1Defaulters($opts);
-			$kpi->anc2prevmonth[$d->did] = $API->getANC2Defaulters($opts);
+
 			$kpi->submittedprevmonth[$d->did] = $API->getProtocolsSubmitted_Cache($opts);
 		}
 	}
@@ -134,17 +126,12 @@ if ($method == 'login'){
 		$opts['limit'] = 0;
 		$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 		$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
-		$kpi->anc1thismonth[$hp] = $API->getANC1Defaulters($opts);
-		$kpi->anc2thismonth[$hp] = $API->getANC2Defaulters($opts);
 		$temp = $API->getProtocolsSubmitted_Cache($opts);
 		$temp->protocols = array();
 		$kpi->submittedthismonth[$hp] = $temp;
 		
 		$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
 		$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
-		
-		$kpi->anc1prevmonth[$hp] = $API->getANC1Defaulters($opts);
-		$kpi->anc2prevmonth[$hp] = $API->getANC2Defaulters($opts);
 		$kpi->submittedprevmonth[$hp] = $API->getProtocolsSubmitted_Cache($opts);
 		
 	}

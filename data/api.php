@@ -1437,12 +1437,14 @@ class API {
 		}
 		
 		//add in the targets
-		$nohps = count(explode(',',$opts['hpcodes']));
-		$submitted->target['protocol.total'] = $CONFIG->props['target.protocols']*$nohps;
-		$submitted->target[PROTOCOL_ANCFIRST] = $CONFIG->props['target.anc1submitted']*$nohps;
-		$submitted->target[PROTOCOL_ANCFOLLOW] = $CONFIG->props['target.ancfollowsubmitted']*$nohps;
-		$submitted->target[PROTOCOL_DELIVERY] = $CONFIG->props['target.deliverysubmitted']*$nohps;
-		$submitted->target[PROTOCOL_PNC] = $CONFIG->props['target.pncsubmitted']*$nohps;
+		if(array_key_exists('hpcodes',$opts)){
+			$nohps = count(explode(',',$opts['hpcodes']));
+			$submitted->target['protocol.total'] = $CONFIG->props['target.protocols']*$nohps;
+			$submitted->target[PROTOCOL_ANCFIRST] = $CONFIG->props['target.anc1submitted']*$nohps;
+			$submitted->target[PROTOCOL_ANCFOLLOW] = $CONFIG->props['target.ancfollowsubmitted']*$nohps;
+			$submitted->target[PROTOCOL_DELIVERY] = $CONFIG->props['target.deliverysubmitted']*$nohps;
+			$submitted->target[PROTOCOL_PNC] = $CONFIG->props['target.pncsubmitted']*$nohps;
+		}
 		
 		$submitted->start = max(min($submitted->count['protocol.total']-1,$start),0);
 		$submitted->limit = $limit;
