@@ -55,6 +55,7 @@ if ($method == 'login'){
 	echo json_encode($deliveries);
 } else if ($method == 'getkpis'){
 	$kpi = new stdClass();
+	$ra = new RiskAssessment();
 	
 	$datetoday = new DateTime();
 	
@@ -84,6 +85,19 @@ if ($method == 'login'){
 			$kpi->anc1prevmonth['all'] = $API->getANC1Defaulters($opts);
 			$kpi->anc2prevmonth['all'] = $API->getANC2Defaulters($opts);
 			$kpi->submittedprevmonth['all'] = $API->getProtocolsSubmitted_Cache($opts);
+			
+			$risks = $ra->getRiskStatistics($opts);
+			// add in risks
+			$riskcount = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>0);
+			$riskpercent = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>0);
+			
+			foreach($risks as $k=>$v){
+				$riskcount[$k] = $v;
+				$riskcount['total'] += $v;
+			}
+			$kpi->riskcount['all'] = $riskcount;
+			$kpi->riskpercent['all'] = $riskpercent;
+			
 		}
 		
 		// add the summaries for each district

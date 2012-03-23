@@ -30,6 +30,7 @@ function showPage(page){
 
 function displayTasks(data){
 	if(data == null || data.length == 0){
+		$('#grayout').hide();
 		return;
 	} 
 	var curdate = "";
@@ -71,6 +72,7 @@ function displayTasks(data){
 
 function displayDeliveries(data){
 	if(data == null || data.length == 0){
+		$('#grayout').hide();
 		return;
 	} 
 	var curdate = "";
@@ -113,6 +115,7 @@ function displayDeliveries(data){
 
 function displayOverdue(data){
 	if(data == null || data.length == 0){
+		$('#grayout').hide();
 		return;
 	} 
 	var curdate = "";
@@ -155,7 +158,6 @@ function displayOverdue(data){
 function displayKPIs(data){
 	$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
 	if(data == null || data.length == 0){
-		$('#content').append("no data to show");
 		$('#grayout').hide();
 		return;
 	} 
@@ -200,7 +202,7 @@ function displayKPIs(data){
 	}
 	
 	$('#content').append("<h2 name='lang' id='page_title_risk'>"+getString('page_title_risk')+"</h2>");
-	// now populate the field based on selected HP.
+	// now populate the fields.
 	updateKPIDisplay();
 	$('#grayout').hide();
 }
@@ -287,6 +289,7 @@ function login(){
 			   //check for any error messages
 			   if(data.error){
 				   alert(data.error[0]);
+				   $('#grayout').hide();
 				   return;
 			   }
 			   if(data.result){
