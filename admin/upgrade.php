@@ -205,7 +205,7 @@ if ($currentDBversion < 7){
 
 if ($currentDBversion < 8){
 	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
-				('target.protocols', '100', 'Target number of protocols which should be submitted per health point')";
+				('target.protocols', '40', 'Target number of protocols which should be submitted per health point')";
 	$API->runSql($sql);
 	//now update the db version prop
 	$API->setSystemProperty('database.version','8');
@@ -226,10 +226,10 @@ if ($currentDBversion < 9){
 
 if ($currentDBversion < 10){
 	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
-				('target.anc1submitted', '12', 'Target number of ANC 1 visits submitted per health post per month')";
+				('target.anc1submitted', '6', 'Target number of ANC 1 visits submitted per health post per month')";
 	$API->runSql($sql);
 	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
-					('target.ancfollowsubmitted', '36', 'Target number of ANC Follow up visits submitted per health post per month')";
+					('target.ancfollowsubmitted', '12', 'Target number of ANC Follow up visits submitted per health post per month')";
 	$API->runSql($sql);
 	//now update the db version prop
 	$API->setSystemProperty('database.version','10');
@@ -238,10 +238,10 @@ if ($currentDBversion < 10){
 
 if ($currentDBversion < 11){
 	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
-				('target.deliverysubmitted', '12', 'Target number of delivery submitted per health post per month')";
+				('target.deliverysubmitted', '6', 'Target number of delivery submitted per health post per month')";
 	$API->runSql($sql);
 	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
-					('target.pncsubmitted', '36', 'Target number of PNC visits submitted per health post per month')";
+					('target.pncsubmitted', '12', 'Target number of PNC visits submitted per health post per month')";
 	$API->runSql($sql);
 	//now update the db version prop
 	$API->setSystemProperty('database.version','11');
