@@ -332,7 +332,7 @@ class API {
 						VALUES ('%s',%d,'%s','%s','%s',%f,%f,%d,'%s')", 
 						$loglevel,$userid,$logtype,mysql_real_escape_string($logmsg),$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$logagent);
 		// just run sql directly (without using $this->runSql) so doesn't try to log an error writing to the log!
-		_mysql_query($sql,$this->DB);
+		mysql_query($sql,$this->DB);
 	}
 	
 	// return list of Health posts
@@ -1539,8 +1539,6 @@ class API {
 					$this->cacheAddTask($userid, $hpcode, $date->format('Y-m-d'), PROTOCOL_ANCLABTEST);
 				}
 			}
-			
-			
 			
 			// based on when due for first PNC
 			if($edd != "" && !isset($patient->delivery) && count($patient->pnc)==0){
