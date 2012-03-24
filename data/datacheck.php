@@ -9,7 +9,6 @@ class DataCheck {
 		$total = 0;
 		$total += count($this->unregistered());
 		$total += count($this->duplicates());
-		$total += count($this->missingANCFirst());
 		if($total >0){
 			return true;
 		} else {
@@ -426,5 +425,20 @@ class DataCheck {
 			array_push($report,$row);
 		}
 		return $report;
+	}
+	
+	function updateCache(){
+		// update cache unregistered
+		
+		
+		// update cache duplicates
+		
+		
+		// update cache age/yob
+		
+		
+		// update cache name
+		
+		
 	}
 }

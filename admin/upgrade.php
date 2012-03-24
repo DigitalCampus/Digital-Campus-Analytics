@@ -248,6 +248,10 @@ if ($currentDBversion < 11){
 	echo "Upgraded to version 11\n";
 }
 
+// add row indexes
+//ALTER TABLE REGISTRATION_FORMV6_CORE ADD INDEX `Q_USERID`(`Q_USERID`);
+//ALTER TABLE REGISTRATION_FORMV6_CORE ADD INDEX `Q_HEALTHPOINTID`(`Q_HEALTHPOINTID`);
+
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";
