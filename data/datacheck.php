@@ -9,7 +9,7 @@ class DataCheck {
 		$total = 0;
 		$total += count($this->unregistered());
 		$total += count($this->duplicates());
-		if($total >0){
+		if($total > 0){
 			return true;
 		} else {
 			return false;
@@ -106,8 +106,8 @@ class DataCheck {
 		$sql .= ") a";
 		$sql .= " WHERE (a.patienthpcode IN (".$API->getUserHealthPointPermissions().") " ;
 		$sql .= " OR a.protocolhpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints() != ""){
-			$sql .= " AND a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints().")";
+		if($API->getIgnoredHealthPoints(true) != ""){
+			$sql .= " AND a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints(true).")";
 		}
 		if(array_key_exists('hpcodes',$opts)){
 			$sql .= " AND  (a.patienthpcode IN ( ".$opts['hpcodes'].")";
@@ -142,8 +142,8 @@ class DataCheck {
 						INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		// add permissions
 		$sql .= " WHERE i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().") " ;
-		if($API->getIgnoredHealthPoints() != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
+		if($API->getIgnoredHealthPoints(true) != ""){
+			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
 		}
 		$sql .= " GROUP BY 
 					i.Q_HEALTHPOINTID, 
@@ -163,8 +163,8 @@ class DataCheck {
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
 		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints() != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
+		if($API->getIgnoredHealthPoints(true) != ""){
+			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
 		}
 		$sql .= " GROUP BY 
 						i.Q_HEALTHPOINTID, 
@@ -183,8 +183,8 @@ class DataCheck {
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
 		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints() != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
+		if($API->getIgnoredHealthPoints(true) != ""){
+			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
 		}
 		$sql .= " GROUP BY 
 						i.Q_HEALTHPOINTID, 
@@ -204,8 +204,8 @@ class DataCheck {
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
 		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints() != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
+		if($API->getIgnoredHealthPoints(true) != ""){
+			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
 		}
 		$sql .= " GROUP BY 
 						i.Q_HEALTHPOINTID, 
@@ -226,8 +226,8 @@ class DataCheck {
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
 		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints() != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
+		if($API->getIgnoredHealthPoints(true) != ""){
+			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
 		}
 		$sql .= " GROUP BY 
 						i.Q_HEALTHPOINTID, 
@@ -247,8 +247,8 @@ class DataCheck {
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
 		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints() != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
+		if($API->getIgnoredHealthPoints(true) != ""){
+			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
 		}
 		$sql .= " GROUP BY 
 						i.Q_HEALTHPOINTID, 
@@ -267,8 +267,8 @@ class DataCheck {
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions(true).")" ;
 		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions(true).")) " ;
-		if($API->getIgnoredHealthPoints() != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints().")";
+		if($API->getIgnoredHealthPoints(true) != ""){
+			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
 		}
 		$sql .= " GROUP BY i.Q_HEALTHPOINTID, 
 						i.Q_USERID,
@@ -429,6 +429,7 @@ class DataCheck {
 	
 	function updateCache(){
 		// update cache unregistered
+		// get current cache of unregistered
 		
 		
 		// update cache duplicates

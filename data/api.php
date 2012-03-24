@@ -78,14 +78,17 @@ class API {
 		$this->cacheRisks($days);
 		echo "cached risks\n";
 		
-		// TODO update & cache KPI figures?
-		
 		// run the data checks and update accordingly
 		$dc = new DataCheck();
-		if($dc->summary()>0){
+		$dc->updateCache();
+		echo "cached data checks\n";
+		
+		if($dc->summary()){
 			$this->setSystemProperty('datacheck.errors','true');
+			echo "data errors = true\n";
 		} else {
 			$this->setSystemProperty('datacheck.errors','false');
+			echo "data errors = false\n";
 		}
 		
 		$this->setSystemProperty('cron.lastrun',time());
@@ -315,8 +318,8 @@ class API {
 	}
 	
 	// get the list of ignored health points
-	function getIgnoredHealthPoints(){
-		if($this->isDemoUser()){
+	function getIgnoredHealthPoints($cron = false){
+		if($this->isDemoUser() && $cron == false){
 			return "";
 		} else {
 			return IGNORE_HEALTHPOINTS;
