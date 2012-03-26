@@ -19,7 +19,7 @@ function writeToLog($loglevel,$logtype,$logmsg,$logpagephptime=0,$logpagemysqlti
 	
 	// add current page url (to help debug later)
 	if($loglevel != 'info'){
-		$logmsg .= ": ".$_SERVER['REQUEST_URI'];
+		$logmsg = "[".$_SERVER['REQUEST_URI']."]: ".$logmsg;
 	}
 	$API->writeLog($loglevel,$uid,$logtype,$logmsg,$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$uagent->useragent);
 }
@@ -32,7 +32,7 @@ function _mysql_query($query,$db) {
     $timetaken = microtime(true) - $start;
     // log any queries taking over 1 second
     if($timetaken >1){
-    	writeToLog("warn","db","Long running query [".$timetaken."]: ".$query);
+    	writeToLog("warning","db",$query,0,$timetaken,1);
     }
     $LOGGER->mysql_queries_time += $timetaken;
     $LOGGER->mysql_queries_count++;
