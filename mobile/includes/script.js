@@ -1,8 +1,15 @@
 
-var API_URL = "/scorecard/api/";
 var PAGE = "";
 var DATA_CACHE_EXPIRY = 360; // no of mins before the data should be updated from server;
 var LOGIN_EXPIRY = 7; // no days before the user needs to log in again
+
+$.ajaxSetup({
+	url: "/scorecard/api/",
+	type: "POST",
+	headers:{},
+	dataType:'json',
+	timeout: 20000
+});
 
 function showPage(page){
 	if(!loggedIn()){
@@ -257,20 +264,21 @@ function showLogin(){
 	$('#menu').hide();
 	$('#content').empty();
 	$('#content').append("<h1 name='lang' id='page_title_login'>"+getString('page_title_login')+"</h1>");
-	
-	$('#content').append("<div class='formblock'>" +
+	var form =  $('<div>');
+	form.append("<div class='formblock'>" +
 		"<div class='formlabel' name='lang' id='login_username'>"+getString('login_username')+"</div>" +
 		"<div class='formfield'><input type='text' name='username' id='username'></input></div>" +
 		"</div>");
 	
-	$('#content').append("<div class='formblock'>"+
+	form.append("<div class='formblock'>"+
 		"<div class='formlabel'name='lang' id='login_password'>"+getString('login_password')+"</div>" +
 		"<div class='formfield'><input type='password' name='password' id='password'></input></div>" +
 		"</div>");
 	
-	$('#content').append("<div class='formblock'>" +
+	form.append("<div class='formblock'>" +
 			"<div class='formfield'><input type='button' name='submit' value='Login' onclick='login()'></input></div>" +
 			"</div>");
+	$('#content').append(form);
 }
 
 function loggedIn(){
@@ -294,15 +302,11 @@ function login(){
 	var password = $('#password').val();
 	if(username == '' || password == ''){
 		alert("Please enter your username and password");
-		return;
+		return false;
 	}
 	
 	$('#grayout').show();
 	$.ajax({
-		   type:'POST',
-		   url:API_URL,
-		   headers:{},
-		   dataType:'json',
 		   data:{'method':'login','username':username,'password':password}, 
 		   success:function(data){
 			   //check for any error messages
@@ -327,6 +331,7 @@ function login(){
 			   alert("No connection available. You need to be online to log in.");
 		   }
 		});
+	return false;
 }
 
 function logout(force){
@@ -368,10 +373,6 @@ function dataUpdate(){
 	
 	// Get the tasks from remote server
 	$.ajax({
-		   type:'POST',
-		   url:API_URL,
-		   headers:{},
-		   dataType:'json',
 		   data:{'method':'gettasks','username':store.get('username'),'password':store.get('password')}, 
 		   success:function(data){
 			   //check for any error messages
@@ -393,10 +394,6 @@ function dataUpdate(){
 	
 	// Get the deliveries from remote server
 	$.ajax({
-		   type:'POST',
-		   url:API_URL,
-		   headers:{},
-		   dataType:'json',
 		   data:{'method':'getdeliveries','username':store.get('username'),'password':store.get('password')}, 
 		   success:function(data){
 			   //check for any error messages
@@ -418,10 +415,6 @@ function dataUpdate(){
 	
 	// Get the overdue from remote server
 	$.ajax({
-		   type:'POST',
-		   url:API_URL,
-		   headers:{},
-		   dataType:'json',
 		   data:{'method':'getoverdue','username':store.get('username'),'password':store.get('password')}, 
 		   success:function(data){
 			   //check for any error messages
@@ -443,10 +436,6 @@ function dataUpdate(){
 	
 	// Get KPIs from remote server
 	$.ajax({
-		   type:'POST',
-		   url:API_URL,
-		   headers:{},
-		   dataType:'json',
 		   data:{'method':'getkpis','username':store.get('username'),'password':store.get('password')}, 
 		   success:function(data){
 			   //check for any error messages
