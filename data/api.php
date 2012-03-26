@@ -55,7 +55,7 @@ class API {
 		
 		// update & cache which HPs the patients have visited
 		// get all submitted protocols in last $days // TODO - should really be since cron last run or something
-		/*$submitted = $this->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
+		$submitted = $this->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
 		
 		foreach($submitted->protocols as $s){
 			$this->cacheAddPatientHealthPointVisit($s->Q_USERID,$s->patienthpcode,$s->protocolhpcode,$s->datestamp,$s->protocol,$s->user_uri);
@@ -76,7 +76,7 @@ class API {
 		
 		// update & cache patient risk factors
 		$this->cacheRisks($days);
-		echo "cached risks\n";*/
+		echo "cached risks\n";
 		
 		// run the data checks and update accordingly
 		$dc = new DataCheck();

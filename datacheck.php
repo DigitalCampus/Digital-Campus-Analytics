@@ -86,7 +86,7 @@ $dc = new DataCheck();
 ?>
 
  
-<h2><?php echo getString("datacheck.age.title")?></h2>
+<h2><?php echo getString("datacheck.ageyob.title")?></h2>
 
 <?php
 
@@ -116,7 +116,7 @@ if(count($ageyob)>0){
 </table>
 <?php 
 	} else {
-		echo "<p>".getString("datacheck.ageyob.protocol.none")."</p>";
+		echo "<p>".getString("datacheck.ageyob.none")."</p>";
 	}
 
 include_once "includes/footer.php";
