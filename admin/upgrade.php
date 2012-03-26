@@ -248,9 +248,25 @@ if ($currentDBversion < 11){
 	echo "Upgraded to version 11\n";
 }
 
-// add row indexes
-//ALTER TABLE REGISTRATION_FORMV6_CORE ADD INDEX `Q_USERID`(`Q_USERID`);
-//ALTER TABLE REGISTRATION_FORMV6_CORE ADD INDEX `Q_HEALTHPOINTID`(`Q_HEALTHPOINTID`);
+if ($currentDBversion < 12){
+	// create table to cache patient risk factors
+	$sql = "CREATE TABLE IF NOT EXISTS `cache_datacheck` (
+				  `dcid` bigint(20) NOT NULL AUTO_INCREMENT,
+				  `dcdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				  `patid` int(11) NOT NULL,
+				  `hpcode` int(11) NOT NULL,
+				  `protocol` varchar(50) DEFAULT NULL,
+				  `dctype` varchar(20) NOT NULL,
+				  `dcregby` varchar(50) DEFAULT NULL,
+				  `dcdata` text,
+				PRIMARY KEY (`dcid`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+	$API->runSql($sql);
+	
+	//now update the db version prop
+	$API->setSystemProperty('database.version','12');
+	echo "Upgraded to version 12\n";
+}
 
 echo "Upgrade complete\n";
 if($flushcache){

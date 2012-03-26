@@ -6,9 +6,11 @@
 class DataCheck {
 	
 	function summary() {
-		$total = 0;
-		$total += count($this->unregistered());
-		$total += count($this->duplicates());
+		global $API;
+		$sql = "SELECT * FROM cache_datacheck";
+		$result = $API->runSql($sql);
+		$total = mysql_num_rows($result);
+		
 		if($total > 0){
 			return true;
 		} else {
@@ -17,103 +19,72 @@ class DataCheck {
 	}
 
 	
-	function unregistered($opts=array()){
+	function findUnregistered($opts=array()){
 		global $API;
 		$report = array();
 		// unregistered from ancfirst
 		$sql = "SELECT * FROM (";
 		$sql .= "SELECT p.Q_HEALTHPOINTID as patienthpcode,
-	 						hp.hpcode as protocolhpcode, 
 							p.Q_USERID,
 							'".PROTOCOL_ANCFIRST."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname,
-							p._CREATION_DATE as datestamp
+							p._CREATOR_URI_USER
 					FROM ".TABLE_ANCFIRST." p
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid
 					WHERE r._URI is null ";
 	
 		//unregistered from ancfollow
 		$sql .= " UNION
-					SELECT p.Q_HEALTHPOINTID as patienthpcode,
-	 						hp.hpcode as protocolhpcode, 
+					SELECT p.Q_HEALTHPOINTID as patienthpcode, 
 							p.Q_USERID,
 							'".PROTOCOL_ANCFOLLOW."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname,
-							p._CREATION_DATE as datestamp
+							p._CREATOR_URI_USER
 					FROM ".TABLE_ANCFOLLOW." p
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 					WHERE r._URI is null";
 	
 		//unregistered from anclabtest
-		$sql .= " UNION SELECT p.Q_HEALTHPOINTID as patienthpcode,
-	 						hp.hpcode as protocolhpcode,   
+		$sql .= " UNION SELECT p.Q_HEALTHPOINTID as patienthpcode,   
 							p.Q_USERID,
 							'".PROTOCOL_ANCLABTEST."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname,
-							p._CREATION_DATE as datestamp
+							p._CREATOR_URI_USER
 					FROM ".TABLE_ANCLABTEST." p
-					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
+					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID)  
 					WHERE r._URI is null";
 	
 		// unregistered from anctransfer
 		$sql .= " UNION
-					SELECT p.Q_HEALTHPOINTID as patienthpcode,
-	 						hp.hpcode as protocolhpcode, 
+					SELECT p.Q_HEALTHPOINTID as patienthpcode, 
 							p.Q_USERID,
 							'".PROTOCOL_ANCTRANSFER."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname,
-							p._CREATION_DATE as datestamp
+							p._CREATOR_URI_USER
 					FROM ".TABLE_ANCTRANSFER." p
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 					WHERE r._URI is null";
 	
 		// unregistered from delivery
 		$sql .= " UNION
 					SELECT p.Q_HEALTHPOINTID as patienthpcode,
-	 						hp.hpcode as protocolhpcode,
 							p.Q_USERID,
 							'".PROTOCOL_DELIVERY."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname,
-							p._CREATION_DATE as datestamp
+							p._CREATOR_URI_USER
 					FROM ".TABLE_DELIVERY." p
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 					WHERE r._URI is null";
 	
 		// unregistered from PNC
 		$sql .= " UNION
 					SELECT p.Q_HEALTHPOINTID as patienthpcode,
-	 						hp.hpcode as protocolhpcode,
 							p.Q_USERID,
 							'".PROTOCOL_PNC."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname,
-							p._CREATION_DATE as datestamp
+							p._CREATOR_URI_USER
 					FROM ".TABLE_PNC." p
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
-					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid 
 					WHERE r._URI is null";
 		
 		$sql .= ") a";
-		$sql .= " WHERE (a.patienthpcode IN (".$API->getUserHealthPointPermissions().") " ;
-		$sql .= " OR a.protocolhpcode IN (".$API->getUserHealthPointPermissions().")) " ;
 		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " AND a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints(true).")";
+			$sql .= " WHERE a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints(true).")";
 		}
-		if(array_key_exists('hpcodes',$opts)){
-			$sql .= " AND  (a.patienthpcode IN ( ".$opts['hpcodes'].")";
-			$sql .= " OR a.protocolhpcode IN (".$opts['hpcodes']."))";
-		}
-		$sql .= " ORDER BY submittedname ASC, patienthpcode ASC, Q_USERID ASC"; 
 
 		$result = $API->runSql($sql);
 		if(!$result){
@@ -125,26 +96,45 @@ class DataCheck {
 		return $report;
 	}
 	
-	function duplicates(){
+	
+	function getDataCheck($type){
+		global $API;
+		$report = array();
+		$sql = sprintf("SELECT 
+					cdc.hpcode as patienthpcode, 
+					hp.hpcode as protocolhpcode, 
+					cdc.patid,
+					cdc.protocol,
+					CONCAT(u.firstname,' ',u.lastname) as submittedname,
+					dcdate
+		 		FROM cache_datacheck cdc
+				INNER JOIN healthpoint php ON php.hpcode = cdc.hpcode
+				INNER JOIN user u ON cdc.dcregby = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
+				WHERE dctype='%s'
+				ORDER BY dcdate ASC",$type);
+		
+		$result = $API->runSql($sql);
+		if(!$result){
+			return;
+		}
+		while($row = mysql_fetch_object($result)){
+			array_push($report,$row);
+		}
+		return $report;	
+	}
+	
+	function findDuplicates(){
 		global $API;
 		$report = array();
 		
 		$sql = "SELECT * FROM (";
 		//duplicate Registration
-		$sql .= "SELECT 	i.Q_HEALTHPOINTID as patienthpcode, 
-						hp.hpcode as protocolhpcode, 
+		$sql .= "SELECT i.Q_HEALTHPOINTID as patienthpcode, 
 						i.Q_USERID,
 						'".PROTOCOL_REGISTRATION."' as protocol,
-						CONCAT(u.firstname,' ',u.lastname) as submittedname
-						FROM ".TABLE_REGISTRATION." i
-						INNER JOIN healthpoint php ON php.hpcode = i.Q_HEALTHPOINTID
-						INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-						INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		// add permissions
-		$sql .= " WHERE i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().") " ;
-		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
-		}
+						i._CREATOR_URI_USER
+						FROM ".TABLE_REGISTRATION." i";
 		$sql .= " GROUP BY 
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
@@ -154,39 +144,23 @@ class DataCheck {
 		// duplicate ancfirst
 		$sql .= " UNION
 					SELECT 	i.Q_HEALTHPOINTID as patienthpcode, 
-							hp.hpcode as protocolhpcode, 
 							i.Q_USERID ,
 							'".PROTOCOL_ANCFIRST."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname
+							i._CREATOR_URI_USER
 					FROM ".TABLE_ANCFIRST." i
-					INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
-		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
-		}
-		$sql .= " GROUP BY 
+					GROUP BY 
 						i.Q_HEALTHPOINTID, 
 						i.Q_USERID
 					HAVING count(i._URI)>1";
 	
 		// duplicate follow up
 		$sql .= " UNION
-					SELECT 	i.Q_HEALTHPOINTID as patienthpcode, 
-							hp.hpcode as protocolhpcode, 
+					SELECT 	i.Q_HEALTHPOINTID as patienthpcode,  
 							i.Q_USERID ,
 							'".PROTOCOL_ANCFOLLOW."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname
+							i._CREATOR_URI_USER
 					FROM ".TABLE_ANCFOLLOW." i
-					INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
-		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
-		}
-		$sql .= " GROUP BY 
+					GROUP BY 
 						i.Q_HEALTHPOINTID, 
 						i.Q_USERID,
 						i.TODAY
@@ -195,19 +169,11 @@ class DataCheck {
 		// duplicate labtest
 		$sql .= " UNION
 					SELECT 	i.Q_HEALTHPOINTID as patienthpcode, 
-							hp.hpcode as protocolhpcode, 
 							i.Q_USERID ,
 							'".PROTOCOL_ANCLABTEST."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname
+							i._CREATOR_URI_USER
 					FROM ".TABLE_ANCLABTEST." i
-					INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
-		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
-		}
-		$sql .= " GROUP BY 
+					GROUP BY 
 						i.Q_HEALTHPOINTID, 
 						i.Q_USERID,
 						i.TODAY
@@ -217,19 +183,11 @@ class DataCheck {
 		// duplicate transfer
 		$sql .= " UNION
 					SELECT 	i.Q_HEALTHPOINTID as patienthpcode, 
-							hp.hpcode as protocolhpcode, 
 							i.Q_USERID ,
 							'".PROTOCOL_ANCTRANSFER."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname
+							i._CREATOR_URI_USER
 					FROM ".TABLE_ANCTRANSFER." i
-					INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
-		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
-		}
-		$sql .= " GROUP BY 
+					GROUP BY 
 						i.Q_HEALTHPOINTID, 
 						i.Q_USERID,
 						i.TODAY
@@ -238,19 +196,11 @@ class DataCheck {
 		// duplicate delivery
 		$sql .= " UNION
 					SELECT 	i.Q_HEALTHPOINTID as patienthpcode, 
-							hp.hpcode as protocolhpcode, 
 							i.Q_USERID ,
 							'".PROTOCOL_DELIVERY."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname
+							i._CREATOR_URI_USER
 					FROM ".TABLE_DELIVERY." i
-					INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions().")" ;
-		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions().")) " ;
-		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
-		}
-		$sql .= " GROUP BY 
+					GROUP BY 
 						i.Q_HEALTHPOINTID, 
 						i.Q_USERID
 					HAVING count(i._URI)>1";
@@ -258,24 +208,19 @@ class DataCheck {
 		// duplicate PNC
 		$sql .= " UNION
 					SELECT 	i.Q_HEALTHPOINTID as patienthpcode, 
-							hp.hpcode as protocolhpcode, 
 							i.Q_USERID ,
 							'".PROTOCOL_PNC."' as protocol,
-							CONCAT(u.firstname,' ',u.lastname) as submittedname
+							i._CREATOR_URI_USER
 					FROM ".TABLE_PNC." i
-					INNER JOIN user u ON i._CREATOR_URI_USER = u.user_uri 
-					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
-		$sql .= " WHERE  (i.Q_HEALTHPOINTID IN (".$API->getUserHealthPointPermissions(true).")" ;
-		$sql .= " OR hp.hpcode IN (".$API->getUserHealthPointPermissions(true).")) " ;
-		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " AND i.Q_HEALTHPOINTID NOT IN (".$API->getIgnoredHealthPoints(true).")";
-		}
-		$sql .= " GROUP BY i.Q_HEALTHPOINTID, 
+					GROUP BY i.Q_HEALTHPOINTID, 
 						i.Q_USERID,
 						i.TODAY
 					HAVING count(i._URI)>1";
 		
-		$sql .= ") a ORDER BY submittedname ASC, patienthpcode ASC, Q_USERID ASC"; 
+		$sql .= ") a ";
+		if($API->getIgnoredHealthPoints(true) != ""){
+			$sql .= " WHERE a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints(true).")";
+		}
 		
 		$result = $API->runSql($sql);
 		if(!$result){
@@ -287,10 +232,11 @@ class DataCheck {
 		return $report;
 	}
 	
-	function age(){
+	function findAgeYoB(){
 		global $API;
 		$patients = $API->getCurrentPatients();
-		
+		$report = array();
+		$counter = 0;
 		foreach($patients as $p){
 			$age = array();
 		
@@ -372,21 +318,15 @@ class DataCheck {
 		
 		
 			if(count($age)>1 || count($yob) >1 ){
-				printf("(%d) <a href='patient.php?hpcode=%d&patientid=%d'>%s</a>",$p->patienthpcode,$p->patienthpcode,$p->Q_USERID,displayHealthPointName($p->patienthpcode,$p->Q_USERID));
-				echo "<ul>";
-				foreach($age as $k=>$v){
-					printf("<li>Age on %s: %d</li>",getstring($v),$k);
-				}
-				echo "</ul>";
-				echo "<ul>";
-				foreach($yob as $k=>$v){
-					printf("<li>Year of birth on %s: %d</li>",getstring($v),$k);
-				}
-				echo "</ul>";
-		
+				$report[$counter] = new stdClass;
+				$report[$counter]->patid = $p->Q_USERID;
+				$report[$counter]->hpcode = $p->patienthpcode;
+				$counter++;
 			}
 		
 		}
+		
+		return $report;
 	}
 	
 	function missingANCFirst($opts=array()){
@@ -428,18 +368,166 @@ class DataCheck {
 	}
 	
 	function updateCache(){
-		// update cache unregistered
-		// get current cache of unregistered
+		global $API;
 		
+		// update cache unregistered
+		$unreg = $this->findUnregistered();
+		
+		$sql = "SELECT * FROM cache_datacheck WHERE dctype='unreg'";
+		$result = $API->runSql($sql);
+		
+		while($row = mysql_fetch_object($result)){
+			$found = false;
+			foreach($unreg as $ur){
+				if($ur->Q_USERID == $row->patid
+				&& $ur->patienthpcode == $row->hpcode
+				&& $ur->protocol == $row->protocol){
+					$found = true;
+				}
+			}
+			// if not found then remove it
+			if(!$found){
+				$delsql = sprintf("DELETE FROM cache_datacheck WHERE
+										dcid = %d",$row->dcid);
+				$result = $API->runSql($delsql);
+			}
+		}
+		
+		// add in any new unregistered patients
+		foreach ($unreg as $ur){
+			$this->addUnregistered($ur);
+		}
 		
 		// update cache duplicates
+		$dups = $this->findDuplicates();
+
+		// get current duplicates and check to see if they are still issues or not
+		$sql = "SELECT * FROM cache_datacheck WHERE dctype='duplicate'";
+		$result = $API->runSql($sql);
+		
+		while($row = mysql_fetch_object($result)){
+			$found = false;
+			foreach($dups as $dup){
+				if($dup->Q_USERID == $row->patid
+					&& $dup->patienthpcode == $row->hpcode
+					&& $dup->protocol == $row->protocol){
+					$found = true;
+				}
+			}
+			// if not found then remove it
+			if(!$found){
+				$delsql = sprintf("DELETE FROM cache_datacheck WHERE
+								dcid = %d",$row->dcid);
+				$result = $API->runSql($delsql);
+			}
+		}
+		
+		foreach ($dups as $dup){
+			$this->addDuplicate($dup);
+		}
 		
 		
 		// update cache age/yob
+		$ageyobs = $this->findAgeYoB();
 		
+		// get current duplicates and check to see if they are still issues or not
+		$sql = "SELECT * FROM cache_datacheck WHERE dctype='ageyob'";
+		$res = $API->runSql($sql);
 		
-		// update cache name
+		while($row = mysql_fetch_object($res)){
+			$found = false;
+			foreach($ageyobs as $ay){
+				if($ay->patid == $row->patid
+				&& $ay->hpcode == $row->hpcode){
+					$found = true;
+				}
+			}
+			// if not found then remove it
+			if(!$found){
+				$delsql = sprintf("DELETE FROM cache_datacheck WHERE
+										dcid = %d",$row->dcid);
+				$result = $API->runSql($delsql);
+			}
+		}
+		
+		foreach ($ageyobs as $ay){
+			$this->addAgeYoB($ay);
+		}
+		
+		// TODO update cache name
 		
 		
 	}
+	
+	private function addUnregistered($unreg){
+		global $API;
+		
+		$selsql = sprintf("SELECT * FROM cache_datacheck
+											WHERE
+												patid = %d
+											AND hpcode = %d
+											AND protocol = '%s'
+											AND dctype ='unreg'",
+		$unreg->Q_USERID, $unreg->patienthpcode,$unreg->protocol);
+		
+		$result = $API->runSql($selsql);
+		$total = mysql_num_rows($result);
+		
+		if($total == 0){
+			$sql = sprintf("INSERT INTO cache_datacheck (dcdate, patid,hpcode,protocol,dctype,dcregby) 
+									VALUES (now(),%d,%d,'%s','unreg','%s')",
+									$unreg->Q_USERID,
+									$unreg->patienthpcode,
+									$unreg->protocol,
+									$unreg->_CREATOR_URI_USER);
+			$API->runSql($sql);
+		}
+		
+	}
+	
+	private function addDuplicate($dup){
+		global $API;
+		$selsql = sprintf("SELECT * FROM cache_datacheck
+									WHERE
+										patid = %d
+									AND hpcode = %d
+									AND protocol = '%s'
+									AND dctype ='duplicate'",
+		$dup->Q_USERID, $dup->patienthpcode,$dup->protocol);
+		
+		$result = $API->runSql($selsql);
+		$total = mysql_num_rows($result);
+		
+		if($total == 0){
+			$sql = sprintf("INSERT INTO cache_datacheck (dcdate, patid,hpcode,protocol,dctype,dcregby)
+										VALUES (now(),%d,%d,'%s','duplicate','%s')",
+									$dup->Q_USERID,
+									$dup->patienthpcode,
+									$dup->protocol,
+									$dup->_CREATOR_URI_USER);
+			$API->runSql($sql);
+		}
+	}
+	
+	private function addAgeYoB($ay){
+		global $API;
+		$selsql = sprintf("SELECT * FROM cache_datacheck
+										WHERE
+											patid = %d
+										AND hpcode = %d
+										AND dctype ='ageyob'",
+		$ay->patid, $ay->hpcode);
+	
+		$result = $API->runSql($selsql);
+		$total = mysql_num_rows($result);
+	
+		if($total == 0){
+			$sql = sprintf("INSERT INTO cache_datacheck (dcdate, patid,hpcode,protocol,dctype,dcregby)
+											VALUES (now(),%d,%d,'','ageyob','')",
+			$ay->patid,
+			$ay->hpcode);
+			$API->runSql($sql);
+		}
+	}
+	
 }
