@@ -33,10 +33,10 @@ lang['TI']['healthpoint.id.0'] = "Digital Campus Team";
 lang['TI']['healthpoint.id.1000'] = "መሳኑ ክልተኣወላዕሎ ጥዕና ኬላ";
 lang['TI']['healthpoint.id.1001'] = "ኣይናለም ጥዕና ኬላ";
 lang['TI']['healthpoint.id.1002'] = "ገማድ ጥዕና ኬላ";
-lang['TI']['healthpoint.id.1003'] = "ነጋሽ (ዓዲ እኽሊ) ጥዕና ኬላ";
+lang['TI']['healthpoint.id.1003'] = "TODO: translate: Adiekli health post";
 lang['TI']['healthpoint.id.1004'] = "ፃዕዳ ናዕለ ጥዕና ኬላ";
 lang['TI']['healthpoint.id.1005'] = "ማይነብሪ ጥዕና ኬላ";
-lang['TI']['healthpoint.id.1006'] = "ዓራ ኣለም ሰገዳ ጥዕና ኬላ";
+lang['TI']['healthpoint.id.1006'] = "TODO: translate: Alemsegeda health post";
 lang['TI']['healthpoint.id.1007'] = "ሃገረሰላም ጥዕና ኬላ";
 lang['TI']['healthpoint.id.1008'] = "መሳኑ ሕንጣሎዋጅራት ጥዕና ኬላ";
 lang['TI']['healthpoint.id.1009'] = "ፍረወይኒ ጥዕና ኬላ";
@@ -48,23 +48,23 @@ lang['TI']['healthpoint.id.50005'] = "ነጋሽ ጥዕና ጣብያ";
 lang['TI']['healthpoint.id.70001'] = "Ayder Referal Hospital";
 lang['TI']['healthpoint.id.9999'] = "ልምምድ";
 
-lang['TI']['login_username'] = 'Username TI:';
-lang['TI']['login_password'] = 'Password TI:';
+lang['TI']['login_username'] = 'Username:';
+lang['TI']['login_password'] = 'Password:';
 
-lang['TI']['logout'] = 'Logout TI';
+lang['TI']['logout'] = 'Logout';
 
-lang['TI']['mobile_app_title'] = 'Health Analytics in TI';
+lang['TI']['mobile_app_title'] = 'Health Analytics in';
 
-lang['TI']['menu_deliveries'] = 'Deliveries TI';
-lang['TI']['menu_kpi'] = 'Statistics TI';
-lang['TI']['menu_overdue'] = 'Overdue TI';
-lang['TI']['menu_tasks'] = 'Tasks TI';
+lang['TI']['menu_deliveries'] = 'Deliveries';
+lang['TI']['menu_kpi'] = 'Statistics';
+lang['TI']['menu_overdue'] = 'Overdue';
+lang['TI']['menu_tasks'] = 'Tasks';
 
-lang['TI']['page_title_deliveries'] = 'Deliveries TI';
-lang['TI']['page_title_kpis'] = 'Statistics TI';
-lang['TI']['page_title_login'] = 'Login TI';
-lang['TI']['page_title_overdue'] = 'Overdue TI';
-lang['TI']['page_title_tasks'] = 'Tasks Due TI';
+lang['TI']['page_title_deliveries'] = 'Deliveries';
+lang['TI']['page_title_kpis'] = 'Statistics';
+lang['TI']['page_title_login'] = 'Login';
+lang['TI']['page_title_overdue'] = 'Overdue';
+lang['TI']['page_title_tasks'] = 'Tasks Due';
 
 lang['TI']['protocol.ancfirst'] = '1ይ ዑደት';
 lang['TI']['protocol.ancfollow'] = 'ክትትል';
