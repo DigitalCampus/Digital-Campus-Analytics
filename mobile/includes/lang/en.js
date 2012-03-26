@@ -52,11 +52,11 @@ lang['EN']['kpi.heading.previousmonth'] = 'Previous month';
 lang['EN']['kpi.heading.target'] = 'Target';
 lang['EN']['kpi.heading.thismonth'] = 'Past month';
 
-lang['EN']['kpi_ancfirst_submitted'] = 'ANC1 Submitted';
-lang['EN']['kpi_ancfollow_submitted'] = 'ANC Follow Up Submitted';
-lang['EN']['kpi_delivery_submitted'] = 'Delivery Submitted';
-lang['EN']['kpi_pnc_submitted'] = 'PNC Submitted';
-lang['EN']['kpi_total_submitted'] = 'Total Submitted';
+lang['EN']['kpi_ancfirst_submitted'] = 'ANC1 visits';
+lang['EN']['kpi_ancfollow_submitted'] = 'ANC Follow Up visits';
+lang['EN']['kpi_delivery_submitted'] = 'Delivery visits';
+lang['EN']['kpi_pnc_submitted'] = 'PNC visits';
+lang['EN']['kpi_total_submitted'] = 'Total visits';
 
 lang['EN']['login_username'] = 'Username:';
 lang['EN']['login_password'] = 'Password:';

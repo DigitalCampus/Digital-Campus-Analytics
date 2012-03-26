@@ -29,7 +29,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	foreach ($submitted as $s) {
 ?>
 	<div class="kpireport" style="width:50%">
-		<div class="kpireporttitle"><a href="kpi.php?kpi=submitted"><?php echo getstring($s); ?> Submitted</a></div>
+		<div class="kpireporttitle"><a href="kpi.php?kpi=submitted"><?php echo getstring($s); ?> visits</a></div>
 		<div class="kpireportscore"><?php echo $nosubmittedthismonth->count[$s]; ?></div>
 		<div class="kpireportscore"><?php echo $nosubmittedpreviousmonth->count[$s]; ?></div>
 		<div class="kpireportchange">
