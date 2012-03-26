@@ -268,6 +268,18 @@ if ($currentDBversion < 12){
 	echo "Upgraded to version 12\n";
 }
 
+if ($currentDBversion < 13){
+	$sql = "ALTER TABLE `cache_visit` MODIFY COLUMN `user_uri` VARCHAR(80)  CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;";
+	$API->runSql($sql);
+	
+	$sql = "ALTER TABLE `user` MODIFY COLUMN `user_uri` VARCHAR(80) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;";
+	$API->runSql($sql); 
+	
+	//now update the db version prop
+	$API->setSystemProperty('database.version','13');
+	echo "Upgraded to version 13\n";
+}
+
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";
