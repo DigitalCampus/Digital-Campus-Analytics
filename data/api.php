@@ -1390,9 +1390,8 @@ class API {
 		} else {
 			$start = DEFAULT_START;
 		}
-		
-		$sql = "SELECT * FROM (";
-		$sql .= "	SELECT 	cv.visitdate as datestamp,
+	
+		$sql = "SELECT 	cv.visitdate as datestamp,
 							cv.userid AS Q_USERID,
 							CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 							cv.hpcode as patienthpcode,
@@ -1404,23 +1403,24 @@ class API {
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = cv.userid AND r.Q_HEALTHPOINTID = cv.hpcode)
 					INNER JOIN user u ON cv.user_uri = u.user_uri 
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
+		$sql .= " WHERE 1 = 1";
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= " AND cv.hpcode NOT IN (".$this->getIgnoredHealthPoints().")";
+		}
 		if(isset($days)){
-			$sql .= sprintf(" WHERE cv.visitdate >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+			$sql .= sprintf(" AND cv.visitdate >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
 		} else {
-			$sql .= sprintf(" WHERE cv.visitdate > '%s'",$startdate);
+			$sql .= sprintf(" AND cv.visitdate > '%s'",$startdate);
 			$sql .= sprintf(" AND cv.visitdate <= '%s'",$enddate);
 		}
 		
-		$sql .= ") a ";
-		$sql .= "WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().") " ;
-		$sql .= "OR a.protocolhpcode IN (".$this->getUserHealthPointPermissions().")) " ;
-		if($this->getIgnoredHealthPoints() != ""){
-			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
-		}
+		$sql .= " AND (cv.hpcode IN (".$this->getUserHealthPointPermissions(true).") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions(true).")) " ;
+		
 		if(array_key_exists('hpcodes',$opts)){
-			$sql .= " AND a.protocolhpcode IN (".$opts['hpcodes'].")";
+			$sql .= " AND cv.hpcode IN (".$opts['hpcodes'].")";
 		}
-		$sql .= "ORDER BY datestamp DESC";
+		$sql .= "ORDER BY cv.visitdate DESC";
 		
 		//query to get the total no of records
 		$countsql = "SELECT COUNT(*) AS norecords, protocol FROM (".$sql.") a group by protocol;";
