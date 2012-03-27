@@ -11,20 +11,22 @@
 <h3><?php echo getstring(PROTOCOL_DELIVERY);?></h3>
 
 <table class='rtable'>
-<tr class='rrow'>
-	<th><?php echo getstring('table.heading.question');?></th>
-	<th><?php echo getstring('table.heading.data');?></th>
-</tr>
-<tr class="rrow">
-	<td class="rqcell"><?php echo getstring('protocolsubmitted');?></td>
-	<td class="rdcell"><?php 
+	<tr class='rrow'>
+		<th><?php echo getstring('table.heading.question');?></th>
+		<th><?php echo getstring('table.heading.data');?></th>
+	</tr>
+	<tr class="rrow">
+		<td class="rqcell"><?php echo getstring('protocolsubmitted');?></td>
+		<td class="rdcell"><?php 
 							printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',	date('H:i',strtotime($patient->delivery->CREATEDON)),
 																		date('D d M Y',strtotime($patient->delivery->CREATEDON)),
 																		displayAsEthioDate(strtotime($patient->delivery->CREATEDON)),
 																		$patient->delivery->submittedname,
 																		displayHealthPointName($patient->delivery->protocolhpcode));
 	?></td>
-</tr>
+	</tr>
+
+	
 <?php 
 	$rowArray = array(
 					'Q_USERID' => $patient->delivery->Q_USERID,
@@ -93,20 +95,98 @@
 	foreach ($rowArray as $k=>$v){
 		generateDeliveryRow(getstring($k),$v);
 	}
-	
-	// TODO add other fields
 ?>
 
 <tr class='rrow'>
-	<td colspan="2" class="sh"><?php echo getstring('section.motherstatus');?></td>
+ <td colspan="2" class="sh"><?php echo getstring('section.motherstatus');?></td>
 </tr>
+<?php 
+ $rowArray = array(
+    'Q_CONDITION' => $patient->delivery->Q_CONDITION,
+    'Q_CARDIACPULSE' => $patient->delivery->Q_CARDIACPULSE,
+    'Q_TEMPERATURE' => $patient->delivery->Q_TEMPERATURE,
+    'Q_ANEMIA' => $patient->delivery->Q_ANEMIA,
+ 	'Q_BLOODPRESSURE' => $patient->delivery->Q_SYSTOLICBP."/".$patient->delivery->Q_DIASTOLICBP
+    );
+ foreach ($rowArray as $k=>$v){
+  generateDeliveryRow(getstring($k),$v);
+ }
+
+?>
 <tr class='rrow'>
-	<td colspan="2" class="sh"><?php echo getstring('section.newbornstatus');?></td>
+ <td colspan="2" class="sh"><?php echo getstring('section.newbornstatus');?></td>
 </tr>
+<?php 
+ $rowArray = array(
+    'Q_BREASTFEEDING' => $patient->delivery->Q_BREASTFEEDING,
+    'Q_ADVICEDANGERSIGNS' => $patient->delivery->Q_ADVICEDANGERSIGNS,
+    'Q_ADVICEFEEDING' => $patient->delivery->Q_ADVICEFEEDING,
+    'Q_IRONSUPPL' => $patient->delivery->Q_IRONSUPPL,
+    'Q_VITASUPPL' => $patient->delivery->Q_VITASUPPL,
+    'Q_ARVMOM' => $patient->delivery->Q_ARVMOM
+    );
+ foreach ($rowArray as $k=>$v){
+  generateDeliveryRow(getstring($k),$v);
+ }
+?>
 <tr class='rrow'>
-	<td colspan="2" class="sh"><?php echo getstring('section.babies');?></td>
+ <td colspan="2" class="sh"><?php echo getstring('section.babies');?></td>
 </tr>
+<?php 
+ $rowArray = array(
+    'Q_GESTATIONALAGE' =>$patient->delivery->Q_GESTATIONALAGE
+    );
+ foreach ($rowArray as $k=>$v){
+  generateDeliveryRow(getstring($k),$v);
+ }
+ $counter = 1;
+ foreach ($patient->delivery->Q_BABIES as $baby){
+ 	printf("<tr class='rrow'><td colspan='2' class='sh'>Baby %d </td></tr>",$counter);
+ 	$counter++;
+ 	
+	 $rowArray = array(
+	     'Q_LIVEBIRTH' => $baby->Q_LIVEBIRTH,
+	     'Q_NEWBORNSEX' => $baby->Q_NEWBORNSEX,
+	     'Q_APGAR1MIN' => $baby->Q_APGAR1MIN,
+	     'Q_APGAR5MIN' => $baby->Q_APGAR5MIN,
+	     'Q_NEWBORNRESUSCITATION' => $baby->Q_NEWBORNRESUSCITATION,
+	     'Q_NEWBORNWEIGHT' => $baby->Q_NEWBORNWEIGHT,
+	     'Q_NEWBORNHEAD' => $baby->Q_NEWBORNHEAD,
+	     'Q_TTCEYEOINTMENT' => $baby->Q_TTCEYEOINTMENT,
+	     'Q_BCGIMMUNO' => $baby->Q_BCGIMMUNO,
+	     'Q_POLIO0IMMUNO' => $baby->Q_POLIO0IMMUNO,
+	     'Q_VITAMINK' => $baby->Q_VITAMINK,
+	     'Q_BABYMOMBOND' => $baby->Q_BABYMOMBOND,
+	     'Q_BABYBREATHING' => $baby->Q_BABYBREATHING,
+	     'Q_NEWBORNHIV' => $baby->Q_NEWBORNHIV,
+	     'Q_ARVNEWBORNHIV' => $baby->Q_ARVNEWBORNHIV,
+	     'Q_OTHERCOMMENTS' => $baby->Q_OTHERCOMMENTS
+	 );
+	 foreach ($rowArray as $k=>$v){
+	 	generateDeliveryRow(getstring($k),$v);
+	 }
+ }
+ if(count($patient->delivery->Q_BABIES) == 0){
+ 	generateDeliveryRow('',"<span class='error'>No babies entered</span>");
+ }
+?>
 <tr class='rrow'>
-	<td colspan="2" class="sh"><?php echo getstring('section.checklist');?></td>
+ <td colspan="2" class="sh"><?php echo getstring('section.checklist');?></td>
 </tr>
+<?php 
+ $q_gpsdata = "";
+ if ($patient->delivery->Q_GPSDATA_LAT != ""){
+  $q_gpsdata = $patient->delivery->Q_GPSDATA_LAT.",".$patient->delivery->Q_GPSDATA_LNG;
+ }
+ $rowArray = array(
+    'Q_APPOINTMENTDATE' => displayAsEthioDate(strtotime($patient->delivery->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($patient->delivery->Q_APPOINTMENTDATE)),
+    'Q_IDCARD' => $patient->delivery->Q_IDCARD,
+    'Q_LOCATION' => getstring("Q_LOCATION.".$patient->delivery->Q_LOCATION),
+    'Q_GPSDATA' => $q_gpsdata
+ );
+ foreach ($rowArray as $k=>$v){
+  generateDeliveryRow(getstring($k),$v);
+ }
+
+?>
 </table>

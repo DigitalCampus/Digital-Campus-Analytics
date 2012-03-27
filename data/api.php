@@ -951,7 +951,7 @@ class API {
 				array_push($o->Q_BIRTHATTENDANT,$app->VALUE);
 			}
 			// add babies
-			$o->Q_BABY = $this->getPatientDeliveryBaby($o->_URI);
+			$o->Q_BABIES = $this->getPatientDeliveryBaby($o->_URI);
 			return $o;
 		}
 	}
