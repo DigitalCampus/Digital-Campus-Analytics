@@ -60,7 +60,7 @@ function displayTasks(data){
 		if(data[i].risk != 'none'){
 			task.append("<div class='taskhighrisk'><img src='images/red-dot-small.png'/></div>");
 		} else {
-			task.append("<div class='taskhighrisk'>&nbsp;</div>");
+			task.append("<div class='taskhighrisk'><img src='images/white-dot-small.png' alt='no high risks'/></div>");
 		}
 		
 		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
