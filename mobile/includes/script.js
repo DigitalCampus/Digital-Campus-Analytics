@@ -143,9 +143,9 @@ function displayOverdue(data){
 		
 		//add risk info 
 		if(data[i].risk != 'none'){
-			task.append("<div class='taskhighrisk'><img src='images/red-dot-small.png'/></div>");
+			task.append("<div class='taskhighrisk'><img src='images/red-dot-small.png' alt='high risk'/></div>");
 		} else {
-			task.append("<div class='taskhighrisk'>&nbsp;</div>");
+			task.append("<div class='taskhighrisk'><img src='images/white-dot-small.png' alt='no high risks'/></div>");
 		}
 		
 		task.append($('<div>').attr('name',data[i].protocol).addClass('taskleft').text(getString(data[i].protocol)));
