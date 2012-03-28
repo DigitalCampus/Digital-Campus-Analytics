@@ -4,7 +4,7 @@
 	<th><?php echo getstring('table.heading.question');?></th>
 	<?php 
 		for($i=0;$i <count($anclabtest); $i++ ){
-			echo "<th>".getstring('table.heading.data')."</th><th>".getstring('table.heading.risk')."</th>";
+			echo "<th>".getstring('table.heading.data')."</th>";
 		}
 	?>
 </tr>
@@ -21,7 +21,19 @@
 															displayHealthPointName($anclabtest[$i]->protocolhpcode));
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
+		}
+	?>
+</tr>
+<tr class="rrow">
+	<td class="rqcell"><?php echo getstring('protocol.datevisitmade');?></td>
+	<?php 
+		for($i=0;$i <count($anclabtest); $i++ ){
+			echo "<td class='rdcell'>";
+				printf('%1$s (%2$s)',displayAsEthioDate(strtotime($anclabtest[$i]->TODAY)), 
+																		date('D d M Y',strtotime($anclabtest[$i]->TODAY)));
+			echo "</td>";
+			
 		}
 	?>
 </tr>
@@ -34,7 +46,7 @@
 				echo $anclabtest[$i]->Q_USERID;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -47,7 +59,7 @@
 				echo displayHealthPointName($anclabtest[$i]->patienthpcode);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -60,7 +72,7 @@
 				echo $anclabtest[$i]->Q_AGE;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -73,7 +85,7 @@
 				echo $anclabtest[$i]->Q_YEAROFBIRTH;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -89,7 +101,7 @@
 				echo $anclabtest[$i]->Q_STOOLEXAMINATION;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -102,7 +114,7 @@
 				echo $anclabtest[$i]->Q_URINEANALYSIS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -115,7 +127,7 @@
 				echo $anclabtest[$i]->Q_BLOODFILM;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -128,7 +140,7 @@
 				echo $anclabtest[$i]->Q_URINEPROTEIN;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -141,7 +153,7 @@
 				echo $anclabtest[$i]->Q_URINEGLUCOSE;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -157,7 +169,7 @@
 				echo $anclabtest[$i]->Q_HEMOGLOBINLEVEL;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -170,7 +182,7 @@
 				echo $anclabtest[$i]->Q_HEMATOCRITLEVEL;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -183,7 +195,7 @@
 				echo $anclabtest[$i]->Q_BLOODGROUP;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -196,7 +208,7 @@
 				echo $anclabtest[$i]->Q_RHFACTOR;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -212,7 +224,7 @@
 				echo $anclabtest[$i]->Q_PREGNANCYTEST ;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -225,7 +237,7 @@
 				echo $anclabtest[$i]->Q_SYPHILIS ;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>

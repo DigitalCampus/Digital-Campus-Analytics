@@ -29,13 +29,23 @@
 	<?php 
 		for($x=0;$x <count($pnc); $x++ ){
 			echo "<td class='rdcell'>";
-			if (isset($pnc[$x])){
 				printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',date('H:i',strtotime($pnc[$x]->CREATEDON)), 
 														date('D d M Y',strtotime($pnc[$x]->CREATEDON)), 
 														displayAsEthioDate(strtotime($pnc[$x]->CREATEDON)), 
 														$pnc[$x]->submittedname, 
 														displayHealthPointName($pnc[$x]->protocolhpcode));
-			}
+			echo "</td>";
+		}
+	?>
+</tr>
+
+<tr class="rrow">
+<td class="rqcell"><?php echo getstring('protocol.datevisitmade');?></td>
+	<?php 
+		for($x=0;$x <count($pnc); $x++ ){
+			echo "<td class='rdcell'>";
+				printf('%1$s (%2$s)',displayAsEthioDate(strtotime($pnc[$x]->TODAY)), 
+																		date('D d M Y',strtotime($pnc[$x]->TODAY)));
 			echo "</td>";
 		}
 	?>

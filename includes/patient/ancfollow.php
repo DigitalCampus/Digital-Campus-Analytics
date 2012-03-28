@@ -38,6 +38,20 @@
 	?>
 </tr>
 
+<tr class="rrow">
+<td class="rqcell"><?php echo getstring('protocol.datevisitmade');?></td>
+	<?php 
+		for($x=0;$x <count($ancfollow); $x++ ){
+			echo "<td class='rdcell'>";
+			if (isset($ancfollow[$x])){
+				printf('%1$s (%2$s)',displayAsEthioDate(strtotime($ancfollow[$x]->TODAY)), 
+																		date('D d M Y',strtotime($ancfollow[$x]->TODAY)));
+			}
+			echo "</td>";
+		}
+	?>
+</tr>
+
 <?php 
 	$rows = array(	'Q_USERID',	
 					'Q_HEALTHPOINTID',	
@@ -234,7 +248,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_HIV');?></td>
 	<?php 
-		foreach($i as $x){
+		for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo getstring("Q_HIV.".$ancfollow[$x]->Q_HIV);
@@ -246,7 +260,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_HIVTREATMENT');?></td>
 	<?php 
-		foreach($i as $x){
+		for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_HIVTREATMENT;
@@ -258,7 +272,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_FOLICACID');?></td>
 	<?php 
-		foreach($i as $x){
+		for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_FOLICACID;
@@ -270,7 +284,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_MEBENDAZOL');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_MEBENDAZOL;
@@ -282,7 +296,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_IODIZEDSALTS');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_IODIZEDSALTS;
@@ -294,7 +308,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_DRUGS');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_DRUGS;
@@ -306,7 +320,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_DRUGSDESCRIPTION');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_DRUGSDESCRIPTION;
@@ -318,7 +332,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_OTHERHEALTHPROBLEMS');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_OTHERHEALTHPROBLEMS;
@@ -333,7 +347,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_WEIGHT');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_WEIGHT;
@@ -345,7 +359,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_HEIGHT');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo getstring('Q_HEIGHT.'.$ancfollow[$x]->Q_HEIGHT);
@@ -357,7 +371,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_BLOODPRESSURE');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_SYSTOLICBP."/".$ancfollow[$x]->Q_DIASTOLICBP;
@@ -369,7 +383,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_PALLORANEMIA');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo getstring('Q_PALLORANEMIA.'.$ancfollow[$x]->Q_PALLORANEMIA);
@@ -381,7 +395,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_CARDIACPULSE');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_CARDIACPULSE;
@@ -393,7 +407,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_EDEMA');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo getstring('Q_EDEMA.'.$ancfollow[$x]->Q_EDEMA);
@@ -405,7 +419,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_FUNDALHEIGHT');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_FUNDALHEIGHT;
@@ -417,7 +431,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_GESTATIONALAGE');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_GESTATIONALAGE;
@@ -429,7 +443,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_PRESENTATION');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x]) && $ancfollow[$x]->Q_PRESENTATION != ""){
 				echo getstring('Q_PRESENTATION.'.$ancfollow[$x]->Q_PRESENTATION);
@@ -441,7 +455,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_FETALHEARTRATEAUDIBLE');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])&& $ancfollow[$x]->Q_FETALHEARTRATEAUDIBLE != ""){
 				echo getstring('Q_FETALHEARTRATEAUDIBLE.'.$ancfollow[$x]->Q_FETALHEARTRATEAUDIBLE);
@@ -453,7 +467,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_FETALHEARTRATE24W');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo $ancfollow[$x]->Q_FETALHEARTRATE24W;
@@ -468,7 +482,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_IDCARD');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo getstring("Q_IDCARD.".$ancfollow[$x]->Q_IDCARD);
@@ -480,7 +494,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_APPOINTMENTDATE');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo displayAsEthioDate(strtotime($ancfollow[$x]->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($ancfollow[$x]->Q_APPOINTMENTDATE));
@@ -492,7 +506,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_LOCATION');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				echo getstring("Q_LOCATION.".$ancfollow[$x]->Q_LOCATION);
@@ -504,7 +518,7 @@
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_GPSDATA');?></td>
 	<?php 
-		foreach($i as $x){
+	for($x=0;$x <count($ancfollow); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($ancfollow[$x])){
 				if ($ancfollow[$x]->Q_GPSDATA_LAT != ""){

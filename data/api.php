@@ -508,7 +508,8 @@ class API {
 						Q_USERNAME,
 						Q_YEAROFBIRTH,
 						_URI,
-						_CREATION_DATE AS CREATEDON
+						_CREATION_DATE AS CREATEDON,
+						TODAY
 				FROM ".TABLE_REGISTRATION." p
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -641,7 +642,8 @@ class API {
 						Q_WEIGHT,
 						Q_YEAROFBIRTH,
 						Q_YOUNGESTCHILD,
-						_CREATION_DATE AS CREATEDON
+						_CREATION_DATE AS CREATEDON,
+						TODAY
 				FROM ".TABLE_ANCFIRST." p
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -734,7 +736,8 @@ class API {
 						Q_USERID,
 						Q_WEIGHT,
 						Q_YEAROFBIRTH,
-						_CREATION_DATE AS CREATEDON
+						_CREATION_DATE AS CREATEDON,
+						TODAY
 				FROM ".TABLE_ANCFOLLOW." p
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -793,7 +796,8 @@ class API {
 						Q_VACUUMDELIVERY,
 						Q_YEAROFBIRTH,
 						Q_YOUNGESTCHILD,
-						_CREATION_DATE AS CREATEDON
+						_CREATION_DATE AS CREATEDON,
+						TODAY
 				FROM ".TABLE_ANCTRANSFER." p
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -854,7 +858,8 @@ class API {
 						Q_URINEPROTEIN,
 						Q_USERID,
 						Q_YEAROFBIRTH,
-						_CREATION_DATE AS CREATEDON
+						_CREATION_DATE AS CREATEDON,
+						TODAY
 				FROM ".TABLE_ANCLABTEST." p
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -928,7 +933,8 @@ class API {
 						Q_VAGINALDELIVERY,
 						Q_VITASUPPL,
 						Q_YEAROFBIRTH,
-						_CREATION_DATE AS CREATEDON
+						_CREATION_DATE AS CREATEDON,
+						TODAY
 				FROM ".TABLE_DELIVERY." p
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -1032,7 +1038,8 @@ class API {
 							Q_USERID,
 							Q_VITASUPPL,
 							Q_YEAROFBIRTH,
-							_CREATION_DATE AS CREATEDON
+							_CREATION_DATE AS CREATEDON,
+							TODAY
 					FROM ".TABLE_PNC." p
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid

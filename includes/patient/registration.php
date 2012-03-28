@@ -14,6 +14,11 @@
 																		displayHealthPointName($patient->protocolhpcode));?></td>
 </tr>
 <tr class="rrow">
+	<td class="rqcell"><?php echo getstring('protocol.datevisitmade');?></td>
+	<td class="rdcell"><?php printf('%1$s (%2$s)',displayAsEthioDate(strtotime($patient->TODAY)), 
+																		date('D d M Y',strtotime($patient->TODAY)));?></td>
+</tr>
+<tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_NAME');?></td>
 	<td class="rdcell"><?php echo $patient->Q_USERNAME," ",$patient->Q_USERFATHERSNAME," ",$patient->Q_USERGRANDFATHERSNAME; ?></td>
 </tr>

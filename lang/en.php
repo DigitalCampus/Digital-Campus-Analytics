@@ -153,6 +153,8 @@ $LANG['protocol.registration'] = 'Registration';
 $LANG['protocol.total'] = 'Total';
 $LANG['protocollocation'] = 'Protocol Submitted at';
 $LANG['protocolsubmitted'] = 'Protocol submitted on/by';
+$LANG['protocol.datevisitmade'] = 'Date visit made';
+
 $LANG['Q_ABDOMINALPAIN'] = 'Abdominal pain or cramps';
 $LANG['Q_ABORTION'] = 'No Abortions';
 $LANG['Q_AGE'] = 'Age';

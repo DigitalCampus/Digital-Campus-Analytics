@@ -4,7 +4,7 @@
 	<th><?php echo getstring('table.heading.question');?></th>
 	<?php 
 		for($i=0;$i <count($anctransfer); $i++ ){
-			echo "<th>".getstring('table.heading.data')."</th><th>".getstring('table.heading.risk')."</th>";
+			echo "<th>".getstring('table.heading.data')."</th>";
 		}
 	?>
 </tr>
@@ -21,7 +21,21 @@
 														displayHealthPointName($anctransfer[$i]->protocolhpcode));
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
+		}
+	?>
+</tr>
+
+<tr class="rrow">
+<td class="rqcell"><?php echo getstring('protocol.datevisitmade');?></td>
+	<?php 
+	for($i=0;$i <count($anctransfer); $i++ ){
+			echo "<td class='rdcell'>";
+			if (isset($anctransfer[$i])){
+				printf('%1$s (%2$s)',displayAsEthioDate(strtotime($anctransfer[$i]->TODAY)), 
+																		date('D d M Y',strtotime($anctransfer[$i]->TODAY)));
+			}
+			echo "</td>";
 		}
 	?>
 </tr>
@@ -34,7 +48,7 @@
 				echo $anctransfer[$i]->Q_USERID;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -47,7 +61,7 @@
 				echo displayHealthPointName($anctransfer[$i]->patienthpcode);
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -60,7 +74,7 @@
 				echo $anctransfer[$i]->Q_AGE;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -73,7 +87,7 @@
 				echo $anctransfer[$i]->Q_YEAROFBIRTH;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -89,7 +103,7 @@
 				echo $anctransfer[$i]->Q_GRAVIDA;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -102,7 +116,7 @@
 				echo $anctransfer[$i]->Q_PARITY;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -115,7 +129,7 @@
 				echo $anctransfer[$i]->Q_BIRTHINTERVAL;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -128,7 +142,7 @@
 				echo $anctransfer[$i]->Q_LIVEBIRTHS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -141,7 +155,7 @@
 				echo $anctransfer[$i]->Q_STILLBIRTHS;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -154,7 +168,7 @@
 				echo $anctransfer[$i]->Q_YOUNGESTCHILD;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -167,7 +181,7 @@
 				echo $anctransfer[$i]->Q_INFANTDEATH;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -180,7 +194,7 @@
 				echo $anctransfer[$i]->Q_ABORTION;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -193,7 +207,7 @@
 				echo $anctransfer[$i]->Q_LIVINGCHILDREN;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -206,7 +220,7 @@
 				echo $anctransfer[$i]->Q_PREECLAMPSIA;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -219,7 +233,7 @@
 				echo $anctransfer[$i]->Q_BLEEDINGPREVPREG;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -232,7 +246,7 @@
 				echo $anctransfer[$i]->Q_CSECTION;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -245,7 +259,7 @@
 				echo $anctransfer[$i]->Q_VACUUMDELIVERY;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -258,7 +272,7 @@
 				echo $anctransfer[$i]->Q_NEWBORNDEATH;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -271,7 +285,7 @@
 				echo $anctransfer[$i]->Q_PROLONGEDLABOR;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -284,7 +298,7 @@
 				echo $anctransfer[$i]->Q_FISTULA;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -297,7 +311,7 @@
 				echo $anctransfer[$i]->Q_MALPOSITION;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -310,7 +324,7 @@
 				echo $anctransfer[$i]->Q_TWIN;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -323,7 +337,7 @@
 				echo $anctransfer[$i]->Q_BABYWEIGHT;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -336,7 +350,7 @@
 				echo $anctransfer[$i]->Q_PREPOSTTERM;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -349,7 +363,7 @@
 				echo $anctransfer[$i]->Q_FAMILYPLAN;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -368,7 +382,7 @@
 			}
 			echo implode($temp,", ");
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -383,7 +397,7 @@
 				echo $anctransfer[$i]->Q_DELIVERYPLACE;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -402,7 +416,7 @@
 			}
 			echo implode($temp,", ");
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -418,7 +432,7 @@
 				echo $anctransfer[$i]->Q_IDCARD;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -431,7 +445,7 @@
 				echo $anctransfer[$i]->Q_LOCATION;
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
@@ -446,7 +460,7 @@
 				}
 			}
 			echo "</td>";
-			echo "<td class='rrcell'></td>";
+			
 		}
 	?>
 </tr>
