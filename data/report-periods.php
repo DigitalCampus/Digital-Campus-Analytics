@@ -143,7 +143,7 @@ $rpm->start = $date->setDate(2011, 10, 12)->format('Y-m-d 00:00:00');
 $rpm->end = $date->setDate(2012, 1, 9)->format('Y-m-d 23:59:59');
 $rpm->prevtext = getstring('ethio.month.11'). " 2003 - ". getstring('ethio.month.1'). " 2004";
 $rpm->prevstart = $date->setDate(2011, 7, 8)->format('Y-m-d 00:00:00');
-$rpm->prevend = $date->setDate(2012, 10, 11)->format('Y-m-d 23:59:59');
+$rpm->prevend = $date->setDate(2011, 10, 11)->format('Y-m-d 23:59:59');
 $reportperiod['2004-q2'] = $rpm;
 
 // Tahsas 2004
