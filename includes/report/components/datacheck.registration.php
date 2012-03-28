@@ -1,7 +1,7 @@
 <?php 
 $opts=array('hpcodes'=>$report->hpcodes);
 $dc = new DataCheck();
-$unregistered = $dc->unregistered($opts);
+$unregistered = $dc->getDataCheck('unreg');
 
 if(count($unregistered)>0){
 ?>
