@@ -42,8 +42,14 @@ class API {
 	} 
 	
 	function cron($days, $showlog = false){
-		global $CONFIG;
+		global $CONFIG,$LOGGER;
+		echo "Starting cron.....................................................\n";
+		flush_buffers();
+		
+		echo "Updating patients:";
 		$this->updatePatients();
+		echo "\n";
+		flush_buffers();
 		
 		// clear up log table
 		$logdays = $CONFIG->props['log.archive.days'];
@@ -52,9 +58,11 @@ class API {
 			$this->runSql($sql);
 			echo "archived log\n";
 		}
+		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
+		flush_buffers();
 		
 		// update & cache which HPs the patients have visited
-		// get all submitted protocols in last $days // TODO - should really be since cron last run or something
+		// get all submitted protocols in last $days
 		$submitted = $this->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
 		
 		foreach($submitted->protocols as $s){
@@ -64,9 +72,15 @@ class API {
 			}
 		}
 		
+		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
+		flush_buffers();
+		
 		// update & cache task list
 		$this->cacheTasksDue($days);
 		echo "cached tasks due\n";
+		
+		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
+		flush_buffers();
 		
 		// remove any really old overdue tasks based on the ignore policy
 		$sql = sprintf("DELETE FROM cache_tasks
@@ -74,14 +88,23 @@ class API {
 		$this->runSql($sql);
 		echo "removed old overdue tasks\n";
 		
+		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
+		flush_buffers();
+		
 		// update & cache patient risk factors
 		$this->cacheRisks($days);
 		echo "cached risks\n";
+		
+		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
+		flush_buffers();
 		
 		// run the data checks and update accordingly
 		$dc = new DataCheck();
 		$dc->updateCache();
 		echo "cached data checks\n";
+		
+		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
+		flush_buffers();
 		
 		if($dc->summary()){
 			$this->setSystemProperty('datacheck.errors','true');
@@ -90,6 +113,9 @@ class API {
 			$this->setSystemProperty('datacheck.errors','false');
 			echo "data errors = false\n";
 		}
+		
+		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
+		flush_buffers();
 		
 		$this->setSystemProperty('cron.lastrun',time());
 	}
@@ -419,29 +445,61 @@ class API {
 	}
 	
 	function updatePatients(){
-		//add any new patients to the patientcurrent table
-		$sql = "INSERT INTO patientcurrent (hpcode,patid) 
-				SELECT DISTINCT i.Q_HEALTHPOINTID, i.Q_USERID FROM ".TABLE_REGISTRATION." i
-				LEFT OUTER JOIN patientcurrent pc ON i.Q_HEALTHPOINTID = pc.hpcode AND i.Q_USERID = pc.patid
-				WHERE pc.pcid is NULL";
-		$result = $this->runSql($sql);
-	    
-		//archive old patients
-		// TODO update for real PNC protocol
 		
-		// TODO update for termination protocol
-		/*$sql = "UPDATE patientcurrent pc, 
-					(SELECT hpcode, patid FROM pnc
-						WHERE datestamp <= DATE_ADD(NOW(), INTERVAL -70 DAY)) pnc1
-				SET pc.pcurrent = 0
-				WHERE pc.hpcode = pnc1.hpcode
-				AND pc.patid = pnc1.patid
-				AND pc.pcurrent = 1";
-		$result = _mysql_query($sql,$this->DB);
-		if (!$result){
-	    	writeToLog('error','database',$sql);
-	    	return;
-	    }*/
+		//add any new patients to the patientcurrent table
+		$sql = "INSERT INTO patientcurrent (hpcode,patid)
+						SELECT DISTINCT i.Q_HEALTHPOINTID, i.Q_USERID FROM ".TABLE_REGISTRATION." i
+						LEFT OUTER JOIN patientcurrent pc ON i.Q_HEALTHPOINTID = pc.hpcode AND i.Q_USERID = pc.patid
+						WHERE pc.pcid is NULL";
+		if($this->getIgnoredHealthPoints(true) != ""){
+			$sql .= sprintf(" AND i.Q_HEALTHPOINTID NOT IN (%s)",$this->getIgnoredHealthPoints(true));
+		}
+		$result = $this->runSql($sql);
+		
+		// archive any patients who either:
+		// - are past 1 month of delivery 
+		// - 2 month past the EDD (if no delivery)
+		// - have had termination protocol entered
+		$pats = $this->getCurrentPatients(); 
+		$today = new DateTime();
+		
+		foreach($pats as $pat){
+			$archive = false;
+			// past 1 month of delivery
+			if(isset($pat->delivery)){
+				$deldate = new DateTime($pat->delivery->CREATEDON);
+				$deldate->add(new DateInterval('P1M'));
+				if($today > $deldate){
+					$archive = true;
+				}
+			} else {
+				// 2 month past the EDD (no delivery)
+				unset($edd);
+				if(isset($pat->ancfirst)){
+					$edd = new DateTime($pat->ancfirst->Q_EDD);
+				}
+				if(count($pat->ancfollow) > 0){
+					$edd = new DateTime($pat->ancfollow[(count($pat->ancfollow)-1)]->Q_EDD);
+				}
+				if(isset($edd)){
+					$edd->add(new DateInterval('P2M'));
+					if($today > $edd){
+						$archive = true;
+					}
+				} 
+			}
+			
+			if(isset($pat->termination)){
+				$archive = true;
+			}
+			
+			if($archive){
+				$sql = sprintf("UPDATE patientcurrent SET pcurrent = false where hpcode=%d AND patid=%d",$pat->Q_HEALTHPOINTID,$pat->Q_USERID);
+				$this->runSql($sql);
+			}
+		}
+		
+		
 	}
 	
 	/*
@@ -1503,6 +1561,16 @@ class API {
 	}
 	
 	function cacheTasksDue($days){
+		// delete tasks cache for those who are no longer current patients
+		$sql = "SELECT taskid FROM cache_tasks ct
+				LEFT OUTER JOIN patientcurrent pc ON pc.hpcode = ct.hpcode AND pc.patid = ct.userid
+				WHERE pc.pcurrent = false";
+		$result = $this->runSql($sql);
+		while($o = mysql_fetch_object($result)){
+			$delsql = sprintf("DELETE FROM cache_tasks WHERE taskid=%d",$o->taskid);
+			$this->runSql($delsql);
+		}
+		
 		// get all the patients submitted recently (according to past no $days)
 		$submitted = $this->getProtocolsSubmitted(array('days'=>$days,'limit'=>'all'));
 		$toupdate = array();
