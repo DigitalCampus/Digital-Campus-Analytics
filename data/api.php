@@ -46,9 +46,9 @@ class API {
 		echo "Starting cron.....................................................\n";
 		flush_buffers();
 		
-		echo "Updating patients:";
+		echo "Updating patients\n";
 		$this->updatePatients();
-		echo "\n";
+		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
 		flush_buffers();
 		
 		// clear up log table
@@ -56,7 +56,7 @@ class API {
 		if($logdays > 0){
 			$sql = sprintf("DELETE FROM log WHERE logtime < DATE_ADD(NOW(), INTERVAL -%d DAY)",$logdays);
 			$this->runSql($sql);
-			echo "archived log\n";
+			echo "Archived log\n";
 		}
 		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
 		flush_buffers();
@@ -67,9 +67,6 @@ class API {
 		
 		foreach($submitted->protocols as $s){
 			$this->cacheAddPatientHealthPointVisit($s->Q_USERID,$s->patienthpcode,$s->protocolhpcode,$s->datestamp,$s->protocol,$s->user_uri);
-			if($showlog){
-				echo "added visit\n";
-			}
 		}
 		
 		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";

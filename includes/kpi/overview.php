@@ -9,14 +9,14 @@ $date2monthago = new DateTime();
 $date2monthago->sub(new DateInterval('P2M'));
 
 $opts = array();
-$opts['hpcodes'] = $API->getUserHealthPointPermissions();
+$opts['hpcodes'] = $API->getUserHealthPointPermissions(true);
 $opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 $opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 
 $nosubmittedthismonth = $API->getProtocolsSubmitted_Cache($opts);
 
 $opts = array();
-$opts['hpcodes'] = $API->getUserHealthPointPermissions();
+$opts['hpcodes'] = $API->getUserHealthPointPermissions(true);
 $opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
 $opts['enddate'] = $datemonthago->format('Y-m-d 00:00:00');
 
@@ -56,4 +56,19 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 </div>
 <?php 
 	}
+	
+$kpi = new KPI();
+$avganc = $kpi->averageANCVisits($opts);
+$avgpnc = $kpi->averagePNCVisits($opts);
 ?>
+<div class="kpi">
+	<div class="kpiavg">Average No. ANC visits per patient:</div>
+	<div class="kpiavgscore"><?php echo $avganc; ?></div>
+	<div style="clear:both;"></div>
+</div>
+
+<div class="kpi">
+	<div class="kpiavg">Average No. PNC visits per patient:</div>
+	<div class="kpiavgscore"><?php echo $avgpnc; ?></div>
+	<div style="clear:both;"></div>
+</div>

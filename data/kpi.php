@@ -455,4 +455,54 @@ class KPI {
 		
 		return $this->convertPercent($summary);
 	}
+	
+	function averageANCVisits($opts){
+		global $API;
+		if(!array_key_exists('hpcodes',$opts)){
+			$opts['hpcodes'] = $API->getUserHealthPointPermissions(true);
+		}
+		
+		$sql = "SELECT AVG(COALESCE(a.pcount,0)) as ancavg FROM patientcurrent pc 
+				LEFT OUTER JOIN (SELECT count(*) as pcount, hpcode, userid 
+						FROM cache_visit cv 
+						WHERE
+						(protocol = 'protocol.ancfirst'
+						OR protocol = 'protocol.ancfollow')
+						GROUP BY hpcode, userid) a ON a.hpcode = pc.hpcode AND a.userid = pc.patid
+				WHERE pc.pcurrent = false";
+		$sql .= sprintf(" AND pc.hpcode IN (%s)",$opts['hpcodes']);
+		if($API->getIgnoredHealthPoints() != ""){
+			$sql .= sprintf(" AND pc.hpcode NOT IN (%s)",$API->getIgnoredHealthPoints());
+		}
+		$results = $API->runSql($sql);
+		while($row = mysql_fetch_object($results)){
+			return $row->ancavg; 
+		}
+		return 0;
+	}
+	
+	function averagePNCVisits($opts){
+		global $API;
+		if(!array_key_exists('hpcodes',$opts)){
+			$opts['hpcodes'] = $API->getUserHealthPointPermissions(true);
+		}
+	
+		$sql = "SELECT AVG(COALESCE(a.pcount,0)) as pncavg FROM patientcurrent pc
+					LEFT OUTER JOIN (SELECT count(*) as pcount, hpcode, userid 
+							FROM cache_visit cv 
+							WHERE
+							(protocol = 'protocol.pnc')
+							GROUP BY hpcode, userid) a ON a.hpcode = pc.hpcode AND a.userid = pc.patid
+					WHERE pc.pcurrent = false";
+		$sql .= sprintf(" AND pc.hpcode IN (%s)",$opts['hpcodes']);
+		if($API->getIgnoredHealthPoints() != ""){
+			$sql .= sprintf(" AND pc.hpcode NOT IN (%s)",$API->getIgnoredHealthPoints());
+		}
+		$results = $API->runSql($sql);
+		while($row = mysql_fetch_object($results)){
+			return $row->pncavg;
+		}
+		return 0;
+	}
+	
 }

@@ -352,6 +352,21 @@ div.kpireporttitle, div.kpireportscore, div.kpireportchange, div.kpireporttarget
 	font-weight: bold;
 }
 
+div.kpiavg{
+	width:75%;
+	text-align:center;
+	float:left;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+div.kpiavgscore {
+	width:20%;
+	text-align:center;
+	float:left;
+	font-size: 120%;
+	font-weight: bold;
+}
 .increase {
 	color: green;
 }
