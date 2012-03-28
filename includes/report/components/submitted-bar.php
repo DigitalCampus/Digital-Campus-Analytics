@@ -8,7 +8,7 @@ foreach($cohort as $c){
 	$summary[$i]->hpcode = $c->hpcode;
 	$opts=array('startdate'=>$report->start,'enddate'=>$report->end,'hpcodes'=>$c->hpcode,'limit'=>'0');
 	$submitted = $API->getProtocolsSubmitted_Cache($opts);
-	$summary[$i]->count = $submitted->count['protocol.total'];
+	$summary[$i]->count = $submitted->count[$report->temp->protocol];
 	//print_r($submitted);
 	$i++;
 }
@@ -36,9 +36,9 @@ foreach($cohort as $c){
         	hAxis: {title: 'Number submitted', minValue: 0}
         };
 
-        var chart = new google.visualization.BarChart(document.getElementById('submitted-bar-div'));
+        var chart = new google.visualization.BarChart(document.getElementById('<?php echo $report->temp->id ; ?>'));
         chart.draw(data, options);
       }
     </script>
-<div id="submitted-bar-div"></div>
+<div id="<?php echo $report->temp->id ; ?>"></div>
     

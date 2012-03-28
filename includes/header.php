@@ -31,6 +31,7 @@ header("Content-Type: text/html; charset=UTF-8");
     <link rel="StyleSheet" href="<?php echo $CONFIG->homeAddress; ?>/includes/style.css" type="text/css" media="screen">
     <link rel="StyleSheet" href="<?php echo $CONFIG->homeAddress; ?>/includes/printstyle.css" type="text/css" media="print">
     <link rel="shortcut icon" href="<?php echo $CONFIG->homeAddress; ?>/images/favicon.ico"/>
+    <script type="text/javascript" src="<?php echo $CONFIG->homeAddress; ?>/includes/jquery-1.7.1.min.js"></script>
     <?php 
     	global $HEADER;
     	echo $HEADER;

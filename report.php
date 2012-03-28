@@ -26,18 +26,28 @@ $hps = $API->getHealthPoints();
 
 $currenthpname = getNameFromHPCodes($report->hpcodes);
 ?>
+<script type="text/javascript">
+ function reportTypeChanged(){
+	if($('#reporttype').val() == 'current'){
+		$('#reportid').attr('disabled', 'disabled');
+	} else {
+		$('#reportid').attr('disabled', '');
+	}
+ }
+</script>
 <form action="" method="get" class="printhide">
 	<select name="hpcodes">
 		<?php 
 			displayHealthPointSelectList($report->hpcodes);
 		?>
 	</select>
-	<select name="reporttype">
-		<option value="healthpost">Health Post</option>
+	<select id="reporttype" name="reporttype" onchange="reportTypeChanged()">
+		<option value="healthpost" >Health Post</option>
+		<option value="current" >Current</option>
 		<option value="supervisor">Supervisor</option>
 		<option value="midwife">Midwife</option>
 	</select>
-	<select name="reportid">
+	<select name="reportid" id="reportid">
 	<?php 
 		foreach($reportperiod as $rpm=>$v){
 			if ($reportid == $rpm){
@@ -61,6 +71,9 @@ switch($reporttype){
 		break;
 	case 'midwife':
 		include_once('includes/report/midwife.php');
+		break;
+	case 'current':
+		include_once('includes/report/current.php');
 		break;
 }
 
