@@ -241,7 +241,7 @@ class API {
 	
 	function userValidatePassword($username,$password){
 		global $USER;
-		$sql = sprintf("SELECT userid FROM user WHERE username='%s' AND password=md5('%s')",$username,$password);
+		$sql = sprintf("SELECT userid FROM user WHERE username='%s' AND password=md5('%s') and useractive=true",$username,$password);
 		$result = $this->runSql($sql);
 		if(!$result){
 			return false;
@@ -268,19 +268,19 @@ class API {
 		
 		if($USER->getProp('permissions.admin') == 'true'){
 			// admin user can view everything
-			$sql = "SELECT hpcode FROM healthpoint";
+			$sql = "SELECT hpcode FROM healthpoint WHERE hpactive = true";
 		} else if($USER->getProp('permissions.viewall') == 'true'){
 			// "permissions.all" can view all districts & healthpoints, but aren't admin users (can't view logs, edit users etc)
-			$sql = "SELECT hpcode FROM healthpoint";
+			$sql = "SELECT hpcode FROM healthpoint WHERE hpactive = true";
 		} else if($USER->getProp('permissions.districts') != null) {
 			// "permissions.districts" can view all the districts listed
-			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE did IN (%s)",$USER->getProp('permissions.districts'));
+			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE did IN (%s) AND hpactive = true",$USER->getProp('permissions.districts'));
 		} else if($USER->getProp('permissions.healthpoints')!= null) {
 			// "permissions.healthpoints" can view all the healthpoints listed
-			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid IN (%s)",$USER->getProp('permissions.healthpoints'));
+			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid IN (%s) AND hpactive = true",$USER->getProp('permissions.healthpoints'));
 		} else {
 			//otherwise can only see the date from the hpid in their user table record (hpid) 
-			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid = %d",$USER->hpid);
+			$sql = sprintf("SELECT hpcode FROM healthpoint WHERE hpid = %d AND hpactive = true",$USER->hpid);
 		}
 		$sql .= " ORDER BY hpname ASC";
 		
@@ -341,7 +341,7 @@ class API {
 	// return list of Health posts
 	function getHealthPoints($getall = false){
 		if($getall){
-			$sql = "SELECT * FROM healthpoint ORDER BY hpname ASC;";
+			$sql = "SELECT * FROM healthpoint WHERE hpactive = true ORDER BY hpname ASC;";
 		} else  {
 			$sql = sprintf("SELECT * FROM healthpoint WHERE hpcode IN (%s) ORDER BY hpname ASC;",$this->getUserHealthPointPermissions());
 		} 
@@ -361,6 +361,7 @@ class API {
 							WHERE d.did IN (SELECT did 
 											FROM healthpoint 
 											WHERE hpcode IN (%s))
+							AND hpactive = true
 							ORDER BY hp.hpname ASC",
 							$this->getUserHealthPointPermissions());
 		} else {
@@ -369,6 +370,7 @@ class API {
 										WHERE d.did IN (SELECT did 
 														FROM healthpoint 
 														WHERE hpcode IN (%s) AND hpcode IN (%s))
+										AND hpactive = true
 										ORDER BY hp.hpname ASC",
 			$this->getUserHealthPointPermissions(),$hpcodes);
 		}
@@ -404,7 +406,9 @@ class API {
 	
 	function getHealthPointsForDistict($did){
 		$sql = sprintf("SELECT * FROM healthpoint hp 
-						WHERE hp.did=%d ORDER BY hp.hpname ASC", $did);
+						WHERE hp.did=%d 
+						AND hpactive = true
+						ORDER BY hp.hpname ASC", $did);
 		$healthposts = array();
 		$result = $this->runSql($sql);
 

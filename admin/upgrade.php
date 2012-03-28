@@ -280,6 +280,19 @@ if ($currentDBversion < 13){
 	echo "Upgraded to version 13\n";
 }
 
+if ($currentDBversion < 14){
+	$sql = "ALTER TABLE `healthpoint` ADD COLUMN `hpactive` boolean NOT NULL DEFAULT true AFTER `locationlng`;";
+	$API->runSql($sql);
+
+	$sql = "ALTER TABLE `user` ADD COLUMN `useractive` boolean  NOT NULL DEFAULT true AFTER `hpid`;";
+	$API->runSql($sql);
+
+	//now update the db version prop
+	$API->setSystemProperty('database.version','14');
+	echo "Upgraded to version 14\n";
+}
+
+
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";

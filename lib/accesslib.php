@@ -17,7 +17,7 @@ function userLogin($username,$password){
             if($passwordCheck){
                 createSession($USER);
                 setLang($USER->getProp('lang'));
-                writeToLog('info','login','user logged in');
+                writeToLog('info','login','user logged in: '.$username);
                 return true;
             } else {
             	array_push($MSG,getstring('warning.login.invalid'));
