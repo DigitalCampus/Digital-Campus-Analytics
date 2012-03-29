@@ -296,9 +296,8 @@ if ($currentDBversion < 14){
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";
-	$USER->props['permissions.admin'] = 'true';
-	// regenerating cache for last 1 year - not ideal
-	$API->cron(365);
+	
+	$API->cron(true);
 	echo "cron complete.";
 	scriptFooter('info','upgrade',sprintf('upgrade to version %d complete',$CONFIG->props['database.version']));
 }

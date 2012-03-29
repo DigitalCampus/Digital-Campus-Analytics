@@ -41,10 +41,26 @@ class API {
 	    $this->DB = false;
 	} 
 	
-	function cron($days, $showlog = false){
-		global $CONFIG,$LOGGER;
-		echo "Starting cron.....................................................\n";
-		flush_buffers();
+	function cron($flush, $days = 2){
+		global $CONFIG,$LOGGER,$USER;
+		
+		$USER->props['permissions.admin'] = 'true';
+		$USER->username = 'cron';
+		
+		if($flush){
+			echo "Flushing Cache tables\n";
+			$tables = array('cache_datacheck','cache_risk','cache_risk_category', 'cache_tasks' ,'cache_visit', 'patientcurrent' );
+			
+			foreach($tables as $t){
+				$sql = sprintf("TRUNCATE `%s` ; ",$t);
+				$this->runSql($sql);
+			}
+			//set days to be from begining of project (1st Nov 2011)
+			$start = new DateTime('1 Nov 2011');
+			$today = new DateTime();
+			$days = $today->diff($start)->days;
+		}
+		
 		
 		echo "Updating patients\n";
 		$this->updatePatients();
@@ -1457,7 +1473,7 @@ class API {
 			$start = DEFAULT_START;
 		}
 	
-		$sql = "SELECT 	cv.visitdate as datestamp,
+		$sql = "SELECT DISTINCT	cv.visitdate as datestamp,
 							cv.userid AS Q_USERID,
 							CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 							cv.hpcode as patienthpcode,
