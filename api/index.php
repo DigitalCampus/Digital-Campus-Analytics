@@ -71,6 +71,7 @@ if ($method == 'login'){
 		if(count($kpi->districts) > 1){
 			$opts['hpcodes'] = $API->getUserHealthPointPermissions();
 			$opts['limit'] = 0;
+			$opts['nohps'] = count(explode(',',$API->getUserHealthPointPermissions()));
 			$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 			$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 			$temp = $API->getProtocolsSubmitted_Cache($opts);
@@ -104,11 +105,15 @@ if ($method == 'login'){
 			//echo $d->did;
 			$hps4district = $API->getHealthPointsForDistict($d->did);
 			$temp = array();
+			$count = 0;
 			foreach($hps4district as $h){
+				$count++;
 				array_push($temp,$h->hpcode);
 			}
+			//print_r($hps4district);
 			$hps = implode(",",$temp);
 			$opts['hpcodes'] = $hps;
+			$opts['nohps'] = $count;
 			$opts['limit'] = 0;
 			$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 			$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
@@ -143,6 +148,7 @@ if ($method == 'login'){
 	foreach($kpi->hps as $hp){
 		$opts['hpcodes'] = $hp;
 		$opts['limit'] = 0;
+		$opts['nohps'] = 1;
 		$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
 		$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
 		$temp = $API->getProtocolsSubmitted_Cache($opts);

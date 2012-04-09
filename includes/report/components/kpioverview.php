@@ -3,13 +3,12 @@
 
 $opts = array();
 $opts['hpcodes'] = $report->hpcodes;
+$opts['nohps'] = count(explode(',',$report->hpcodes));
 $opts['startdate'] = $report->start;
 $opts['enddate'] = $report->end;
 
 $nosubmittedthismonth = $API->getProtocolsSubmitted_Cache($opts);
 
-$opts = array();
-$opts['hpcodes'] = $report->hpcodes;
 $opts['startdate'] =  $report->prevstart;
 $opts['enddate'] = $report->prevend;
 
