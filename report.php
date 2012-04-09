@@ -13,6 +13,7 @@ $submit = optional_param("submit","",PARAM_TEXT);
 $reporttype = optional_param("reporttype","healthpost",PARAM_TEXT);
 $reportid = optional_param("reportid",$ethioToday['year']."-".$ethioToday['month'],PARAM_TEXT);
 
+$report = new stdClass();
 $report = $reportperiod[$reportid];
 $report->hpcodes = optional_param("hpcodes",$USER->hpcode,PARAM_TEXT);
 
