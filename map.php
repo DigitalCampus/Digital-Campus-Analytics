@@ -1,4 +1,6 @@
 <?php
+
+die;
 include_once "config.php";
 $PAGE = "map";
 $BODY_ATT = 'onload="initialize()" onunload="GUnload()"';
