@@ -1,28 +1,9 @@
 <?php
 include_once "config.php";
-$PAGE="kpi";
+$PAGE="submitted";
 include_once "includes/header.php";
-$kpis = array ('submitted' =>'Submitted', 
-				'anc1defaulters'=>"ANC 1 Non Defaulters",
-				'anc2defaulters'=>"ANC 2 Non Defaulters",
-				'pnc1defaulters'=>"PNC 1 Non Defaulters");
-// ,'tt1defaulters'=>"TT 1 Non Defaulters"
+				
 $kpi = optional_param('kpi','submitted',PARAM_TEXT);
-
-
-//select KPI....
-$counter = 1;
-foreach ($kpis as $k=>$v){
-	if ($k == $kpi){
-		printf("<span class='selected'>%s</span>",$v);
-	} else {
-		printf("<a href='?kpi=%s'>%s</a>",$k,$v);
-	}
-	if($counter < count($kpis)){
-		echo " | ";
-	}
-	$counter++;
-}
 
 if ($kpi == "submitted"){
 	$viewopts = array('height'=>500,'width'=>800,'class'=>'graph','comparison'=>true);

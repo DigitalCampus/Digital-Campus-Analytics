@@ -64,7 +64,7 @@ $compare = $API->getANC2Defaulters($compareopts);
     
 
 <div class="comparison">
-<form action="kpi.php?kpi=anc2defaulters" name="compareHealthPoint" method="get">
+<form action="statistics.php?kpi=anc2defaulters" name="compareHealthPoint" method="get">
 	<p>Compare:
 	<select name="hpcodes">
 		<?php 
@@ -77,7 +77,7 @@ $compare = $API->getANC2Defaulters($compareopts);
 			displayHealthPointSelectList($compareopts['hpcodes']);
 		?>
 	</select>
-	<input type="hidden" name="kpi" value="anc2defaulters"/>
+	<input type="hidden" name="stat" value="anc2defaulters"/>
 	<input type="submit" name="submit" value="compare"/></p>
 </form>
 </div>

@@ -100,7 +100,7 @@ $LANG['menu.map'] = 'Map';
 $LANG['menu.patient'] = 'Patient Manager';
 $LANG['menu.report'] = 'Reports';
 $LANG['menu.stats'] = 'Statistics';
-$LANG['menu.submitted'] = 'Submitted Protocols';
+$LANG['menu.submitted'] = 'Submitted';
 
 $LANG['mobile.app.name'] = 'Health<br/>Analytics';
 $LANG['mobile.login.title'] = 'Login';
