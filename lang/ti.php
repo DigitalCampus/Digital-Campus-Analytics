@@ -114,10 +114,7 @@ $LANG['mobile.login.title'] = 'Login';
 $LANG['mobile.kpi.heading.lastmonth'] = 'Last Month';
 $LANG['mobile.kpi.heading.previousmonth'] = 'Previous Month';
 $LANG['mobile.kpi.heading.target'] = 'Target';
-$LANG['mobile.kpi.anc1'] = 'ANC1 on time';
-$LANG['mobile.kpi.anc1submitted'] = 'ANC1 submitted';
-$LANG['mobile.kpi.anc2'] = 'ANC2 on time';
-$LANG['mobile.kpi.ancfollowsubmitted'] = 'ANC Follow Up submitted';
+$LANG['mobile.kpi.ancsubmitted'] = 'ANC submitted';
 $LANG['mobile.kpi.protocols'] = 'Protocols submitted';
 $LANG['mobile.kpi.tt1'] = 'TT1 on time';
 
