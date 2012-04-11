@@ -1,6 +1,12 @@
 <?php 
-	function generateANCRow($title, $data){
-		printf("<tr class='rrow'><td class='rqcell'>%s</td><td class='rdcell'>%s</td><tr>",$title,$data);
+	function generateANCOpenRow($title){
+		printf("<tr class='rrow'><td class='rqcell'>%s</td>",$title);
+	}
+	function generateANCCell($data){
+		printf("<td class='rdcell'>%s</td>",$data);
+	}
+	function generateANCCloseRow(){
+		printf("</tr>");
 	}
 ?>
 
@@ -13,11 +19,17 @@
 </tr>
 <tr class="rrow">
 	<td class="rqcell"><?php echo getstring('protocolsubmitted');?></td>
-	<td class="rdcell"><?php printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',date('H:i',strtotime($patient->ancfirst->CREATEDON)), 
-																		date('D d M Y',strtotime($patient->ancfirst->CREATEDON)), 
-																		displayAsEthioDate(strtotime($patient->ancfirst->CREATEDON)), 
-																		$patient->ancfirst->submittedname, 
-																		displayHealthPointName($patient->ancfirst->protocolhpcode));?></td>
+	<?php 
+		for($x=0;$x <count($anc); $x++ ){
+			echo "<td class='rdcell'>";
+				printf('%1$s %3$s (%2$s)<br/>%4$s (%5$s)',date('H:i',strtotime($ancfollow[$x]->CREATEDON)), 
+														date('D d M Y',strtotime($ancfollow[$x]->CREATEDON)), 
+														displayAsEthioDate(strtotime($ancfollow[$x]->CREATEDON)), 
+														$ancfollow[$x]->submittedname, 
+														displayHealthPointName($ancfollow[$x]->protocolhpcode));
+			echo "</td>";
+		}
+	?>
 </tr>
 <tr class="rrow">
 <td class="rqcell"><?php echo getstring('protocol.datevisitmade');?></td>

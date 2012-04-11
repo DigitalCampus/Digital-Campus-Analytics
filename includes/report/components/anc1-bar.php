@@ -9,7 +9,6 @@ foreach($cohort as $c){
 	$opts=array('startdate'=>$report->start,'enddate'=>$report->end,'hpcodes'=>$c->hpcode,'limit'=>'0');
 	$nondefaulters = $API->getANC1Defaulters($opts);
 	$summary[$i]->count = $nondefaulters[0]->nondefaulters;
-	//print_r($submitted);
 	$i++;
 }
 ?>
