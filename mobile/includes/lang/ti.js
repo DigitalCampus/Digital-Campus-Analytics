@@ -66,10 +66,8 @@ lang['TI']['page_title_login'] = 'Login';
 lang['TI']['page_title_overdue'] = 'Overdue';
 lang['TI']['page_title_tasks'] = 'Tasks Due';
 
-lang['TI']['protocol.ancfirst'] = '1ይ ዑደት';
-lang['TI']['protocol.ancfollow'] = 'ክትትል';
+lang['TI']['protocol.anc'] = 'ANC';
 lang['TI']['protocol.anclabtest'] = 'ላብራቶሪ ምርመራ';
-lang['TI']['protocol.anctransfer'] = 'መዘዋወሪ';
 lang['TI']['protocol.delivery'] = 'ወሊድ';
 lang['TI']['protocol.pnc'] = 'ክትትል ድሕሪ ወሊድ';
 lang['TI']['protocol.registration'] = 'ምዝገባ';
