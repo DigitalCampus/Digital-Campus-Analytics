@@ -1310,7 +1310,7 @@ class API {
 		//add in the targets
 		if(array_key_exists('nohps',$opts)){
 			$submitted->target['protocol.total'] = $CONFIG->props['target.protocols']*$opts['nohps'];
-			$submitted->target[PROTOCOL_ANC] = $CONFIG->props['target.anc1submitted']*$opts['nohps'];
+			$submitted->target[PROTOCOL_ANC] = $CONFIG->props['target.ancsubmitted']*$opts['nohps'];
 			$submitted->target[PROTOCOL_DELIVERY] = $CONFIG->props['target.deliverysubmitted']*$opts['nohps'];
 			$submitted->target[PROTOCOL_PNC] = $CONFIG->props['target.pncsubmitted']*$opts['nohps'];
 		}
@@ -1389,9 +1389,9 @@ class API {
 			if(count($patient->anc)>0 && !isset($patient->delivery) && count($patient->pnc)==0){
 				//get the most recent ANC follow
 				if($patient->anc[count($patient->anc)-1]->Q_APPOINTMENTDATE != ""){
-					$this->cacheAddTask($userid, $hpcode, $patient->ancfollow[count($patient->ancfollow)-1]->Q_APPOINTMENTDATE,PROTOCOL_ANC);
+					$this->cacheAddTask($userid, $hpcode, $patient->anc[count($patient->anc)-1]->Q_APPOINTMENTDATE,PROTOCOL_ANC);
 				}
-				$edd = $patient->ancfollow[count($patient->ancfollow)-1]->Q_EDD;
+				$edd = $patient->anc[count($patient->anc)-1]->Q_EDD;
 			}
 			
 			// get their most recent EDD to enter delivery date 
