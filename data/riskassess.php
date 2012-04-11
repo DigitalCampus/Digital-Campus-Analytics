@@ -411,7 +411,6 @@ class RiskAssessment {
 		} else {
 			$hps = $API->getUserHealthPointPermissions(true);
 		}
-		
 		$sql = sprintf("SELECT COUNT(*) as riskcatcount, riskcategory
 						FROM cache_risk_category crc
 						INNER JOIN patientcurrent pc ON pc.hpcode = crc.hpcode AND pc.patid = crc.userid
@@ -420,7 +419,7 @@ class RiskAssessment {
 							OR visithpcode IN (%s) )",$API->getUserHealthPointPermissions(true),$API->getUserHealthPointPermissions(true));
 		
 		$sql .= sprintf(" AND ( hpcode IN (%s)",$hps);
-		$sql .= sprintf(" OR visithpcode IN (%s)",$hps);
+		$sql .= sprintf(" OR visithpcode IN (%s))",$hps);
 		
 		$sql .= ") cv ON cv.userid = crc.userid AND cv.hpcode = crc.hpcode" ;
 		$sql .= " WHERE pc.pcurrent = 1 OR pc.pcurrent IS NULL";
