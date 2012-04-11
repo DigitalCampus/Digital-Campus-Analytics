@@ -23,11 +23,11 @@ foreach($cohort as $c){
         data.addColumn('number', 'Percent non-defaulters');
         data.addColumn('number', 'Target');
 		<?php 
-			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc1']);
+			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc']);
 			foreach($summary as $s){
-				printf("data.addRow(['%s',%d,%d]);",displayHealthPointName($s->hpcode),$s->count,$CONFIG->props['target.anc1']);	
+				printf("data.addRow(['%s',%d,%d]);",displayHealthPointName($s->hpcode),$s->count,$CONFIG->props['target.anc']);	
 			}
-			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc1']);
+			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc']);
 		?>
 		
         var options = {
