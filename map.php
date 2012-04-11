@@ -97,7 +97,7 @@ $dayopts = Array(7,14,31);
 				
 				  		<?php 
 	  							break;
-	  						case getString('protocol.ancfirst'):
+	  						case getString('protocol.anc'):
 	  							?>
 				      	var marker = new google.maps.Marker({
 				      	      position: new google.maps.LatLng(<?php echo $gpslat.",".$gpslng; ?>),
@@ -108,28 +108,7 @@ $dayopts = Array(7,14,31);
 							
 				  		<?php 
 	  							break;
-	  						case getString('protocol.ancfollow'):
-  						?>
-  									var marker = new google.maps.Marker({
-  										position: new google.maps.LatLng(<?php echo $gpslat.",".$gpslng; ?>),
-  										title:"<?php echo $s->patientname; ?>",
-  										map: map,
-  										icon: '<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol3.png'
-  									});
-  														
-  						<?php 
-  								break;
-  							case getString('protocol.anctransfer'):
-  									?>
-  								  	var marker = new google.maps.Marker({
-  								  		position: new google.maps.LatLng(<?php echo $gpslat.",".$gpslng; ?>),
-  								  		title:"<?php echo $s->patientname; ?>",
-  								  		map: map,
-  								  		icon: '<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol4.png'
-  								  	});
-  								  														
-  						<?php 
-  								break;
+	  						
   							case getString('protocol.anclabtest'):
   									?>
   								  	var marker = new google.maps.Marker({
