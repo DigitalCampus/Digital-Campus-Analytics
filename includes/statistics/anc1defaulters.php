@@ -81,7 +81,7 @@ $compare = $API->getANC1Defaulters($compareopts);
 			displayHealthPointSelectList($compareopts['hpcodes']);
 		?>
 	</select>
-	<input type="hidden" name="kpi" value="anc1defaulters">
+	<input type="hidden" name="stat" value="anc1defaulters">
 	<input type="submit" name="submit" value="compare"/></p>
 </form>
 </div>
