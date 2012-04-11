@@ -143,9 +143,7 @@ $dayopts = Array(7,14,31);
 		Legend:<br/>
 		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/hospital-building.png"/> <?php echo getString('map.healthpost');?><br/>
 		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol1.png"/> <?php echo getString('protocol.registration');?><br/>
-		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol2.png"/> <?php echo getString('protocol.ancfirst');?><br/>
-		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol3.png"/> <?php echo getString('protocol.ancfollow');?><br/>
-		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol4.png"/> <?php echo getString('protocol.anctransfer');?><br/>
+		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol2.png"/> <?php echo getString('protocol.anc');?><br/>
 		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol5.png"/> <?php echo getString('protocol.anclabtest');?><br/>
 	</div>
 <?php 
