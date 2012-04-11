@@ -1399,8 +1399,8 @@ class API {
 				$this->cacheAddTask($userid, $hpcode, $edd, PROTOCOL_DELIVERY);
 				
 				// if they are due for Lab test
-				if(!isset($patient->labtest) && isset($patient->ancfirst)){
-					$date = new DateTime($patient->ancfirst->CREATEDON);
+				if(!isset($patient->labtest) && count($patient->anc)>0){
+					$date = new DateTime($patient->anc[count($patient->anc)-1]->CREATEDON);
 					$date->add(new DateInterval('P4M'));
 				
 					//if this date is greater than the delivery, make it the day before delivery

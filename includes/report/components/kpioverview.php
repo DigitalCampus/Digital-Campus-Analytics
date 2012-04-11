@@ -24,7 +24,7 @@ $nosubmittedpreviousmonth = $API->getProtocolsSubmitted_Cache($opts);
 	<div style="clear:both;"></div>
 </div>
 <?php 
-	$submitted = array('protocol.total',PROTOCOL_ANCFIRST, PROTOCOL_ANCFOLLOW, PROTOCOL_DELIVERY, PROTOCOL_PNC);
+	$submitted = array('protocol.total',PROTOCOL_ANC, PROTOCOL_DELIVERY, PROTOCOL_PNC);
 	foreach ($submitted as $s) {
 ?>
 	<div class="kpireport" style="width:50%">
