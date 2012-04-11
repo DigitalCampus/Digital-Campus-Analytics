@@ -200,7 +200,7 @@ function displayKPIs(data){
 							"<div class='kpitarget' name='lang' id='kpi.heading.target'>"+getString('kpi.heading.target')+"</div>" +
 						"<div style='clear:both;'></div></div>");
 	
-	var submitted = new Array('total','ancfirst','ancfollow','delivery','pnc');
+	var submitted = new Array('total','anc','delivery','pnc');
 	
 	for(var i=0; i<submitted.length; i++){
 		$('#content').append("<div class='kpi'>" +
@@ -236,7 +236,7 @@ function updateKPIDisplay(){
 		return;
 	}
 	
-	var submitted = new Array('total','ancfirst','ancfollow','delivery','pnc');
+	var submitted = new Array('total','anc','delivery','pnc');
 	
 	for(var i=0; i<submitted.length; i++){
 		$('#kpi_'+submitted[i]+'_submitted_thismonth').text(data.submittedthismonth[hpcodes].count['protocol.'+submitted[i]]);
