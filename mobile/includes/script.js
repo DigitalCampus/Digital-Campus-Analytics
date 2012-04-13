@@ -8,7 +8,7 @@ $.ajaxSetup({
 	type: "POST",
 	headers:{},
 	dataType:'json',
-	timeout: 20000
+	timeout: 10000
 });
 
 function showPage(page){
@@ -21,25 +21,27 @@ function showPage(page){
 	$('#content').empty();
 	$('#grayout').show();
 	if(page == 'tasks'){
-		$('#content').append("<h2 name='lang' id='page_title_tasks'>"+getString('page_title_tasks')+"</h2>");
 		displayTasks(store.get('tasks'));
 	} else if(page == 'kpi'){
 		displayKPIs(store.get('kpis'));
 	} else if(page == 'deliveries'){
-		$('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");
 		displayDeliveries(store.get('deliveries'));
 	} else if(page == 'overdue'){
-		$('#content').append("<h2 name='lang' id='page_title_overdue'>"+getString('page_title_overdue')+"</h2>");
 		displayOverdue(store.get('overdue'));
 	}
 }
 
 
 function displayTasks(data){
+	$('#content').empty();
+	$('#content').append("<h2 name='lang' id='page_title_tasks'>"+getString('page_title_tasks')+"</h2>");
+
 	if(data == null || data.length == 0){
 		$('#grayout').hide();
+		$('#content').append("<h2 name='lang' id='info_notavailable_tasks'>"+getString('info_notavailable_tasks')+"</h2>");
 		return;
 	} 
+	
 	var curdate = "";
 	for (var i=0; i<data.length; i++){
 		// show data header
@@ -78,7 +80,10 @@ function displayTasks(data){
 }
 
 function displayDeliveries(data){
+	$('#content').empty();
+	$('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");
 	if(data == null || data.length == 0){
+		$('#content').append("<h2 name='lang' id='info_notavailable_deliveries'>"+getString('info_notavailable_deliveries')+"</h2>");
 		$('#grayout').hide();
 		return;
 	} 
@@ -121,7 +126,10 @@ function displayDeliveries(data){
 }
 
 function displayOverdue(data){
+	$('#content').empty();
+	$('#content').append("<h2 name='lang' id='page_title_overdue'>"+getString('page_title_overdue')+"</h2>");
 	if(data == null || data.length == 0){
+		$('#content').append("<h2 name='lang' id='info_notavailable_overdue'>"+getString('info_notavailable_overdue')+"</h2>");
 		$('#grayout').hide();
 		return;
 	} 
@@ -163,12 +171,14 @@ function displayOverdue(data){
 }
 
 function displayKPIs(data){
+	$('#content').empty();
+	$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");	
 	
 	if(data == null || data.length == 0){
-		$('#grayout').hide();
+		$('#content').append("<h2 name='lang' id='info_notavailable_kpis'>"+getString('info_notavailable_kpis')+"</h2>");	
+		$('#grayout').hide();	
 		return;
 	} 
-	
 	if(data.districts && data.districts.length >0 && data.hps.length >0){
 		var seldiv = $('<div>').attr('id','hpcodeselect');
 		var sel = $('<select>').attr('id','hpcodes').attr('onchange','updateKPIDisplay()');
@@ -191,8 +201,6 @@ function displayKPIs(data){
 		seldiv.append(sel)
 		$('#content').append(seldiv);
 	}
-	
-	$('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");
 	
 	$('#content').append("<div class='kpiheader'>" +
 							"<div class='kpiscore' name='lang' id='kpi.heading.thismonth'>"+getString('kpi.heading.thismonth')+"</div>" + 
@@ -386,7 +394,11 @@ function dataUpdate(){
 			   }
 		   }, 
 		   error:function(data){
-			   if(PAGE == 'tasks'){
+			   if(PAGE == 'tasks' && store.get('tasks') == null){
+				   $('#content').empty();
+				   $('#content').append("<h2 name='lang' id='page_title_tasks'>"+getString('page_title_tasks')+"</h2>");	
+				   $('#content').append("<h2 name='lang' id='info_timeout_tasks'>"+getString('info_timeout_tasks')+"</h2>");
+			   } else if(PAGE == 'tasks'){
 				   displayTasks(store.get('tasks'));
 			   }
 		   }
@@ -407,7 +419,11 @@ function dataUpdate(){
 			   }
 		   }, 
 		   error:function(data){
-			   if(PAGE == 'deliveries'){
+			   if(PAGE == 'deliveries' && store.get('deliveries') == null){
+				   $('#content').empty();
+				   $('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");	
+				   $('#content').append("<h2 name='lang' id='info_timeout_deliveries'>"+getString('info_timeout_deliveries')+"</h2>");
+			   } else if(PAGE == 'deliveries'){
 				   displayDeliveries(store.get('deliveries'));
 			   }
 		   }
@@ -428,7 +444,11 @@ function dataUpdate(){
 			   }
 		   }, 
 		   error:function(data){
-			   if(PAGE == 'overdue'){
+			   if(PAGE == 'overdue' && store.get('overdue') == null){
+				   $('#content').empty();
+				   $('#content').append("<h2 name='lang' id='page_title_overdue'>"+getString('page_title_overdue')+"</h2>");	
+				   $('#content').append("<h2 name='lang' id='info_timeout_overdue'>"+getString('info_timeout_overdue')+"</h2>");
+			   } else if(PAGE == 'overdue'){
 				   displayOverdue(store.get('overdue'));
 			   }
 		   }
@@ -442,15 +462,19 @@ function dataUpdate(){
 			   if(data && !data.error){
 				   store.set('kpis',data);
 				   if(PAGE == 'kpi'){
-					   showPage('kpi');
+					   displayKPIs(store.get('kpis'));
 				   }
 				   store.set('lastupdate',Date());
 				   setUpdated();
 			   }
 		   }, 
 		   error:function(data){
-			   if(PAGE == 'kpi'){
-				   showPage('kpi');
+			   if(PAGE == 'kpi' && store.get('kpis') == null){
+				   $('#content').empty();
+				   $('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");	
+				   $('#content').append("<h2 name='lang' id='info_timeout_kpis'>"+getString('info_timeout_kpis')+"</h2>");
+			   } else if(PAGE == 'kpi'){
+				   displayKPIs(store.get('kpis'));
 			   }
 		   }
 		});
