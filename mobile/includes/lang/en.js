@@ -48,11 +48,21 @@ lang['EN']['healthpoint.id.50005'] = "Negash health centre";
 lang['EN']['healthpoint.id.70001'] = "Ayder Referal Hospital";
 lang['EN']['healthpoint.id.9999'] = "Practice only";
 
+lang['EN']['info_notavailable_kpis'] = "Statistics not currently available";
+lang['EN']['info_timeout_kpis'] = "Timeout in loading performance indicators, please try again later.";
+lang['EN']['info_notavailable_tasks'] = "Tasks not currently available";
+lang['EN']['info_timeout_tasks'] = "Timeout in loading tasks, please try again later.";
+lang['EN']['info_notavailable_deliveries'] = "Deliveries not currently available";
+lang['EN']['info_timeout_deliveries'] = "Timeout in loading deliveries, please try again later.";
+lang['EN']['info_notavailable_overdue'] = "Overdue tasks not currently available";
+lang['EN']['info_timeout_overdue'] = "Timeout in loading overdue tasks, please try again later.";
+
 lang['EN']['kpi.heading.previousmonth'] = 'Previous month';
 lang['EN']['kpi.heading.target'] = 'Target';
 lang['EN']['kpi.heading.thismonth'] = 'Past month';
 
-lang['EN']['kpi_anc_submitted'] = 'ANC visits';
+lang['EN']['kpi_ancfirst_submitted'] = 'ANC1 visits';
+lang['EN']['kpi_ancfollow_submitted'] = 'ANC Follow Up visits';
 lang['EN']['kpi_delivery_submitted'] = 'Delivery visits';
 lang['EN']['kpi_pnc_submitted'] = 'PNC visits';
 lang['EN']['kpi_total_submitted'] = 'Total visits';
@@ -76,8 +86,10 @@ lang['EN']['page_title_overdue'] = 'Overdue';
 lang['EN']['page_title_risk'] = 'Risk Distribution';
 lang['EN']['page_title_tasks'] = 'Tasks Due';
 
-lang['EN']['protocol.anc'] = 'ANC';
+lang['EN']['protocol.ancfirst'] = 'ANC First';
+lang['EN']['protocol.ancfollow'] = 'ANC Follow Up';
 lang['EN']['protocol.anclabtest'] = 'ANC Lab Test';
+lang['EN']['protocol.anctransfer'] = 'ANC Transfer';
 lang['EN']['protocol.delivery'] = 'Delivery';
 lang['EN']['protocol.pnc'] = 'PNC';
 lang['EN']['protocol.registration'] = 'Registration';
