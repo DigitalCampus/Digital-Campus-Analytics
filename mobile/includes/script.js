@@ -8,7 +8,7 @@ $.ajaxSetup({
 	type: "POST",
 	headers:{},
 	dataType:'json',
-	timeout: 10000
+	timeout: 60000
 });
 
 function showPage(page){
