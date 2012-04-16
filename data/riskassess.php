@@ -14,8 +14,18 @@ class RiskAssessment {
 		if(isset($p->Q_AGE) && $p->Q_AGE < 18 ){
 			$risk->risks['Q_AGE_UNDER'] = true;
 		} 
+		// from ANC first
+		if(isset($p->ancfirst->Q_AGE) && $p->ancfirst->Q_AGE < 18){
+			$risk->risks['Q_AGE_UNDER'] = true;
+		}
 		//from ANC Follow
-		foreach($p->anc as $x){
+		foreach($p->ancfollow as $x){
+			if(isset($x->Q_AGE) && $x->Q_AGE < 18){
+				$risk->risks['Q_AGE_UNDER'] = true;
+			}
+		}
+		//from ANC Transfer
+		foreach($p->anctransfer as $x){
 			if(isset($x->Q_AGE) && $x->Q_AGE < 18){
 				$risk->risks['Q_AGE_UNDER'] = true;
 			}
@@ -26,8 +36,18 @@ class RiskAssessment {
 		if(isset($p->Q_AGE) && $p->Q_AGE > 34){
 			$risk->risks['Q_AGE_OVER'] = true;
 		}
+		// from ANC first
+		if(isset($p->ancfirst->Q_AGE) && $p->ancfirst->Q_AGE > 34){
+			$risk->risks['Q_AGE_OVER'] = true;
+		}
 		//from ANC Follow
-		foreach($p->anc as $x){
+		foreach($p->ancfollow as $x){
+			if(isset($x->Q_AGE) && $x->Q_AGE > 34){
+				$risk->risks['Q_AGE_OVER'] = true;
+			}
+		}
+		//from ANC Transfer
+		foreach($p->anctransfer as $x){
 			if(isset($x->Q_AGE) && $x->Q_AGE > 34){
 				$risk->risks['Q_AGE_OVER'] = true;
 			}
@@ -40,8 +60,12 @@ class RiskAssessment {
 		 * Birth Interval
 		 */
 		$risk->risks['Q_BIRTHINTERVAL'] = false;
-		// from ANC
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->Q_BIRTHINTERVAL) && ($p->ancfirst->Q_BIRTHINTERVAL == 'within1' || $p->ancfirst->Q_BIRTHINTERVAL == 'within2')){
+			$risk->risks['Q_BIRTHINTERVAL'] = true;
+		}
+		// from Transfer
+		foreach($p->anctransfer as $x){
 			if(isset($x->Q_BIRTHINTERVAL) && ($x->Q_BIRTHINTERVAL == 'within1' || $x->Q_BIRTHINTERVAL == 'within2')){
 				$risk->risks['Q_BIRTHINTERVAL'] = true;
 			}
@@ -54,9 +78,12 @@ class RiskAssessment {
 		 * Birth order/gravida
 		 */
 		$risk->risks['Q_GRAVIDA'] = false;
-
-		// from ANC
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->Q_GRAVIDA) && ($p->ancfirst->Q_GRAVIDA > 6)){
+			$risk->risks['Q_GRAVIDA'] = true;
+		}
+		// from Transfer
+		foreach($p->anctransfer as $x){
 			if(isset($x->Q_GRAVIDA) && ($x->Q_GRAVIDA > 6)){
 				$risk->risks['Q_GRAVIDA'] = true;
 			}
@@ -71,8 +98,12 @@ class RiskAssessment {
 		$risks = array ('Q_ABDOMINALPAIN', 'Q_BLEEDING', 'Q_FATIGUE','Q_FEVER','Q_HEADACHE');
 		foreach ($risks AS $r){
 			$risk->risks[$r] = false;
-			// from ANC
-			foreach($p->anc as $x){
+			// from ANC First
+			if(isset($p->ancfirst->{$r}) && ($p->ancfirst->{$r} == 'yes')){
+				$risk->risks[$r] = true;
+			}
+			// from ANC Follow
+			foreach($p->ancfollow as $x){
 				if(isset($x->{$r}) && ($x->{$r} == 'yes')){
 					$risk->risks[$r] = true;
 				}
@@ -88,8 +119,12 @@ class RiskAssessment {
 		$risks = array ('Q_STILLBIRTHS', 'Q_ABORTION');
 		foreach ($risks AS $r){
 			$risk->risks[$r] = false;
-			// from ANC
-			foreach($p->anc as $x){
+			// from ANC First
+			if(isset($p->ancfirst->{$r}) && ($p->ancfirst->{$r} >= 1)){
+				$risk->risks[$r] = true;
+			}
+			// from ANC Transfer
+			foreach($p->anctransfer as $x){
 				if(isset($x->{$r}) && ($x->{$r} >= 1)){
 					$risk->risks[$r] = true;
 				}
@@ -101,9 +136,12 @@ class RiskAssessment {
 		
 		$factor = 'Q_YOUNGESTCHILD';
 		$risk->risks[$factor] = false;
-
-		// from ANC 
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && ($p->ancfirst->{$factor} == 'no')){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Transfer
+		foreach($p->anctransfer as $x){
 			if(isset($x->{$factor}) && ($x->{$factor} == 'no')){
 				$risk->risks[$factor] = true;
 			}
@@ -124,8 +162,12 @@ class RiskAssessment {
 						'Q_TWIN');
 		foreach ($risks AS $r){
 			$risk->risks[$r] = false;
-			// from ANC 
-			foreach($p->anc as $x){
+			// from ANC First
+			if(isset($p->ancfirst->{$r}) && ($p->ancfirst->{$r} == 'yes')){
+				$risk->risks[$r] = true;
+			}
+			// from ANC Transfer
+			foreach($p->anctransfer as $x){
 				if(isset($x->{$r}) && ($x->{$r} == 'yes')){
 					$risk->risks[$r] = true;
 				}
@@ -137,8 +179,12 @@ class RiskAssessment {
 		
 		$factor = 'Q_BABYWEIGHT';
 		$risk->risks[$factor] = false;
-		// from ANC 
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && ($p->ancfirst->{$factor} != 'neither')){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Transfer
+		foreach($p->anctransfer as $x){
 			if(isset($x->{$factor}) && ($x->{$factor} != 'neither')){
 				$risk->risks[$factor] = true;
 			}
@@ -149,8 +195,12 @@ class RiskAssessment {
 		
 		$factor = 'Q_PREPOSTTERM';
 		$risk->risks[$factor] = false;
-		// from ANC 
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && ($p->ancfirst->{$factor} != 'neither')){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Transfer
+		foreach($p->anctransfer as $x){
 			if(isset($x->{$factor}) && ($x->{$factor} != 'neither')){
 				$risk->risks[$factor] = true;
 			}
@@ -165,8 +215,12 @@ class RiskAssessment {
 		$risks = array ('Q_SOCIALSUPPORT', 'Q_ECONOMICS', 'Q_TRANSPORTATION');
 		foreach ($risks AS $r){
 			$risk->risks[$r] = false;
-			// from ANC 
-			foreach($p->anc as $x){
+			// from ANC First
+			if(isset($p->ancfirst->{$r}) && ($p->ancfirst->{$r} == 'no')){
+				$risk->risks[$r] = true;
+			}
+			// from ANC Transfer
+			foreach($p->anctransfer as $x){
 				if(isset($x->{$r}) && ($x->{$r} == 'no')){
 					$risk->risks[$r] = true;
 				}
@@ -182,8 +236,12 @@ class RiskAssessment {
 		$risks = array ('Q_DIABETES', 'Q_TUBERCULOSIS', 'Q_HYPERTENSION');
 		foreach ($risks AS $r){
 			$risk->risks[$r] = false;
-			// from ANC 
-			foreach($p->anc as $x){
+			// from ANC First
+			if(isset($p->ancfirst->{$r}) && ($p->ancfirst->{$r} == 'yes')){
+				$risk->risks[$r] = true;
+			}
+			// from ANC Follow
+			foreach($p->ancfollow as $x){
 				if(isset($x->{$r}) && ($x->{$r} == 'yes')){
 					$risk->risks[$r] = true;
 				}
@@ -195,8 +253,12 @@ class RiskAssessment {
 		
 		$factor = 'Q_HIV';
 		$risk->risks[$factor] = false;
-		// from ANC 
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && ($p->ancfirst->{$factor} == 'positive')){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Follow
+		foreach($p->ancfollow as $x){
 			if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
 				$risk->risks[$factor] = true;
 			}
@@ -210,8 +272,12 @@ class RiskAssessment {
 		 */
 		$factor = 'Q_WEIGHT';
 		$risk->risks[$factor] = false;
-		// from ANC
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && ($p->ancfirst->{$factor} < 40)){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Follow
+		foreach($p->ancfollow as $x){
 			if(isset($x->{$factor}) && ($x->{$factor} < 40)){
 				$risk->risks[$factor] = true;
 			}
@@ -222,8 +288,12 @@ class RiskAssessment {
 		
 		$factor = 'Q_HEIGHT';
 		$risk->risks[$factor] = false;
-		// from ANC 
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && ($p->ancfirst->{$factor} == 'below150')){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Follow
+		foreach($p->ancfollow as $x){
 			if(isset($x->{$factor}) && ($x->{$factor} == 'below150')){
 				$risk->risks[$factor] = true;
 			}
@@ -234,8 +304,16 @@ class RiskAssessment {
 		
 		$factor = "Q_BLOODPRESSURE";
 		$risk->risks[$factor] = false;
-		// from ANC
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->Q_SYSTOLICBP) && isset($p->ancfirst->Q_DIASTOLICBP) 
+											&& (($p->ancfirst->Q_SYSTOLICBP > 120) 
+												|| ($p->ancfirst->Q_SYSTOLICBP < 90)
+												|| ($p->ancfirst->Q_DIASTOLICBP > 90)
+												|| ($p->ancfirst->Q_DIASTOLICBP < 60))){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Follow
+		foreach($p->ancfollow as $x){
 			if(isset($x->Q_SYSTOLICBP) && isset($x->Q_DIASTOLICBP)
 											&& (($x->Q_SYSTOLICBP > 120) 
 											|| ($x->Q_SYSTOLICBP < 90)
@@ -250,8 +328,12 @@ class RiskAssessment {
 		
 		$factor = 'Q_PALLORANEMIA';
 		$risk->risks[$factor] = false;
-		// from ANC 
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && ($p->ancfirst->{$factor} == 'pallor')){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Follow
+		foreach($p->ancfollow as $x){
 			if(isset($x->{$factor}) && ($x->{$factor} == 'pallor')){
 				$risk->risks[$factor] = true;
 			}
@@ -262,8 +344,12 @@ class RiskAssessment {
 		
 		$factor = 'Q_CARDIACPULSE';
 		$risk->risks[$factor] = false;
-		// from ANC
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && (($p->ancfirst->{$factor} >= 100) || ($p->ancfirst->{$factor} <= 50))){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Follow
+		foreach($p->ancfollow as $x){
 			if(isset($x->{$factor}) && (($x->{$factor} >= 100) || ($x->{$factor} <= 50))){
 				$risk->risks[$factor] = true;
 			}
@@ -274,8 +360,12 @@ class RiskAssessment {
 		
 		$factor = 'Q_PRESENTATION';
 		$risk->risks[$factor] = false;
-		// from ANC 
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && (($p->ancfirst->{$factor} == 'breech') || ($p->ancfirst->{$factor} == 'transverse'))){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Follow
+		foreach($p->ancfollow as $x){
 			if(isset($x->{$factor}) && (($x->{$factor} == 'breech') || ($x->{$factor} == 'transverse'))){
 				$risk->risks[$factor] = true;
 			}
@@ -286,8 +376,12 @@ class RiskAssessment {
 		
 		$factor = 'Q_FETALHEARTRATEAUDIBLE';
 		$risk->risks[$factor] = false;
-		// from ANC 
-		foreach($p->anc as $x){
+		// from ANC First
+		if(isset($p->ancfirst->{$factor}) && ($p->ancfirst->{$factor} == 'notaudible')){
+			$risk->risks[$factor] = true;
+		}
+		// from ANC Follow
+		foreach($p->ancfollow as $x){
 			if(isset($x->{$factor}) && ($x->{$factor} == 'notaudible')){
 				$risk->risks[$factor] = true;
 			}
@@ -366,8 +460,12 @@ class RiskAssessment {
 		// unavoidable risk
 		//if no other risks and first order birth
 		if($risk->count == 0){
-			// from ANC
-			foreach($p->anc as $x){
+			// from ANC First
+			if(isset($p->ancfirst->Q_GRAVIDA) && ($p->ancfirst->Q_GRAVIDA == 1)){
+				$risk->category = 'unavoidable';
+			}
+			// from Transfer
+			foreach($p->anctransfer as $x){
 				if(isset($x->Q_GRAVIDA) && ($x->Q_GRAVIDA == 1)){
 					$risk->category = 'unavoidable';
 				}
@@ -411,15 +509,16 @@ class RiskAssessment {
 		} else {
 			$hps = $API->getUserHealthPointPermissions(true);
 		}
+		
 		$sql = sprintf("SELECT COUNT(*) as riskcatcount, riskcategory
 						FROM cache_risk_category crc
 						INNER JOIN patientcurrent pc ON pc.hpcode = crc.hpcode AND pc.patid = crc.userid
 						INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
-							WHERE (hpcode IN (%s) 
-							OR visithpcode IN (%s) )",$API->getUserHealthPointPermissions(true),$API->getUserHealthPointPermissions(true));
+							WHERE (hpcode IN (".$API->getUserHealthPointPermissions(true).") 
+							OR visithpcode IN (".$API->getUserHealthPointPermissions(true).") )");
 		
-		$sql .= sprintf(" AND ( hpcode IN (%s)",$hps);
-		$sql .= sprintf(" OR visithpcode IN (%s))",$hps);
+		$sql .= " AND ( hpcode IN (".$hps.")";
+		$sql .= " OR visithpcode IN (".$hps."))";
 		
 		$sql .= ") cv ON cv.userid = crc.userid AND cv.hpcode = crc.hpcode" ;
 		$sql .= " WHERE pc.pcurrent = 1 OR pc.pcurrent IS NULL";
@@ -437,7 +536,7 @@ class RiskAssessment {
 		if(array_key_exists('hpcodes',$opts)){
 			$hps = $opts['hpcodes'];
 		} else {
-			$hps = $API->getUserHealthPointPermissions(true);
+			$hps = $API->getUserHealthPointPermissions();
 		}
 	
 		$sql = sprintf("SELECT crc.*,
@@ -447,7 +546,7 @@ class RiskAssessment {
 						INNER JOIN patientcurrent pc ON pc.hpcode = crc.hpcode AND pc.patid = crc.userid
 						INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 							WHERE (hpcode IN (%s) 
-							OR visithpcode IN (%s))",$API->getUserHealthPointPermissions(true),$API->getUserHealthPointPermissions(true));
+							OR visithpcode IN (%s))",$API->getUserHealthPointPermissions(),$API->getUserHealthPointPermissions());
 		$sql .= sprintf(" AND (hpcode IN (%s) OR visithpcode IN (%s))",$hps,$hps);
 		if ($API->getIgnoredHealthPoints() != ""){
 			$sql .= " AND  hpcode NOT IN (".$API->getIgnoredHealthPoints().")";

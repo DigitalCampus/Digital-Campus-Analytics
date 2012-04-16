@@ -488,8 +488,11 @@ class API {
 			} else {
 				// 2 month past the EDD (no delivery)
 				unset($edd);
-				if(count($pat->anc) > 0){
-					$edd = new DateTime($pat->anc[(count($pat->anc)-1)]->Q_EDD);
+				if(isset($pat->ancfirst)){
+					$edd = new DateTime($pat->ancfirst->Q_EDD);
+				}
+				if(count($pat->ancfollow) > 0){
+					$edd = new DateTime($pat->ancfollow[(count($pat->ancfollow)-1)]->Q_EDD);
 				}
 				if(isset($edd)){
 					$edd->add(new DateInterval('P2M'));
@@ -609,14 +612,18 @@ class API {
 	  	}
   		
 	  	// add protocol details
-		$pat->anc = $this->getPatientANC($opts);
+		$pat->ancfirst = $this->getPatientANCFirst($opts);
+		$pat->ancfollow = $this->getPatientANCFollow($opts); 
+		$pat->anctransfer = $this->getPatientANCTransfer($opts);
 		$pat->anclabtest= $this->getPatientANCLabTest($opts);
 		$pat->delivery = $this->getPatientDelivery($opts);
 		$pat->pnc = $this->getPatientPNC($opts);
 		
 		// if patient record has no protocols then assume invalid patientid/hpcode 
 		if($pat->regcomplete == false
-			&& count($pat->anc) == 0
+			&& $pat->ancfirst == null
+			&& count($pat->ancfollow) == 0
+			&& count($pat->anctransfer) == 0
 			&& count($pat->anclabtest) == 0
 			&& $pat->delivery == null
 			&& count($pat->pnc) == 0){
@@ -627,130 +634,282 @@ class API {
 	}
 	
 	
-	private function getPatientANC($opts=array()){
-		$sql = "SELECT p.Q_HEALTHPOINTID as patienthpcode,
-								hp.hpcode as protocolhpcode,
-								CONCAT(u.firstname,' ',u.lastname) as submittedname,
-								_URI,
-								Q_ABDOMINALPAIN,
-								Q_ABORTION,
-								Q_AGE,
-								Q_APPOINTMENTDATE,
-								Q_BABYWEIGHT,
-								Q_BEDNETS,
-								Q_BIRTHINTERVAL,
-								Q_BLEEDING,
-								Q_BLEEDINGPREVPREG,
-								Q_CARDIACPULSE,
-								Q_CONSENT,
-								Q_CSECTION,
-								Q_DELIVERYPLACE,
-								Q_DELIVERYPLAN,
-								Q_DIABETES,
-								Q_DIASTOLICBP,
-								Q_DRUGS,
-								Q_DRUGSDESCRIPTION,
-								Q_ECONOMICS,
-								Q_EDD,
-								Q_EDEMA,
-								Q_FAMILYPLAN,
-								Q_FATIGUE,
-								Q_FETALHEARTRATE24W,
-								Q_FETALHEARTRATEAUDIBLE,
-								Q_FEVER,
-								Q_FIRSTVISIT,
-								Q_FISTULA,
-								Q_FOLICACID,
-								Q_FUNDALHEIGHT,
-								Q_GESTATIONALAGE,
-								Q_GPSDATA_ACC,
-								Q_GPSDATA_ALT,
-								Q_GPSDATA_LAT,
-								Q_GPSDATA_LNG,
-								Q_GRAVIDA,
-								Q_HEADACHE,
-								Q_HEALTHPOINTID,
-								Q_HEIGHT,
-								Q_HIV,
-								Q_HIVTREATMENT,
-								Q_HYPERTENSION,
-								Q_IDCARD,
-								Q_INFANTDEATH,
-								Q_IRONGIVEN,
-								Q_IRONTABLETS,
-								Q_LIVEBIRTHS,
-								Q_LIVINGCHILDREN,
-								Q_LMP,
-								Q_LOCATION,
-								Q_MALARIA,
-								Q_MALPOSITION,
-								Q_MEBENDAZOL,
-								Q_NEWBORNDEATH,
-								Q_OTHERHEALTHISSUES,
-								Q_OTHERHEALTHPROBLEMS,
-								Q_OTHERPREVPREG,
-								Q_PALLORANEMIA,
-								Q_PARITY,
-								Q_PREECLAMPSIA,
-								Q_PREPOSTTERM,
-								Q_PRESENTATION,
-								Q_PROLONGEDLABOR,
-								Q_SOCIALSUPPORT,
-								Q_STILLBIRTHS,
-								Q_SYSTOLICBP,
-								Q_TETANUS,
-								Q_TRANSPORTATION,
-								Q_TT1,
-								Q_TT2,
-								Q_TUBERCULOSIS,
-								Q_TWIN,
-								Q_USERID,
-								Q_USERNAME,
-								Q_VACUUMDELIVERY,
-								Q_WEIGHT,
-								Q_YEAROFBIRTH,
-								Q_YOUNGESTCHILD,
-								_CREATION_DATE AS CREATEDON,
-								TODAY
-						FROM ".TABLE_ANC." p
-						INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
-						INNER JOIN healthpoint hp ON u.hpid = hp.hpid
-						WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' AND p.Q_USERID='".$opts['patid']."'";
+	
+	private function getPatientANCFirst($opts=array()){
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
+						hp.hpcode as protocolhpcode,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname,
+						_URI,
+						_CREATOR_URI_USER,
+						Q_ABDOMINALPAIN,
+						Q_ABORTION,
+						Q_AGE,
+						Q_APPOINTMENTDATE,
+						Q_BABYWEIGHT,
+						Q_BEDNETS,
+						Q_BIRTHINTERVAL,
+						Q_BLEEDING,
+						Q_BLEEDINGPREVPREG,
+						Q_CARDIACPULSE,
+						Q_CONSENT,
+						Q_CSECTION,
+						Q_DELIVERYPLACE,
+						Q_DELIVERYPLAN,
+						Q_DIABETES,
+						Q_DIASTOLICBP,
+						Q_DRUGS,
+						Q_DRUGSDESCRIPTION,
+						Q_ECONOMICS,
+						Q_EDD,
+						Q_EDEMA,
+						Q_FAMILYPLAN,
+						Q_FATIGUE,
+						Q_FETALHEARTRATE24W,
+						Q_FETALHEARTRATEAUDIBLE,
+						Q_FEVER,
+						Q_FISTULA,
+						Q_FOLICACID,
+						Q_FUNDALHEIGHT,
+						Q_GESTATIONALAGE,
+						Q_GPSDATA_ACC,
+						Q_GPSDATA_ALT,
+						Q_GPSDATA_LAT,
+						Q_GPSDATA_LNG,
+						Q_GRAVIDA,
+						Q_HEADACHE,
+						Q_HEALTHPOINTID,
+						Q_HEIGHT,
+						Q_HIV,
+						Q_HIVTREATMENT,
+						Q_HYPERTENSION,
+						Q_IDCARD,
+						Q_INFANTDEATH,
+						Q_IRONGIVEN,
+						Q_IRONTABLETS,
+						Q_LIVEBIRTHS,
+						Q_LIVINGCHILDREN,
+						Q_LMP,
+						Q_LOCATION,
+						Q_MALARIA,
+						Q_MALPOSITION,
+						Q_MEBENDAZOL,
+						Q_NEWBORNDEATH,
+						Q_OTHERHEALTHISSUES,
+						Q_OTHERHEALTHPROBLEMS,
+						Q_OTHERPREVPREG,
+						Q_PALLORANEMIA,
+						Q_PARITY,
+						Q_PREECLAMPSIA,
+						Q_PREPOSTTERM,
+						Q_PRESENTATION,
+						Q_PROLONGEDLABOR,
+						Q_SOCIALSUPPORT,
+						Q_STILLBIRTHS,
+						Q_SYSTOLICBP,
+						Q_TETANUS,
+						Q_TRANSPORTATION,
+						Q_TT1,
+						Q_TT2,
+						Q_TUBERCULOSIS,
+						Q_TWIN,
+						Q_USERID,
+						Q_VACUUMDELIVERY,
+						Q_WEIGHT,
+						Q_YEAROFBIRTH,
+						Q_YOUNGESTCHILD,
+						_CREATION_DATE AS CREATEDON,
+						TODAY
+				FROM ".TABLE_ANCFIRST." p
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
+				WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
 		// add permissions
-		$sql .= sprintf(" AND (p.Q_HEALTHPOINTID IN (%s) ",$this->getUserHealthPointPermissions(true));
-		$sql .= sprintf(" OR hp.hpcode IN (%s)) ",$this->getUserHealthPointPermissions(true));
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions()."))" ;
+		
+		$result = $this->runSql($sql);
+
+	  	while($pat = mysql_fetch_object($result)){
+	  		$pat->Q_FPMETHOD = array();
+	  		// get the Home applicances source
+	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCFIRST_FPMETHOD." WHERE _PARENT_AURI = '".$pat->_URI."'";
+	  		$appresult = $this->runSql($appsql);
+
+	  		while($app = mysql_fetch_object($appresult)){
+	  			array_push($pat->Q_FPMETHOD,$app->VALUE);
+	  		}
+	  		
+	  		$pat->Q_WHOATTENDED = array();
+	  		// get the Home applicances source
+	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCFIRST_ATTENDED ." WHERE _PARENT_AURI = '".$pat->_URI."'";
+	  		$appresult = $this->runSql($appsql);
+
+	  		while($app = mysql_fetch_object($appresult)){
+	  			array_push($pat->Q_WHOATTENDED,$app->VALUE);
+	  		}
+	  		return $pat;
+	  	}
+	}
+	
+	private function getPatientANCFollow($opts=array()){
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
+						hp.hpcode as protocolhpcode,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname,
+						_URI,
+						Q_ABDOMINALPAIN,
+						Q_AGE,
+						Q_APPOINTMENTDATE,
+						Q_BEDNETS,
+						Q_BLEEDING,
+						Q_CARDIACPULSE,
+						Q_CONSENT,
+						Q_DELIVERYPLAN,
+						Q_DIABETES,
+						Q_DIASTOLICBP,
+						Q_DRUGS,
+						Q_DRUGSDESCRIPTION,
+						Q_ECONOMICS,
+						Q_EDD,
+						Q_EDEMA,
+						Q_FATIGUE,
+						Q_FETALHEARTRATE24W,
+						Q_FETALHEARTRATEAUDIBLE,
+						Q_FEVER,
+						Q_FOLICACID,
+						Q_FOLLOWUPNO,
+						Q_FUNDALHEIGHT,
+						Q_GESTATIONALAGE,
+						Q_GPSDATA_ACC,
+						Q_GPSDATA_ALT,
+						Q_GPSDATA_LAT,
+						Q_GPSDATA_LNG,
+						Q_HEADACHE,
+						Q_HEALTHPOINTID,
+						Q_HEIGHT,
+						Q_HIV,
+						Q_HIVTREATMENT,
+						Q_HYPERTENSION,
+						Q_IDCARD,
+						Q_IODIZEDSALTS,
+						Q_IRONGIVEN,
+						Q_IRONTABLETS,
+						Q_LMP,
+						Q_LOCATION,
+						Q_MALARIA,
+						Q_MEBENDAZOL,
+						Q_OTHERHEALTHISSUES,
+						Q_OTHERHEALTHPROBLEMS,
+						Q_PALLORANEMIA,
+						Q_PRESENTATION,
+						Q_SOCIALSUPPORT,
+						Q_SYSTOLICBP,
+						Q_TETANUS,
+						Q_TRANSPORTATION,
+						Q_TT1,
+						Q_TT2,
+						Q_TUBERCULOSIS,
+						Q_USERID,
+						Q_WEIGHT,
+						Q_YEAROFBIRTH,
+						_CREATION_DATE AS CREATEDON,
+						TODAY
+				FROM ".TABLE_ANCFOLLOW." p
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
+				WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' AND p.Q_USERID='".$opts['patid']."'";
+		// add permissions
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		$sql .= " ORDER BY TODAY ASC";
 		
 		$result = $this->runSql($sql);
-		$protocols = array();
-		$count=0;
-		while($pat = mysql_fetch_object($result)){
-			
-			$pat->Q_FPMETHOD = array();
-			// get the Home applicances source
-			$appsql = "SELECT VALUE FROM ".TABLE_ANC_FPMETHOD." WHERE _PARENT_AURI = '".$pat->_URI."'";
-			$appresult = $this->runSql($appsql);
-			
-			while($app = mysql_fetch_object($appresult)){
-				array_push($pat->Q_FPMETHOD,$app->VALUE);
-			}
-			
-			$pat->Q_WHOATTENDED = array();
-			// get the Home applicances source
-			$appsql = "SELECT VALUE FROM ".TABLE_ANC_ATTENDED ." WHERE _PARENT_AURI = '".$pat->_URI."'";
-			$appresult = $this->runSql($appsql);
-			
-			while($app = mysql_fetch_object($appresult)){
-				array_push($pat->Q_WHOATTENDED,$app->VALUE);
-			}
-			
-			$protocols[$count] = $pat;
-			$count++;
-		}
+	    $protocols = array();
+	    $count=0;
+	  	while($pat = mysql_fetch_object($result)){
+	  		$protocols[$count] = $pat;
+	  		$count++;
+	  	}
 		
-		return $protocols;
+	  	return $protocols;
 	}
+	
+	private function getPatientANCTransfer($opts=array()){
+		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
+						hp.hpcode as protocolhpcode,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname,
+						_URI,
+						Q_ABORTION,
+						Q_AGE,
+						Q_BABYWEIGHT,
+						Q_BIRTHINTERVAL,
+						Q_BLEEDINGPREVPREG,
+						Q_CONSENT,
+						Q_CSECTION,
+						Q_DELIVERYPLACE,
+						Q_FAMILYPLAN,
+						Q_FISTULA,
+						Q_GPSDATA_ACC,
+						Q_GPSDATA_ALT,
+						Q_GPSDATA_LAT,
+						Q_GPSDATA_LNG,
+						Q_GRAVIDA,
+						Q_HEALTHPOINTID,
+						Q_IDCARD,
+						Q_INFANTDEATH,
+						Q_LIVEBIRTHS,
+						Q_LIVINGCHILDREN,
+						Q_LOCATION,
+						Q_MALPOSITION,
+						Q_NEWBORNDEATH,
+						Q_PARITY,
+						Q_PREECLAMPSIA,
+						Q_PREPOSTTERM,
+						Q_PROLONGEDLABOR,
+						Q_STILLBIRTHS,
+						Q_TWIN,
+						Q_USERID,
+						Q_VACUUMDELIVERY,
+						Q_YEAROFBIRTH,
+						Q_YOUNGESTCHILD,
+						_CREATION_DATE AS CREATEDON,
+						TODAY
+				FROM ".TABLE_ANCTRANSFER." p
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
+				WHERE p.Q_HEALTHPOINTID = '".$opts['hpcode']."' and p.Q_USERID='".$opts['patid']."'";
+		// add permissions
+		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
+		$sql .= " ORDER BY TODAY ASC";
+		
+		$result = $this->runSql($sql);
 
+	    $protocols = array();
+	    $count=0;
+	  	while($pat = mysql_fetch_object($result)){
+	  		
+	  		$pat->Q_FPMETHOD = array();
+	  		// get the Home applicances source
+	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCTRANSFER_FPMETHOD." WHERE _PARENT_AURI = '".$pat->_URI."'";
+	  		$appresult = $this->runSql($appsql); 
+
+	  		while($app = mysql_fetch_object($appresult)){
+	  			array_push($pat->Q_FPMETHOD,$app->VALUE);
+	  		}
+	  		
+	  		$pat->Q_WHOATTENDED = array();
+	  		// get the Home applicances source
+	  		$appsql = "SELECT VALUE FROM ".TABLE_ANCTRANSFER_ATTENDED ." WHERE _PARENT_AURI = '".$pat->_URI."'";
+	  		$appresult = $this->runSql($appsql); 
+	  		while($app = mysql_fetch_object($appresult)){
+	  			array_push($pat->Q_WHOATTENDED,$app->VALUE);
+	  		}
+	  		$protocols[$count] = $pat;
+	  		$count++;
+	  	}
+		
+	  	return $protocols;
+	}
 	
 	private function getPatientANCLabTest($opts=array()){
 		$sql = "SELECT 	p.Q_HEALTHPOINTID as patienthpcode,
@@ -1077,8 +1236,9 @@ class API {
 			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
 			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
 		}
-
-		// anc
+	
+		
+		// anc first
 		$sql .= " UNION
 				SELECT 
 					p._CREATION_DATE as datestamp,
@@ -1086,7 +1246,7 @@ class API {
 					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 					p.Q_HEALTHPOINTID as patienthpcode,
 					hp.hpcode as protocolhpcode,
-					'".PROTOCOL_ANC."' as protocol,
+					'".PROTOCOL_ANCFIRST."' as protocol,
 					CONCAT(u.firstname,' ',u.lastname) as submittedname,
 					u.userid,
 					p.Q_GPSDATA_LAT,
@@ -1095,7 +1255,34 @@ class API {
 					hp.locationlat,
 					hp.locationlng,
 					u.user_uri 
-				FROM ".TABLE_ANC." p 
+				FROM ".TABLE_ANCFIRST." p 
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
+		// follow ups
+		$sql .= " UNION
+				SELECT 
+					p._CREATION_DATE as datestamp,
+					p.Q_USERID,
+					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
+					p.Q_HEALTHPOINTID as patienthpcode,
+					hp.hpcode as protocolhpcode,
+					'".PROTOCOL_ANCFOLLOW."' as protocol,
+					CONCAT(u.firstname,' ',u.lastname) as submittedname,
+					u.userid,
+					p.Q_GPSDATA_LAT,
+					p.Q_GPSDATA_LNG,
+					p.Q_LOCATION,
+					hp.locationlat,
+					hp.locationlng,
+					u.user_uri 
+				FROM ".TABLE_ANCFOLLOW." p 
 				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
@@ -1133,7 +1320,33 @@ class API {
 			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
 			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
 		}
-
+		// transfer
+		$sql .= " UNION
+				SELECT
+					p._CREATION_DATE as datestamp,
+					p.Q_USERID,
+					CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
+					p.Q_HEALTHPOINTID as patienthpcode,
+					hp.hpcode as protocolhpcode,
+					'".PROTOCOL_ANCTRANSFER."' as protocol,
+					CONCAT(u.firstname,' ',u.lastname) as submittedname,
+					u.userid,
+					p.Q_GPSDATA_LAT,
+					p.Q_GPSDATA_LNG,
+					p.Q_LOCATION,
+					hp.locationlat,
+					hp.locationlng,
+					u.user_uri 
+				FROM ".TABLE_ANCTRANSFER." p 
+				LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
+				INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
 		
 		//delivery
 		$sql .= " UNION
@@ -1193,10 +1406,10 @@ class API {
 		
 		
 		$sql .= ") a ";
-		$sql .= sprintf("WHERE (a.patienthpcode IN (%s) ", $this->getUserHealthPointPermissions(true));
-		$sql .= sprintf("OR a.protocolhpcode IN (%s)) ",$this->getUserHealthPointPermissions());
+		$sql .= "WHERE (a.patienthpcode IN (".$this->getUserHealthPointPermissions().") " ;
+		$sql .= "OR a.protocolhpcode IN (".$this->getUserHealthPointPermissions().")) " ;
 		if($this->getIgnoredHealthPoints() != ""){
-			$sql .= sprintf(" AND a.patienthpcode NOT IN (%s)",$this->getIgnoredHealthPoints());
+			$sql .= " AND a.patienthpcode NOT IN (".$this->getIgnoredHealthPoints().")";
 		}
 		if(array_key_exists('hpcode',$opts)){
 			$sql .= " AND  (a.patienthpcode = ".$opts['hpcode'];
@@ -1299,7 +1512,8 @@ class API {
 		$submitted = new stdClass();
 		
 		$submitted->count['protocol.total'] = 0;
-		$submitted->count[PROTOCOL_ANC] = 0;
+		$submitted->count[PROTOCOL_ANCFIRST] = 0;
+		$submitted->count[PROTOCOL_ANCFOLLOW] = 0;
 		$submitted->count[PROTOCOL_DELIVERY] = 0;
 		$submitted->count[PROTOCOL_PNC] = 0;
 		while($row = mysql_fetch_object($countres)){
@@ -1310,7 +1524,8 @@ class API {
 		//add in the targets
 		if(array_key_exists('nohps',$opts)){
 			$submitted->target['protocol.total'] = $CONFIG->props['target.protocols']*$opts['nohps'];
-			$submitted->target[PROTOCOL_ANC] = $CONFIG->props['target.ancsubmitted']*$opts['nohps'];
+			$submitted->target[PROTOCOL_ANCFIRST] = $CONFIG->props['target.anc1submitted']*$opts['nohps'];
+			$submitted->target[PROTOCOL_ANCFOLLOW] = $CONFIG->props['target.ancfollowsubmitted']*$opts['nohps'];
 			$submitted->target[PROTOCOL_DELIVERY] = $CONFIG->props['target.deliverysubmitted']*$opts['nohps'];
 			$submitted->target[PROTOCOL_PNC] = $CONFIG->props['target.pncsubmitted']*$opts['nohps'];
 		}
@@ -1385,13 +1600,21 @@ class API {
 
 			$edd = "";
 			
-			// based on ANC Follow up are they due for another 
-			if(count($patient->anc)>0 && !isset($patient->delivery) && count($patient->pnc)==0){
-				//get the most recent ANC follow
-				if($patient->anc[count($patient->anc)-1]->Q_APPOINTMENTDATE != ""){
-					$this->cacheAddTask($userid, $hpcode, $patient->anc[count($patient->anc)-1]->Q_APPOINTMENTDATE,PROTOCOL_ANC);
+			// based on ANC First, are they due for ANC follow up 
+			if(isset($patient->ancfirst) && count($patient->ancfollow)==0 && !isset($patient->delivery) && count($patient->pnc)==0){
+				if($patient->ancfirst->Q_APPOINTMENTDATE != ""){
+					$this->cacheAddTask($userid, $hpcode, $patient->ancfirst->Q_APPOINTMENTDATE,PROTOCOL_ANCFOLLOW);
 				}
-				$edd = $patient->anc[count($patient->anc)-1]->Q_EDD;
+				$edd = $patient->ancfirst->Q_EDD;
+			}
+			
+			// based on ANC Follow up are they due for another 
+			if(count($patient->ancfollow)>0 && !isset($patient->delivery) && count($patient->pnc)==0){
+				//get the most recent ANC follow
+				if($patient->ancfollow[count($patient->ancfollow)-1]->Q_APPOINTMENTDATE != ""){
+					$this->cacheAddTask($userid, $hpcode, $patient->ancfollow[count($patient->ancfollow)-1]->Q_APPOINTMENTDATE,PROTOCOL_ANCFOLLOW);
+				}
+				$edd = $patient->ancfollow[count($patient->ancfollow)-1]->Q_EDD;
 			}
 			
 			// get their most recent EDD to enter delivery date 
@@ -1399,8 +1622,8 @@ class API {
 				$this->cacheAddTask($userid, $hpcode, $edd, PROTOCOL_DELIVERY);
 				
 				// if they are due for Lab test
-				if(!isset($patient->labtest) && count($patient->anc)>0){
-					$date = new DateTime($patient->anc[count($patient->anc)-1]->CREATEDON);
+				if(!isset($patient->labtest) && isset($patient->ancfirst)){
+					$date = new DateTime($patient->ancfirst->CREATEDON);
 					$date->add(new DateInterval('P4M'));
 				
 					//if this date is greater than the delivery, make it the day before delivery

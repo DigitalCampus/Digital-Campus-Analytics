@@ -63,12 +63,28 @@ if(!$patient->regcomplete){
 	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode, PROTOCOL_REGISTRATION, getstring(PROTOCOL_REGISTRATION));
 }
 printf(" | ");
-if(count($patient->anc)==0){
-	echo getstring(PROTOCOL_ANC);
-} else if ($protocol == PROTOCOL_ANC){
-	echo "<span class='selected'>".getstring(PROTOCOL_ANC)."</span>"; 
+if(!isset($patient->ancfirst)){
+	echo getstring(PROTOCOL_ANCFIRST);
+} else if ($protocol == PROTOCOL_ANCFIRST){
+	echo "<span class='selected'>".getstring(PROTOCOL_ANCFIRST)."</span>";
 } else {
-	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_ANC,getstring(PROTOCOL_ANC));
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_ANCFIRST, getstring(PROTOCOL_ANCFIRST));
+}
+printf(" | ");
+if(count($patient->ancfollow)==0){
+	echo getstring(PROTOCOL_ANCFOLLOW);
+} else if ($protocol == PROTOCOL_ANCFOLLOW){
+	echo "<span class='selected'>".getstring(PROTOCOL_ANCFOLLOW)."</span>"; 
+} else {
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_ANCFOLLOW,getstring(PROTOCOL_ANCFOLLOW));
+}
+printf(" | ");
+if(count($patient->anctransfer)==0){
+	echo getstring(PROTOCOL_ANCTRANSFER);
+} else if ($protocol == PROTOCOL_ANCTRANSFER){
+	echo "<span class='selected'>".getstring(PROTOCOL_ANCTRANSFER)."</span>"; 
+} else {
+	printf("<a href='?patientid=%s&hpcode=%s&protocol=%s'>%s</a>",$patientid,$hpcode,PROTOCOL_ANCTRANSFER,getstring(PROTOCOL_ANCTRANSFER));
 }
 printf(" | ");
 if(count($patient->anclabtest)==0){
@@ -103,12 +119,27 @@ if ($patient->regcomplete && $protocol == PROTOCOL_REGISTRATION){
 }
 
 /*
- * ANC 
+ * ANC First Visit Procotol
  */
-if ($patient->anc && $protocol==PROTOCOL_ANC){
-	$anc = $patient->anc;
-	include('includes/patient/anc.php');
-}  
+if ($patient->ancfirst && $protocol==PROTOCOL_ANCFIRST){
+	include_once('includes/patient/ancfirst.php');
+} 
+
+/*
+ * ANC follow ups
+ */
+if ($patient->ancfollow && $protocol==PROTOCOL_ANCFOLLOW){
+	$ancfollow = $patient->ancfollow;
+	include('includes/patient/ancfollow.php');
+} 
+
+/*
+ * ANC Transfers
+ */
+if ($patient->anctransfer && $protocol==PROTOCOL_ANCTRANSFER){
+	$anctransfer = $patient->anctransfer;
+	include('includes/patient/anctransfer.php');
+} 
 
 /*
  * ANC Lab Tests

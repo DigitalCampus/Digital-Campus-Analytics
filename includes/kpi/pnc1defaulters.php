@@ -80,7 +80,7 @@ $compare = $API->getPNC1Defaulters($compareopts);
 			displayHealthPointSelectList($compareopts['hpcodes']);
 		?>
 	</select>
-	<input type="hidden" name="stat" value="pnc1defaulters">
+	<input type="hidden" name="kpi" value="pnc1defaulters">
 	<input type="submit" name="submit" value="compare"/></p>
 </form>
 </div>

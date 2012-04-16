@@ -22,14 +22,23 @@ class DataCheck {
 	function findUnregistered($opts=array()){
 		global $API;
 		$report = array();
+		// unregistered from ancfirst
 		$sql = "SELECT * FROM (";
-		
-		//unregistered from ANC
-		$sql .= " SELECT p.Q_HEALTHPOINTID as patienthpcode, 
+		$sql .= "SELECT p.Q_HEALTHPOINTID as patienthpcode,
 							p.Q_USERID,
-							'".PROTOCOL_ANC."' as protocol,
+							'".PROTOCOL_ANCFIRST."' as protocol,
 							p._CREATOR_URI_USER
-					FROM ".TABLE_ANC." p
+					FROM ".TABLE_ANCFIRST." p
+					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
+					WHERE r._URI is null ";
+	
+		//unregistered from ancfollow
+		$sql .= " UNION
+					SELECT p.Q_HEALTHPOINTID as patienthpcode, 
+							p.Q_USERID,
+							'".PROTOCOL_ANCFOLLOW."' as protocol,
+							p._CREATOR_URI_USER
+					FROM ".TABLE_ANCFOLLOW." p
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
 					WHERE r._URI is null";
 	
@@ -40,6 +49,16 @@ class DataCheck {
 							p._CREATOR_URI_USER
 					FROM ".TABLE_ANCLABTEST." p
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID)  
+					WHERE r._URI is null";
+	
+		// unregistered from anctransfer
+		$sql .= " UNION
+					SELECT p.Q_HEALTHPOINTID as patienthpcode, 
+							p.Q_USERID,
+							'".PROTOCOL_ANCTRANSFER."' as protocol,
+							p._CREATOR_URI_USER
+					FROM ".TABLE_ANCTRANSFER." p
+					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
 					WHERE r._URI is null";
 	
 		// unregistered from delivery
@@ -120,14 +139,27 @@ class DataCheck {
 					i.Q_HEALTHPOINTID, 
 					i.Q_USERID
 				HAVING count(i._URI)>1";
+
+		
+		// duplicate ancfirst
+		$sql .= " UNION
+					SELECT 	i.Q_HEALTHPOINTID as patienthpcode, 
+							i.Q_USERID ,
+							'".PROTOCOL_ANCFIRST."' as protocol,
+							i._CREATOR_URI_USER
+					FROM ".TABLE_ANCFIRST." i
+					GROUP BY 
+						i.Q_HEALTHPOINTID, 
+						i.Q_USERID
+					HAVING count(i._URI)>1";
 	
-		// duplicate ANC
+		// duplicate follow up
 		$sql .= " UNION
 					SELECT 	i.Q_HEALTHPOINTID as patienthpcode,  
 							i.Q_USERID ,
-							'".PROTOCOL_ANC."' as protocol,
+							'".PROTOCOL_ANCFOLLOW."' as protocol,
 							i._CREATOR_URI_USER
-					FROM ".TABLE_ANC." i
+					FROM ".TABLE_ANCFOLLOW." i
 					GROUP BY 
 						i.Q_HEALTHPOINTID, 
 						i.Q_USERID,
@@ -147,6 +179,19 @@ class DataCheck {
 						i.TODAY
 					HAVING count(i._URI)>1";
 		
+	
+		// duplicate transfer
+		$sql .= " UNION
+					SELECT 	i.Q_HEALTHPOINTID as patienthpcode, 
+							i.Q_USERID ,
+							'".PROTOCOL_ANCTRANSFER."' as protocol,
+							i._CREATOR_URI_USER
+					FROM ".TABLE_ANCTRANSFER." i
+					GROUP BY 
+						i.Q_HEALTHPOINTID, 
+						i.Q_USERID,
+						i.TODAY
+					HAVING count(i._URI)>1";
 	
 		// duplicate delivery
 		$sql .= " UNION
@@ -199,10 +244,20 @@ class DataCheck {
 			if(isset($p->Q_AGE)){
 				$age[$p->Q_AGE] = PROTOCOL_REGISTRATION;
 			}
-			//anc
-			foreach($p->anc as $x){
+			// first
+			if(isset($p->ancfirst->Q_AGE)){
+				$age[$p->ancfirst->Q_AGE] = PROTOCOL_ANCFIRST;
+			}
+			//follow
+			foreach($p->ancfollow as $x){
 				if(isset($x->Q_AGE)){
-					$age[$x->Q_AGE] = PROTOCOL_ANC;
+					$age[$x->Q_AGE] = PROTOCOL_ANCFOLLOW;
+				}
+			}
+			//xfer
+			foreach($p->anctransfer as $x){
+				if(isset($x->Q_AGE)){
+					$age[$x->Q_AGE] = PROTOCOL_ANCTRANSFER;
 				}
 			}
 			//lab
@@ -228,10 +283,20 @@ class DataCheck {
 			if(isset($p->Q_YEAROFBIRTH)){
 				$yob[$p->Q_YEAROFBIRTH] = PROTOCOL_REGISTRATION;
 			}
-			// ANC
-			foreach($p->anc as $x){
+			// first
+			if(isset($p->ancfirst->Q_YEAROFBIRTH)){
+				$yob[$p->ancfirst->Q_YEAROFBIRTH] = PROTOCOL_ANCFIRST;
+			}
+			//follow
+			foreach($p->ancfollow as $x){
 				if(isset($x->Q_YEAROFBIRTH)){
-					$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_ANC;
+					$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_ANCFOLLOW;
+				}
+			}
+			//xfer
+			foreach($p->anctransfer as $x){
+				if(isset($x->Q_YEAROFBIRTH)){
+					$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_ANCTRANSFER;
 				}
 			}
 			//lab
@@ -264,6 +329,43 @@ class DataCheck {
 		return $report;
 	}
 	
+	function missingANCFirst($opts=array()){
+		global $API;
+		$report = array();
+		
+		$sql = sprintf("SELECT 
+					cv.hpcode as patienthpcode,
+					cv.visithpcode as protocolhpcode,
+					cv.userid,
+					cv.protocol,
+					CONCAT(u.firstname,' ',u.lastname) as submittedname,
+					cv.visitdate as datestamp
+		 		FROM cache_visit cv
+				LEFT OUTER JOIN (SELECT * FROM cache_visit WHERE protocol='%s') cvfirst ON cv.userid = cvfirst.userid AND cv.hpcode = cvfirst.hpcode
+				INNER JOIN user u ON cv.user_uri = u.user_uri
+				WHERE (cv.protocol='%s' OR cv.protocol='%s')
+				AND cvfirst.pathpid is null",PROTOCOL_ANCFIRST,PROTOCOL_REGISTRATION,PROTOCOL_ANCFOLLOW);
+		$sql .= " AND (cv.hpcode IN (".$API->getUserHealthPointPermissions(true).")" ;
+		$sql .= " OR cv.visithpcode IN (".$API->getUserHealthPointPermissions(true).")) " ;
+		if($API->getIgnoredHealthPoints() != ""){
+			$sql .= " AND cv.hpcode NOT IN (".$API->getIgnoredHealthPoints().")";
+		}
+		if(array_key_exists('hpcodes',$opts)){
+			$sql .= " AND  (cv.hpcode IN ( ".$opts['hpcodes'].")";
+			$sql .= " OR cv.visithpcode IN (".$opts['hpcodes']."))";
+		}
+
+		$sql .= " ORDER BY u.firstname, u.lastname ASC";
+		
+		$result = $API->runSql($sql);
+		if(!$result){
+			return;
+		}
+		while($row = mysql_fetch_object($result)){
+			array_push($report,$row);
+		}
+		return $report;
+	}
 	
 	function updateCache(){
 		global $API;
