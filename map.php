@@ -1,6 +1,4 @@
 <?php
-
-die;
 include_once "config.php";
 $PAGE = "map";
 $BODY_ATT = 'onload="initialize()" onunload="GUnload()"';
@@ -99,7 +97,7 @@ $dayopts = Array(7,14,31);
 				
 				  		<?php 
 	  							break;
-	  						case getString('protocol.anc'):
+	  						case getString('protocol.ancfirst'):
 	  							?>
 				      	var marker = new google.maps.Marker({
 				      	      position: new google.maps.LatLng(<?php echo $gpslat.",".$gpslng; ?>),
@@ -110,7 +108,28 @@ $dayopts = Array(7,14,31);
 							
 				  		<?php 
 	  							break;
-	  						
+	  						case getString('protocol.ancfollow'):
+  						?>
+  									var marker = new google.maps.Marker({
+  										position: new google.maps.LatLng(<?php echo $gpslat.",".$gpslng; ?>),
+  										title:"<?php echo $s->patientname; ?>",
+  										map: map,
+  										icon: '<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol3.png'
+  									});
+  														
+  						<?php 
+  								break;
+  							case getString('protocol.anctransfer'):
+  									?>
+  								  	var marker = new google.maps.Marker({
+  								  		position: new google.maps.LatLng(<?php echo $gpslat.",".$gpslng; ?>),
+  								  		title:"<?php echo $s->patientname; ?>",
+  								  		map: map,
+  								  		icon: '<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol4.png'
+  								  	});
+  								  														
+  						<?php 
+  								break;
   							case getString('protocol.anclabtest'):
   									?>
   								  	var marker = new google.maps.Marker({
@@ -145,7 +164,9 @@ $dayopts = Array(7,14,31);
 		Legend:<br/>
 		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/hospital-building.png"/> <?php echo getString('map.healthpost');?><br/>
 		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol1.png"/> <?php echo getString('protocol.registration');?><br/>
-		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol2.png"/> <?php echo getString('protocol.anc');?><br/>
+		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol2.png"/> <?php echo getString('protocol.ancfirst');?><br/>
+		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol3.png"/> <?php echo getString('protocol.ancfollow');?><br/>
+		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol4.png"/> <?php echo getString('protocol.anctransfer');?><br/>
 		<img align="center" src="<?php echo $CONFIG->homeAddress; ?>images/mapicons/protocol5.png"/> <?php echo getString('protocol.anclabtest');?><br/>
 	</div>
 <?php 
