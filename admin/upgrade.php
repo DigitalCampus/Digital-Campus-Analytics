@@ -293,16 +293,6 @@ if ($currentDBversion < 14){
 }
 
 
-if ($currentDBversion < 15){
-	$sql = "INSERT INTO `properties` (`propname`, `propvalue`, `propinfo`) VALUES
-					('target.ancsubmitted', '18', 'Target number of ANC visits submitted per health post per month')";
-	$API->runSql($sql);
-	
-	//now update the db version prop
-	$API->setSystemProperty('database.version','15');
-	echo "Upgraded to version 15\n";
-}
-
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";

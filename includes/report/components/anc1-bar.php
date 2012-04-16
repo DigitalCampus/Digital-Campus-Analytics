@@ -9,6 +9,7 @@ foreach($cohort as $c){
 	$opts=array('startdate'=>$report->start,'enddate'=>$report->end,'hpcodes'=>$c->hpcode,'limit'=>'0');
 	$nondefaulters = $API->getANC1Defaulters($opts);
 	$summary[$i]->count = $nondefaulters[0]->nondefaulters;
+	//print_r($submitted);
 	$i++;
 }
 ?>
@@ -23,11 +24,11 @@ foreach($cohort as $c){
         data.addColumn('number', 'Percent non-defaulters');
         data.addColumn('number', 'Target');
 		<?php 
-			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc']);
+			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc1']);
 			foreach($summary as $s){
-				printf("data.addRow(['%s',%d,%d]);",displayHealthPointName($s->hpcode),$s->count,$CONFIG->props['target.anc']);	
+				printf("data.addRow(['%s',%d,%d]);",displayHealthPointName($s->hpcode),$s->count,$CONFIG->props['target.anc1']);	
 			}
-			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc']);
+			printf("data.addRow(['%s',%d,%d]);",'',0,$CONFIG->props['target.anc1']);
 		?>
 		
         var options = {
