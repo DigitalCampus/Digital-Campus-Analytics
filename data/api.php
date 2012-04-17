@@ -1260,7 +1260,7 @@ class API {
 			$start = DEFAULT_START;
 		}
 	
-		$sql = "SELECT DISTINCT	cv.visitdate as datestamp,
+		$sql = "SELECT cv.visitdate as datestamp,
 							cv.userid AS Q_USERID,
 							CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
 							cv.hpcode as patienthpcode,
@@ -1269,7 +1269,7 @@ class API {
 							CONCAT(u.firstname,' ',u.lastname) as submittedname,
 							cv.user_uri 
 					FROM cache_visit cv 
-					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = cv.userid AND r.Q_HEALTHPOINTID = cv.hpcode)
+					INNER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = cv.userid AND r.Q_HEALTHPOINTID = cv.hpcode)
 					INNER JOIN user u ON cv.user_uri = u.user_uri 
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
 		$sql .= " WHERE 1 = 1";
