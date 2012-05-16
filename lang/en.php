@@ -41,10 +41,18 @@ $LANG['day.5'] = 'Fri';
 $LANG['day.6'] = 'Sat';
 $LANG['day.7'] = 'Sun';
 
+
 $LANG['district.id.1'] = 'Hinatalo wajerat District';
 $LANG['district.id.2'] = 'Kilteawelaelo District';
 $LANG['district.id.3'] = 'Testing';
 $LANG['district.id.4'] = 'Mekelle';
+
+/*
+$LANG['district.id.1'] = 'District 1';
+$LANG['district.id.2'] = 'District 2';
+$LANG['district.id.3'] = 'District 3';
+$LANG['district.id.4'] = 'District 4';
+*/
 
 $LANG['dob'] = 'Date of birth';
 $LANG['education'] = 'Education Level';
@@ -89,6 +97,28 @@ $LANG['healthpoint.id.50004'] = "Hiwane health centre";
 $LANG['healthpoint.id.50005'] = "Negash health centre";
 $LANG['healthpoint.id.70001'] = "Ayder Referal Hospital";
 $LANG['healthpoint.id.9999'] = "Practice only";
+
+
+/*
+$LANG['healthpoint.id.0'] = "Health post 1";
+$LANG['healthpoint.id.1000'] = "Health post 2";
+$LANG['healthpoint.id.1001'] = "Health post 3";
+$LANG['healthpoint.id.1002'] = "Health post 4";
+$LANG['healthpoint.id.1003'] = "Health post 5";
+$LANG['healthpoint.id.1004'] = "Health post 6";
+$LANG['healthpoint.id.1005'] = "Health post 7";
+$LANG['healthpoint.id.1006'] = "Health post 8";
+$LANG['healthpoint.id.1007'] = "Health post 9";
+$LANG['healthpoint.id.1008'] = "Health post 10";
+$LANG['healthpoint.id.1009'] = "Health post 11";
+$LANG['healthpoint.id.50001'] = "Health centre 1";
+$LANG['healthpoint.id.50002'] = "Health centre 2";
+$LANG['healthpoint.id.50003'] = "Health centre 3";
+$LANG['healthpoint.id.50004'] = "Health centre 4";
+$LANG['healthpoint.id.50005'] = "Health centre 5";
+$LANG['healthpoint.id.70001'] = "Health centre 6";
+$LANG['healthpoint.id.9999'] = "Health post 12";
+*/
 
 $LANG['hpcode'] = 'Health Point Code';
 $LANG['kpi.form.healthpost'] = 'Select location';
