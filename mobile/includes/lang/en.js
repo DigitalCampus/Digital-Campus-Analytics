@@ -61,8 +61,7 @@ lang['EN']['kpi.heading.previousmonth'] = 'Previous month';
 lang['EN']['kpi.heading.target'] = 'Target';
 lang['EN']['kpi.heading.thismonth'] = 'Past month';
 
-lang['EN']['kpi_ancfirst_submitted'] = 'ANC1 visits';
-lang['EN']['kpi_ancfollow_submitted'] = 'ANC Follow Up visits';
+lang['EN']['kpi_anc_submitted'] = 'ANC visits';
 lang['EN']['kpi_delivery_submitted'] = 'Delivery visits';
 lang['EN']['kpi_pnc_submitted'] = 'PNC visits';
 lang['EN']['kpi_total_submitted'] = 'Total visits';
@@ -86,10 +85,8 @@ lang['EN']['page_title_overdue'] = 'Overdue';
 lang['EN']['page_title_risk'] = 'Risk Distribution';
 lang['EN']['page_title_tasks'] = 'Tasks Due';
 
-lang['EN']['protocol.ancfirst'] = 'ANC First';
-lang['EN']['protocol.ancfollow'] = 'ANC Follow Up';
+lang['EN']['protocol.anc'] = 'ANC';
 lang['EN']['protocol.anclabtest'] = 'ANC Lab Test';
-lang['EN']['protocol.anctransfer'] = 'ANC Transfer';
 lang['EN']['protocol.delivery'] = 'Delivery';
 lang['EN']['protocol.pnc'] = 'PNC';
 lang['EN']['protocol.registration'] = 'Registration';

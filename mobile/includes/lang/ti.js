@@ -8,7 +8,7 @@ lang['TI']['ethio.day.4'] = 'ሓሙስ';
 lang['TI']['ethio.day.5'] = 'ዓርቢ';
 lang['TI']['ethio.day.6'] = 'ቀዳም';
 
-
+lang['TI']['district.id.all'] = 'All';
 lang['TI']['district.id.1'] = 'ሕንጣሎዋጅራት District';
 lang['TI']['district.id.2'] = 'ክልተኣወላዕሎ District';
 lang['TI']['district.id.3'] = 'Testing';
@@ -48,12 +48,30 @@ lang['TI']['healthpoint.id.50005'] = "ነጋሽ ጥዕና ጣብያ";
 lang['TI']['healthpoint.id.70001'] = "Ayder Referal Hospital";
 lang['TI']['healthpoint.id.9999'] = "ልምምድ";
 
+lang['TI']['info_notavailable_kpis'] = "Statistics not currently available";
+lang['TI']['info_timeout_kpis'] = "Timeout in loading performance indicators, please try again later.";
+lang['TI']['info_notavailable_tasks'] = "Tasks not currently available";
+lang['TI']['info_timeout_tasks'] = "Timeout in loading tasks, please try again later.";
+lang['TI']['info_notavailable_deliveries'] = "Deliveries not currently available";
+lang['TI']['info_timeout_deliveries'] = "Timeout in loading deliveries, please try again later.";
+lang['TI']['info_notavailable_overdue'] = "Overdue tasks not currently available";
+lang['TI']['info_timeout_overdue'] = "Timeout in loading overdue tasks, please try again later.";
+
+lang['TI']['kpi.heading.previousmonth'] = 'Previous month';
+lang['TI']['kpi.heading.target'] = 'Target';
+lang['TI']['kpi.heading.thismonth'] = 'Past month';
+
+lang['TI']['kpi_anc_submitted'] = 'ANC visits';
+lang['TI']['kpi_delivery_submitted'] = 'Delivery visits';
+lang['TI']['kpi_pnc_submitted'] = 'PNC visits';
+lang['TI']['kpi_total_submitted'] = 'Total visits';
+
 lang['TI']['login_username'] = 'Username:';
 lang['TI']['login_password'] = 'Password:';
 
 lang['TI']['logout'] = 'Logout';
 
-lang['TI']['mobile_app_title'] = 'Health Analytics in';
+lang['TI']['mobile_app_title'] = 'Health Analytics';
 
 lang['TI']['menu_deliveries'] = 'Deliveries';
 lang['TI']['menu_kpi'] = 'Statistics';
@@ -61,9 +79,10 @@ lang['TI']['menu_overdue'] = 'Overdue';
 lang['TI']['menu_tasks'] = 'Tasks';
 
 lang['TI']['page_title_deliveries'] = 'Deliveries';
-lang['TI']['page_title_kpis'] = 'Statistics';
+lang['TI']['page_title_kpis'] = 'Performance Indicators';
 lang['TI']['page_title_login'] = 'Login';
 lang['TI']['page_title_overdue'] = 'Overdue';
+lang['TI']['page_title_risk'] = 'Risk Distribution';
 lang['TI']['page_title_tasks'] = 'Tasks Due';
 
 lang['TI']['protocol.anc'] = 'ANC';
@@ -71,6 +90,7 @@ lang['TI']['protocol.anclabtest'] = 'ላብራቶሪ ምርመራ';
 lang['TI']['protocol.delivery'] = 'ወሊድ';
 lang['TI']['protocol.pnc'] = 'ክትትል ድሕሪ ወሊድ';
 lang['TI']['protocol.registration'] = 'ምዝገባ';
+lang['TI']['protocol.total'] = 'Total';
 
 lang['TI']['risk_multiple'] = 'ክልተን ልዕሊኡን ምስ ጥንሲ ዝተዛመዱ ምልክታት ልዑል ሓደጋ/ ስግኣት ኣለዉ';
 lang['TI']['risk_none'] = 'ምስ ጥንሲ ዝተዛመደ ምልክት ልዑል ሓደጋ/ ስግኣት የለን';

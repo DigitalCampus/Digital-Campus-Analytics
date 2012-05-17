@@ -920,7 +920,6 @@ class API {
 							Q_CONSENT,
 							Q_DELIVERYDATE,
 							Q_DELIVERYMODE,
-							Q_DELIVERYNOBABIES,
 							Q_DELIVERYSITE,
 							Q_DIASTOLICBP,
 							Q_DRUGS,
