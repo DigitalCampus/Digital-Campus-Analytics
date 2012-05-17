@@ -25,9 +25,6 @@ $LANG['datacheck.duplicate.reg.title'] = 'Duplicate Patient Registrations';
 $LANG['datacheck.missing.info'] = 'Protocols without preceeding protocols';
 $LANG['datacheck.missing.none'] = 'There are no missing protocols';
 $LANG['datacheck.missing.title'] = 'Missing Protocols';
-$LANG['datacheck.missing.ancfirst.info'] = 'Registration or ANC Follow Up protocols without an ANC First visit';
-$LANG['datacheck.missing.ancfirst.none'] = 'There are no missing ANC first protocols';
-$LANG['datacheck.missing.ancfirst.title'] = 'Missing ANC First visits';
 $LANG['datacheck.unregistered.info'] = 'Users who have had protocols submitted but no registration form';
 $LANG['datacheck.unregistered.none'] = 'All users have been registered';
 $LANG['datacheck.unregistered.title'] = 'Unregistered Users';
@@ -41,18 +38,10 @@ $LANG['day.5'] = 'Fri';
 $LANG['day.6'] = 'Sat';
 $LANG['day.7'] = 'Sun';
 
-
 $LANG['district.id.1'] = 'Hinatalo wajerat District';
 $LANG['district.id.2'] = 'Kilteawelaelo District';
 $LANG['district.id.3'] = 'Testing';
 $LANG['district.id.4'] = 'Mekelle';
-
-/*
-$LANG['district.id.1'] = 'District 1';
-$LANG['district.id.2'] = 'District 2';
-$LANG['district.id.3'] = 'District 3';
-$LANG['district.id.4'] = 'District 4';
-*/
 
 $LANG['dob'] = 'Date of birth';
 $LANG['education'] = 'Education Level';
@@ -98,28 +87,6 @@ $LANG['healthpoint.id.50005'] = "Negash health centre";
 $LANG['healthpoint.id.70001'] = "Ayder Referal Hospital";
 $LANG['healthpoint.id.9999'] = "Practice only";
 
-
-/*
-$LANG['healthpoint.id.0'] = "Health post 1";
-$LANG['healthpoint.id.1000'] = "Health post 2";
-$LANG['healthpoint.id.1001'] = "Health post 3";
-$LANG['healthpoint.id.1002'] = "Health post 4";
-$LANG['healthpoint.id.1003'] = "Health post 5";
-$LANG['healthpoint.id.1004'] = "Health post 6";
-$LANG['healthpoint.id.1005'] = "Health post 7";
-$LANG['healthpoint.id.1006'] = "Health post 8";
-$LANG['healthpoint.id.1007'] = "Health post 9";
-$LANG['healthpoint.id.1008'] = "Health post 10";
-$LANG['healthpoint.id.1009'] = "Health post 11";
-$LANG['healthpoint.id.50001'] = "Health centre 1";
-$LANG['healthpoint.id.50002'] = "Health centre 2";
-$LANG['healthpoint.id.50003'] = "Health centre 3";
-$LANG['healthpoint.id.50004'] = "Health centre 4";
-$LANG['healthpoint.id.50005'] = "Health centre 5";
-$LANG['healthpoint.id.70001'] = "Health centre 6";
-$LANG['healthpoint.id.9999'] = "Health post 12";
-*/
-
 $LANG['hpcode'] = 'Health Point Code';
 $LANG['kpi.form.healthpost'] = 'Select location';
 $LANG['kpi.form.searchbtn'] = 'Go';
@@ -140,7 +107,7 @@ $LANG['menu.map'] = 'Map';
 $LANG['menu.patient'] = 'Patient Manager';
 $LANG['menu.report'] = 'Reports';
 $LANG['menu.stats'] = 'Statistics';
-$LANG['menu.submitted'] = 'Submitted Protocols';
+$LANG['menu.submitted'] = 'Submitted';
 
 $LANG['mobile.app.name'] = 'Health<br/>Analytics';
 $LANG['mobile.login.title'] = 'Login';
@@ -148,10 +115,7 @@ $LANG['mobile.login.title'] = 'Login';
 $LANG['mobile.kpi.heading.lastmonth'] = 'Last Month';
 $LANG['mobile.kpi.heading.previousmonth'] = 'Previous Month';
 $LANG['mobile.kpi.heading.target'] = 'Target';
-$LANG['mobile.kpi.anc1'] = 'ANC1 on time';
-$LANG['mobile.kpi.anc1submitted'] = 'ANC1 submitted';
-$LANG['mobile.kpi.anc2'] = 'ANC2 on time';
-$LANG['mobile.kpi.ancfollowsubmitted'] = 'ANC Follow Up submitted';
+$LANG['mobile.kpi.ancsubmitted'] = 'ANC submitted';
 $LANG['mobile.kpi.protocols'] = 'Protocols submitted';
 $LANG['mobile.kpi.tt1'] = 'TT1 on time';
 
@@ -173,10 +137,8 @@ $LANG['patientmanager.form.healthpost'] = 'Select location:';
 $LANG['patientmanager.form.patientid'] = 'Enter user id number:';
 $LANG['patientmanager.form.searchbtn'] = 'Go';
 $LANG['patientmanager.title'] = 'Patient Manager';
-$LANG['protocol.ancfirst'] = 'ANC First Visit';
-$LANG['protocol.ancfollow'] = 'ANC Follow Up';
+$LANG['protocol.anc'] = 'ANC';
 $LANG['protocol.anclabtest'] = 'ANC Lab Test';
-$LANG['protocol.anctransfer'] = 'ANC Transfer';
 $LANG['protocol.delivery'] = 'Delivery';
 $LANG['protocol.pnc'] = 'PNC';
 $LANG['protocol.registration'] = 'Registration';
@@ -643,8 +605,7 @@ $LANG['report.overdue'] = 'Overdue Protocols';
 $LANG['report.overdue.none'] = 'No protocols overdue';
 $LANG['report.submitted'] = 'Protocols Submitted (last %d days)';
 $LANG['report.submitted.bar'] = 'Total Protocols Submitted (%s)';
-$LANG['report.submitted.anc1.bar'] = 'ANC First Visits Protocols Submitted (%s)';
-$LANG['report.submitted.ancfollow.bar'] = 'ANC Follow Up Protocols Submitted (%s)';
+$LANG['report.submitted.anc.bar'] = 'ANC Protocols Submitted (%s)';
 $LANG['report.submitted.delivery.bar'] = 'Delivery Protocols Submitted (%s)';
 $LANG['report.submitted.pnc.bar'] = 'PNC Protocols Submitted (%s)';
 $LANG['report.submitted.none'] = 'No protocols submitted in last %d days';

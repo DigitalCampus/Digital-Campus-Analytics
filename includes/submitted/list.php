@@ -13,13 +13,13 @@
 	if($submitted->start+$submitted->limit <= $submitted->count['protocol.total']){
 		$hasnext = true;
 		$newnext = max($submitted->start + $submitted->limit,0);
-		$nextlink = sprintf("%skpi.php?kpi=submitted&view=%s&days=%d&start=%d",$CONFIG->homeAddress,$view,$days,$newnext);
+		$nextlink = sprintf("%ssubmitted.php?kpi=submitted&view=%s&days=%d&start=%d",$CONFIG->homeAddress,$view,$days,$newnext);
 	}
 	
 	if ($start >0 ){
 		$hasprev = true;
 		$newprev = max($submitted->start - $submitted->limit,0);
-		$prevlink = sprintf("%skpi.php?kpi=submitted&view=%s&days=%d&start=%d",$CONFIG->homeAddress,$view,$days,$newprev);
+		$prevlink = sprintf("%ssubmitted.php?kpi=submitted&view=%s&days=%d&start=%d",$CONFIG->homeAddress,$view,$days,$newprev);
 	}
 
 	if($submitted->count['protocol.total'] > 0){
