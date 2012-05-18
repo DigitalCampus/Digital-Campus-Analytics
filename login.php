@@ -18,7 +18,6 @@ if(isset($USER->username)){
 
 if ($submit != ""){
 	if(userLogin($username,$password)){
-		$API->setUserProperty($USER->userid,'lastlogin',date('Y-m-d H:i:s'));
 		header('Location: '. $ref); 
 		return;
 	}		

@@ -2,7 +2,7 @@
 
 
 function userLogin($username,$password){
-	global $USER,$MSG;
+	global $USER,$MSG,$API;
     clearSession();
     
     if($password == ""){
@@ -17,6 +17,7 @@ function userLogin($username,$password){
             if($passwordCheck){
                 createSession($USER);
                 setLang($USER->getProp('lang'));
+                $API->setUserProperty($USER->userid,'lastlogin',date('Y-m-d H:i:s'));
                 writeToLog('info','login','user logged in: '.$username);
                 return true;
             } else {
