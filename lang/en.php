@@ -354,6 +354,7 @@ $LANG['Q_MONTHOFBIRTH.8'] = 'Miazia';
 $LANG['Q_MONTHOFBIRTH.9'] = 'Gunbet';
 $LANG['Q_NAME'] = 'Name';
 $LANG['Q_NEWBORNDEATH'] = 'Newborn death in previous delivery';
+$LANG['Q_NOBABIES'] = 'No babies delivered';
 $LANG['Q_OCCUPATION'] = 'Occupation';
 $LANG['Q_OCCUPATION.empgov'] = 'Employee: government';
 $LANG['Q_OCCUPATION.empnongov'] = 'Employee: non-government';

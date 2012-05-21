@@ -80,7 +80,7 @@
 </tr>
 <?php 
 	$rows = array(	'Q_DELIVERYDATE',
-						'Q_DELIVERYNOBABIES',	
+						'Q_NOBABIES',	
 						'Q_DELIVERYMODE',
 						'Q_DELIVERYSITE',
 						'Q_BIRTHATTENDANT',
@@ -103,7 +103,7 @@
 			$q_birthattendant = implode($temp,", ");
 			$data[$x] = array(
 								'Q_DELIVERYDATE' => displayAsEthioDate(strtotime($pnc[$x]->Q_DELIVERYDATE))."<br/>".date('D d M Y',strtotime($pnc[$x]->Q_DELIVERYDATE)),
-								'Q_DELIVERYNOBABIES' => $pnc[$x]->Q_DELIVERYNOBABIES,
+								'Q_NOBABIES' => $pnc[$x]->Q_NOBABIES,
 								'Q_DELIVERYMODE' => $pnc[$x]->Q_DELIVERYMODE,
 								'Q_DELIVERYSITE' => $pnc[$x]->Q_DELIVERYSITE,
 								'Q_BIRTHATTENDANT' => $q_birthattendant,

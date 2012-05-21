@@ -943,6 +943,7 @@ class API {
 							Q_LOCHIAODOUR,
 							Q_MATERNALDEATH,
 							Q_MOTHERCONDITION,
+							Q_NOBABIES,
 							Q_PALLORANEMIA,
 							Q_PNCVISITNO,
 							Q_SYSTOLICBP,
