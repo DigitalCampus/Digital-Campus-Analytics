@@ -41,6 +41,136 @@ class API {
 	    $this->DB = false;
 	} 
 	
+	function getMobileKPIs(){
+		global $USER;
+		$kpi = new stdClass();
+		$ra = new RiskAssessment();
+		
+		$datetoday = new DateTime();
+		
+		$datemonthago = new DateTime();
+		$datemonthago->sub(new DateInterval('P1M'));
+		
+		$date2monthago = new DateTime();
+		$date2monthago->sub(new DateInterval('P2M'));
+		
+		if($USER->getProp('permissions.role') != 'hew' && $USER->getProp('permissions.role') != 'midwife'){
+			$kpi->districts = $this->getDistricts();
+		
+			if(count($kpi->districts) > 1){
+				$opts['hpcodes'] = $this->getUserHealthPointPermissions();
+				$opts['limit'] = 0;
+				$opts['nohps'] = count(explode(',',$this->getUserHealthPointPermissions()));
+				$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
+				$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
+				$temp = $this->getProtocolsSubmitted_Cache($opts);
+				$temp->protocols = array();
+				$kpi->submittedthismonth['all'] = $temp;
+		
+				$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
+				$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
+				$temp = $this->getProtocolsSubmitted_Cache($opts);
+				$temp->protocols = array();
+				$kpi->submittedprevmonth['all'] = $temp;
+					
+				$risks = $ra->getRiskStatistics($opts);
+				// add in risks
+				$riskcount = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>0);
+				$riskpercent = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>100);
+					
+				foreach($risks as $k=>$v){
+					$riskcount[$k] = $v;
+					$riskcount['total'] += $v;
+				}
+				foreach($risks as $k=>$v){
+					$riskpercent[$k] = round($riskcount[$k]*100/$riskcount['total']);
+				}
+				$kpi->riskcount['all'] = $riskcount;
+				$kpi->riskpercent['all'] = $riskpercent;
+					
+			}
+		
+			// add the summaries for each district
+			foreach($kpi->districts as $d){
+				//echo $d->did;
+				$hps4district = $this->getHealthPointsForDistict($d->did);
+				$temp = array();
+				$count = 0;
+				foreach($hps4district as $h){
+					$count++;
+					array_push($temp,$h->hpcode);
+				}
+				//print_r($hps4district);
+				$hps = implode(",",$temp);
+				$opts['hpcodes'] = $hps;
+				$opts['nohps'] = $count;
+				$opts['limit'] = 0;
+				$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
+				$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
+				$temp = $this->getProtocolsSubmitted_Cache($opts);
+				$temp->protocols = array();
+				$kpi->submittedthismonth[$d->did] = $temp;
+					
+				$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
+				$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
+		
+				$temp = $this->getProtocolsSubmitted_Cache($opts);
+				$temp->protocols = array();
+				$kpi->submittedprevmonth[$d->did] = $temp;
+					
+				// add in risks
+				$risks = $ra->getRiskStatistics($opts);
+				$riskcount = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>0);
+				$riskpercent = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>100);
+		
+				foreach($risks as $k=>$v){
+					$riskcount[$k] = $v;
+					$riskcount['total'] += $v;
+				}
+				foreach($risks as $k=>$v){
+					$riskpercent[$k] = round($riskcount[$k]*100 / $riskcount['total']);
+				}
+				$kpi->riskcount[$d->did] = $riskcount;
+				$kpi->riskpercent[$d->did] = $riskpercent;
+			}
+		}
+		$kpi->hps = $this->getUserHealthPointPermissions(false,true);
+		
+		foreach($kpi->hps as $hp){
+			$opts['hpcodes'] = $hp;
+			$opts['limit'] = 0;
+			$opts['nohps'] = 1;
+			$opts['startdate'] = $datemonthago->format('Y-m-d 00:00:00');
+			$opts['enddate'] = $datetoday->format('Y-m-d 23:59:59');
+			$temp = $this->getProtocolsSubmitted_Cache($opts);
+			$temp->protocols = array();
+			$kpi->submittedthismonth[$hp] = $temp;
+		
+			$opts['startdate'] = $date2monthago->format('Y-m-d 00:00:00');
+			$opts['enddate'] = $datemonthago->format('Y-m-d 23:59:59');
+			$temp = $this->getProtocolsSubmitted_Cache($opts);
+			$temp->protocols = array();
+			$kpi->submittedprevmonth[$hp] = $temp;
+		
+			// add in risks
+			$risks = $ra->getRiskStatistics($opts);
+			$riskcount = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>0);
+			$riskpercent = array('none'=>0,'unavoidable'=>0,'single'=>0, 'multiple'=>0, 'total'=>100);
+		
+			foreach($risks as $k=>$v){
+				$riskcount[$k] = $v;
+				$riskcount['total'] += $v;
+			}
+			foreach($risks as $k=>$v){
+				$riskpercent[$k] = round($riskcount[$k]*100 / $riskcount['total']);
+			}
+			$kpi->riskcount[$hp] = $riskcount;
+			$kpi->riskpercent[$hp] = $riskpercent;
+		
+		}
+		return $kpi;
+	}
+	
 	function cron($flush, $days = 2){
 		global $CONFIG,$LOGGER,$USER;
 		
@@ -129,6 +259,52 @@ class API {
 		
 		echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
 		flush_buffers();
+		
+		// cache mobile data for user
+		// get all users
+		$users = $this->getUsers(true);
+		foreach($users as $u){
+			$USER->userid = $u->userid;
+			$USER->user($u->username);
+			
+			//cache tasks
+			$tasks = $this->getTasksDue(array('days'=>30));
+			//add risk factors
+			$ra = new RiskAssessment();
+			foreach($tasks as $t){
+				$risks = $ra->getRisks_Cache($t->patienthpcode, $t->userid);
+				$t->risk = $risks->category;
+			}
+			$this->setUserProperty($u->userid,'mobile.cache.tasks',addslashes(json_encode($tasks)));
+			
+			
+			//cache overdue
+			$tasks = $this->getOverdueTasks(array('days'=>30));
+			//add risk factors
+			$ra = new RiskAssessment();
+			foreach($tasks as $t){
+				$risks = $ra->getRisks_Cache($t->patienthpcode, $t->userid);
+				$t->risk = $risks->category;
+			}
+			$this->setUserProperty($u->userid,'mobile.cache.overdue',addslashes(json_encode($tasks)));
+			
+			// cache deliveries
+			// add risk factors
+			$ra = new RiskAssessment();
+			$deliveries = $this->getDeliveriesDue(array('days'=>30));
+			foreach($deliveries as $d){
+				$risks = $ra->getRisks_Cache($d->patienthpcode, $d->userid);
+				$d->risk = $risks;
+			}
+			$this->setUserProperty($u->userid,'mobile.cache.deliveries',addslashes(json_encode($deliveries)));
+			
+			//cache KPIs
+			$kpis = $this->getMobileKPIs();
+			$this->setUserProperty($u->userid,'mobile.cache.kpis',addslashes(json_encode($kpis)));
+			
+			echo "Queries so far: ".$LOGGER->mysql_queries_count."\n";
+			flush_buffers();
+		}
 		
 		$this->setSystemProperty('cron.lastrun',time());
 	}
