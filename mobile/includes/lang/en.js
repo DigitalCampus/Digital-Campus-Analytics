@@ -1,3 +1,4 @@
+
 lang['EN'] = [];
 
 lang['EN']['ethio.day.0'] = 'Sun';

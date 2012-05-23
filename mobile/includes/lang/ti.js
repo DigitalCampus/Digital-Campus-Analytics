@@ -1,3 +1,4 @@
+
 lang['TI'] = [];
 
 lang['TI']['ethio.day.0'] = 'ሰንበት';
