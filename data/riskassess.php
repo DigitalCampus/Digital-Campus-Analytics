@@ -237,6 +237,7 @@ class RiskAssessment {
 		// from ANC
 		foreach($p->anc as $x){
 			if(isset($x->Q_SYSTOLICBP) && isset($x->Q_DIASTOLICBP)
+					&& $x->Q_SYSTOLICBP != 0 && $x->Q_DIASTOLICBP != 0
 											&& (($x->Q_SYSTOLICBP > 120) 
 											|| ($x->Q_SYSTOLICBP < 90)
 											|| ($x->Q_DIASTOLICBP > 90)
