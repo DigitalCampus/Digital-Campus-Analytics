@@ -11,6 +11,13 @@ class Admin {
 					INNER JOIN userprops up ON up.userid = u.userid
 					WHERE propname='lastlogin'
 					ORDER BY propvalue DESC";
+		/*
+		 * "select max(logtime) as propvalue, l.userid, firstname,lastname from log l
+inner join user u on u.userid = l.userid
+where logtype='login'
+group by l.userid
+order by max(logtime) desc"
+		 */
 		$stats = array();
 		$result = $API->runSql($sql);
 	

@@ -77,6 +77,7 @@ function displayTasks(data){
 		
 	}
 	$('#grayout').hide();
+	$('#lastupdate').text(store.get('lastupdate_tasks'));
 }
 
 function displayDeliveries(data){
@@ -123,6 +124,7 @@ function displayDeliveries(data){
 		
 	}
 	$('#grayout').hide();
+	$('#lastupdate').text(store.get('lastupdate_deliveries'));
 }
 
 function displayOverdue(data){
@@ -168,6 +170,7 @@ function displayOverdue(data){
 		
 	}
 	$('#grayout').hide();
+	$('#lastupdate').text(store.get('lastupdate_overdue'));
 }
 
 function displayKPIs(data){
@@ -232,6 +235,8 @@ function displayKPIs(data){
 	// now populate the fields.
 	updateKPIDisplay();
 	$('#grayout').hide();
+	// show last update
+	$('#lastupdate').text(store.get('lastupdate_kpi'));
 }
 
 function updateKPIDisplay(){
@@ -287,6 +292,8 @@ function showLogin(){
 			"<div class='formfield'><input type='button' name='submit' value='Login' onclick='login()'></input></div>" +
 			"</div>");
 	$('#content').append(form);
+	
+	$('#lastupdate').text('-/-');
 }
 
 function loggedIn(){
@@ -374,114 +381,118 @@ function dataUpdate(){
 	}
 	// check when last update made, return if too early
 	var now = new Date();
-	var lastupdate = new Date(store.get('lastupdate'));
-	if(lastupdate > now.addMins(-DATA_CACHE_EXPIRY)){
-		return;
-	} 
 	
-	// Get the tasks from remote server
-	$.ajax({
-		   data:{'method':'gettasks','username':store.get('username'),'password':store.get('password')}, 
-		   success:function(data){
-			   //check for any error messages
-			   if(data && !data.error){
-				   store.set('tasks',data);
-				   if(PAGE == 'tasks'){
-					   displayTasks(store.get('tasks'));
+	var lastupdate_kpi = new Date(store.get('lastupdate_kpi'));
+	if(lastupdate_kpi < now.addMins(-DATA_CACHE_EXPIRY)){
+		// Get KPIs from remote server
+		$.ajax({
+			   data:{'method':'getkpis','username':store.get('username'),'password':store.get('password')}, 
+			   success:function(data){
+				   //check for any error messages
+				   if(data && !data.error){
+					   store.set('kpis',data);
+					   store.set('lastupdate_kpi',Date());
+					   if(PAGE == 'kpi'){
+						   displayKPIs(store.get('kpis'));
+					   }
 				   }
-				   store.set('lastupdate',Date());
-				   setUpdated();
-			   }
-		   }, 
-		   error:function(data){
-			   if(PAGE == 'tasks' && store.get('tasks') == null){
-				   $('#content').empty();
-				   $('#content').append("<h2 name='lang' id='page_title_tasks'>"+getString('page_title_tasks')+"</h2>");	
-				   $('#content').append("<h2 name='lang' id='info_timeout_tasks'>"+getString('info_timeout_tasks')+"</h2>");
-			   } else if(PAGE == 'tasks'){
-				   displayTasks(store.get('tasks'));
-			   }
-		   }
-		});
-	
-	// Get the deliveries from remote server
-	$.ajax({
-		   data:{'method':'getdeliveries','username':store.get('username'),'password':store.get('password')}, 
-		   success:function(data){
-			   //check for any error messages
-			   if(data && !data.error){
-				   store.set('deliveries',data);
-				   if(PAGE == 'deliveries'){
-					   displayDeliveries(store.get('deliveries'));
-				   }
-				   store.set('lastupdate',Date());
-				   setUpdated();
-			   }
-		   }, 
-		   error:function(data){
-			   if(PAGE == 'deliveries' && store.get('deliveries') == null){
-				   $('#content').empty();
-				   $('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");	
-				   $('#content').append("<h2 name='lang' id='info_timeout_deliveries'>"+getString('info_timeout_deliveries')+"</h2>");
-			   } else if(PAGE == 'deliveries'){
-				   displayDeliveries(store.get('deliveries'));
-			   }
-		   }
-		});
-	
-	// Get the overdue from remote server
-	$.ajax({
-		   data:{'method':'getoverdue','username':store.get('username'),'password':store.get('password')}, 
-		   success:function(data){
-			   //check for any error messages
-			   if(data && !data.error){
-				   store.set('overdue',data);
-				   if(PAGE == 'overdue'){
-					   displayOverdue(store.get('overdue'));
-				   }
-				   store.set('lastupdate',Date());
-				   setUpdated();
-			   }
-		   }, 
-		   error:function(data){
-			   if(PAGE == 'overdue' && store.get('overdue') == null){
-				   $('#content').empty();
-				   $('#content').append("<h2 name='lang' id='page_title_overdue'>"+getString('page_title_overdue')+"</h2>");	
-				   $('#content').append("<h2 name='lang' id='info_timeout_overdue'>"+getString('info_timeout_overdue')+"</h2>");
-			   } else if(PAGE == 'overdue'){
-				   displayOverdue(store.get('overdue'));
-			   }
-		   }
-		});
-	
-	// Get KPIs from remote server
-	$.ajax({
-		   data:{'method':'getkpis','username':store.get('username'),'password':store.get('password')}, 
-		   success:function(data){
-			   //check for any error messages
-			   if(data && !data.error){
-				   store.set('kpis',data);
-				   if(PAGE == 'kpi'){
+			   }, 
+			   error:function(data){
+				   if(PAGE == 'kpi' && store.get('kpis') == null){
+					   $('#content').empty();
+					   $('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");	
+					   $('#content').append("<h2 name='lang' id='info_timeout_kpis'>"+getString('info_timeout_kpis')+"</h2>");
+				   } else if(PAGE == 'kpi'){
 					   displayKPIs(store.get('kpis'));
 				   }
-				   store.set('lastupdate',Date());
-				   setUpdated();
 			   }
-		   }, 
-		   error:function(data){
-			   if(PAGE == 'kpi' && store.get('kpis') == null){
-				   $('#content').empty();
-				   $('#content').append("<h2 name='lang' id='page_title_kpis'>"+getString('page_title_kpis')+"</h2>");	
-				   $('#content').append("<h2 name='lang' id='info_timeout_kpis'>"+getString('info_timeout_kpis')+"</h2>");
-			   } else if(PAGE == 'kpi'){
-				   displayKPIs(store.get('kpis'));
+			});
+	}
+	
+	var lastupdate_deliveries = new Date(store.get('lastupdate_deliveries'));
+	if(lastupdate_deliveries < now.addMins(-DATA_CACHE_EXPIRY)){
+		// Get the deliveries from remote server
+		$.ajax({
+			   data:{'method':'getdeliveries','username':store.get('username'),'password':store.get('password')}, 
+			   success:function(data){
+				   //check for any error messages
+				   if(data && !data.error){
+					   store.set('deliveries',data);
+					   store.set('lastupdate_deliveries',Date());
+					   if(PAGE == 'deliveries'){
+						   displayDeliveries(store.get('deliveries'));
+					   }
+				   }
+			   }, 
+			   error:function(data){
+				   if(PAGE == 'deliveries' && store.get('deliveries') == null){
+					   $('#content').empty();
+					   $('#content').append("<h2 name='lang' id='page_title_deliveries'>"+getString('page_title_deliveries')+"</h2>");	
+					   $('#content').append("<h2 name='lang' id='info_timeout_deliveries'>"+getString('info_timeout_deliveries')+"</h2>");
+				   } else if(PAGE == 'deliveries'){
+					   displayDeliveries(store.get('deliveries'));
+				   }
 			   }
-		   }
-		});
-}
+			});
+	}
+	
+	
+	var lastupdate_tasks = new Date(store.get('lastupdate_tasks'));
+	if(lastupdate_tasks < now.addMins(-DATA_CACHE_EXPIRY)){
+		// Get the tasks from remote server
+		$.ajax({
+			   data:{'method':'gettasks','username':store.get('username'),'password':store.get('password')}, 
+			   success:function(data){
+				   //check for any error messages
+				   if(data && !data.error){
+					   store.set('tasks',data);
+					   store.set('lastupdate_tasks',Date());
+					   if(PAGE == 'tasks'){
+						   displayTasks(store.get('tasks'));
+					   }
+				   }
+			   }, 
+			   error:function(data){
+				   if(PAGE == 'tasks' && store.get('tasks') == null){
+					   $('#content').empty();
+					   $('#content').append("<h2 name='lang' id='page_title_tasks'>"+getString('page_title_tasks')+"</h2>");	
+					   $('#content').append("<h2 name='lang' id='info_timeout_tasks'>"+getString('info_timeout_tasks')+"</h2>");
+				   } else if(PAGE == 'tasks'){
+					   displayTasks(store.get('tasks'));
+				   }
+			   }
+			});
+	}
+	
 
-function setUpdated(){
-	$('#last_update').text(store.get('lastupdate'));
+	var lastupdate_overdue = new Date(store.get('lastupdate_overdue'));
+	if(lastupdate_overdue < now.addMins(-DATA_CACHE_EXPIRY)){
+		// Get the overdue from remote server
+		$.ajax({
+			   data:{'method':'getoverdue','username':store.get('username'),'password':store.get('password')}, 
+			   success:function(data){
+				   //check for any error messages
+				   if(data && !data.error){
+					   store.set('overdue',data);
+					   store.set('lastupdate_overdue',Date());
+					   if(PAGE == 'overdue'){
+						   displayOverdue(store.get('overdue'));
+					   }
+				   }
+			   }, 
+			   error:function(data){
+				   if(PAGE == 'overdue' && store.get('overdue') == null){
+					   $('#content').empty();
+					   $('#content').append("<h2 name='lang' id='page_title_overdue'>"+getString('page_title_overdue')+"</h2>");	
+					   $('#content').append("<h2 name='lang' id='info_timeout_overdue'>"+getString('info_timeout_overdue')+"</h2>");
+				   } else if(PAGE == 'overdue'){
+					   displayOverdue(store.get('overdue'));
+				   }
+			   }
+			});
+	}
+	
+
 }
 
 Date.prototype.addMins= function(m){
