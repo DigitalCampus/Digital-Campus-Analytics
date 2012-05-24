@@ -37,13 +37,27 @@
 </tr>
 
 <tr class="rrow">
-<td class="rqcell"><?php echo getstring('protocol.datevisitmade');?></td>
+<td class="rqcell"><?php echo getstring('protocol.datevisitmadephone');?></td>
 	<?php 
 		for($x=0;$x <count($anc); $x++ ){
 			echo "<td class='rdcell'>";
 			if (isset($anc[$x])){
 				printf('%1$s (%2$s)',displayAsEthioDate(strtotime($anc[$x]->TODAY)), 
 																		date('D d M Y',strtotime($anc[$x]->TODAY)));
+			}
+			echo "</td>";
+		}
+	?>
+</tr>
+<td class="rqcell"><?php echo getstring('protocol.datevisitmadehw');?></td>
+	<?php 
+		for($x=0;$x <count($anc); $x++ ){
+			echo "<td class='rdcell'>";
+			if (isset($anc[$x]) && $anc[$x]->Q_VISITDATE != ""){
+				printf('%1$s (%2$s)',displayAsEthioDate(strtotime($anc[$x]->TODAY)), 
+																		date('D d M Y',strtotime($anc[$x]->TODAY)));
+			} else {
+				printf('--');
 			}
 			echo "</td>";
 		}

@@ -27,10 +27,22 @@
 	</tr>
 
 	<tr class="rrow">
-		<td class="rqcell"><?php echo getstring('protocol.datevisitmade');?></td>
+		<td class="rqcell"><?php echo getstring('protocol.datevisitmadephone');?></td>
 		<td class="rdcell"><?php printf('%1$s (%2$s)',displayAsEthioDate(strtotime($patient->delivery->TODAY)), 
 																		date('D d M Y',strtotime($patient->delivery->TODAY)));?></td>
 	</tr>
+	
+	<tr class="rrow">
+	<td class="rqcell"><?php echo getstring('protocol.datevisitmadehw');?></td>
+	<td class="rdcell"><?php 
+		if($patient->delivery->Q_VISITDATE != ""){
+			printf('%1$s (%2$s)',displayAsEthioDate(strtotime($patient->delivery->Q_VISITDATE)),
+					date('D d M Y',strtotime($patient->delivery->Q_VISITDATE)));
+		} else {
+			printf('--');
+		}
+	?></td>
+</tr>
 	
 <?php 
 	$rowArray = array(
