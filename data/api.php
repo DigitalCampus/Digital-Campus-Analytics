@@ -546,9 +546,10 @@ class API {
 	 * 
 	 */
 	function writeLog($loglevel,$userid,$logtype,$logmsg,$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$logagent){
-		$sql = sprintf("INSERT INTO log (loglevel,userid,logtype,logmsg,logip,logpagephptime,logpagemysqltime,logpagequeries,logagent) 
-						VALUES ('%s',%d,'%s','%s','%s',%f,%f,%d,'%s')", 
-						$loglevel,$userid,$logtype,mysql_real_escape_string($logmsg),$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$logagent);
+		$date = date('Y-m-d H:i:s');
+		$sql = sprintf("INSERT INTO log (loglevel,logtime,userid,logtype,logmsg,logip,logpagephptime,logpagemysqltime,logpagequeries,logagent) 
+						VALUES ('%s','%s',%d,'%s','%s','%s',%f,%f,%d,'%s')", 
+						$loglevel,$date,$userid,$logtype,mysql_real_escape_string($logmsg),$ip,$logpagephptime,$logpagemysqltime,$logpagequeries,$logagent);
 		// just run sql directly (without using $this->runSql) so doesn't try to log an error writing to the log!
 		mysql_query($sql,$this->DB);
 	}
