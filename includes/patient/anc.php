@@ -337,7 +337,7 @@
 		$data = array();
 		for($x=0;$x <count($anc); $x++ ){
 			$data[$x] = array(
-							'Q_APPOINTMENTDATE' => displayAsEthioDate(strtotime($anc[$x]->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($anc[$x]->Q_APPOINTMENTDATE)),
+							'Q_APPOINTMENTDATE' => ($anc[$x]->Q_APPOINTMENTDATE != "") ? displayAsEthioDate(strtotime($anc[$x]->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($anc[$x]->Q_APPOINTMENTDATE)) : "--",
 							'Q_IDCARD' => $anc[$x]->Q_IDCARD,
 							'Q_LOCATION' => getstring("Q_LOCATION.".$anc[$x]->Q_LOCATION),
 							'Q_GPSDATA' => ($anc[$x]->Q_GPSDATA_LAT != "") ? Q_GPSDATA_LAT."/".Q_GPSDATA_LNG :"",

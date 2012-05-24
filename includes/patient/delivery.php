@@ -184,7 +184,7 @@
   $q_gpsdata = $patient->delivery->Q_GPSDATA_LAT.",".$patient->delivery->Q_GPSDATA_LNG;
  }
  $rowArray = array(
-    'Q_APPOINTMENTDATE' => displayAsEthioDate(strtotime($patient->delivery->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($patient->delivery->Q_APPOINTMENTDATE)),
+    'Q_APPOINTMENTDATE' => ($patient->delivery->Q_APPOINTMENTDATE != "") ? displayAsEthioDate(strtotime($patient->delivery->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($patient->delivery->Q_APPOINTMENTDATE)) : "--",
     'Q_IDCARD' => $patient->delivery->Q_IDCARD,
     'Q_LOCATION' => getstring("Q_LOCATION.".$patient->delivery->Q_LOCATION),
     'Q_GPSDATA' => $q_gpsdata

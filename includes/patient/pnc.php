@@ -283,7 +283,7 @@
 				$q_gpsdata = $pnc[$x]->Q_GPSDATA_LAT.",".$pnc[$x]->Q_GPSDATA_LNG;
 			}
 			$data[$x] = array(
-					'Q_APPOINTMENTDATE' => displayAsEthioDate(strtotime($pnc[$x]->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($pnc[$x]->Q_APPOINTMENTDATE)),
+					'Q_APPOINTMENTDATE' => ($pnc[$x]->Q_APPOINTMENTDATE != "") ? displayAsEthioDate(strtotime($pnc[$x]->Q_APPOINTMENTDATE))."<br/>".date('D d M Y',strtotime($pnc[$x]->Q_APPOINTMENTDATE)) : "--",
 					'Q_IDCARD' => $pnc[$x]->Q_IDCARD,
 					'Q_LOCATION' => getstring("Q_LOCATION.".$pnc[$x]->Q_LOCATION),
 					'Q_GPSDATA' => $q_gpsdata,
