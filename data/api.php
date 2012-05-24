@@ -898,7 +898,7 @@ class API {
 		// add permissions
 		$sql .= sprintf(" AND (p.Q_HEALTHPOINTID IN (%s) ",$this->getUserHealthPointPermissions(true));
 		$sql .= sprintf(" OR hp.hpcode IN (%s)) ",$this->getUserHealthPointPermissions(true));
-		$sql .= " ORDER BY TODAY ASC";
+		$sql .= " ORDER BY _CREATION_DATE ASC";
 		
 		$result = $this->runSql($sql);
 		$protocols = array();
@@ -962,7 +962,7 @@ class API {
 		// add permissions
 		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
-		$sql .= " ORDER BY TODAY ASC";
+		$sql .= " ORDER BY _CREATION_DATE ASC";
 		
 		$result = $this->runSql($sql);
 
@@ -1038,7 +1038,7 @@ class API {
 		// add permissions
 		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= " OR hp.hpcode IN (".$this->getUserHealthPointPermissions().")) " ;
-		$sql .= " ORDER BY TODAY ASC";
+		$sql .= " ORDER BY _CREATION_DATE ASC";
 		
 		$result = $this->runSql($sql);
 
@@ -1144,7 +1144,8 @@ class API {
 		// add permissions
 		$sql .= " AND (p.Q_HEALTHPOINTID IN (".$this->getUserHealthPointPermissions().") " ;
 		$sql .= "OR hp.hpcode IN (".$this->getUserHealthPointPermissions()."))" ;
-	
+		$sql .= " ORDER BY _CREATION_DATE ASC";
+		
 		$result = $this->runSql($sql);
 	
 		$protocols = array();
