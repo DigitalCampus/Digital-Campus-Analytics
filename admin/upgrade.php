@@ -303,6 +303,15 @@ if ($currentDBversion < 15){
 	echo "Upgraded to version 15\n";
 }
 
+if ($currentDBversion < 16){
+	$sql = "ALTER TABLE `healthpoint` ADD COLUMN `hptype` varchar(20)  NOT NULL AFTER `hpactive`;";
+	$API->runSql($sql);
+
+	//now update the db version prop
+	$API->setSystemProperty('database.version','16');
+	echo "Upgraded to version 16\n";
+}
+
 echo "Upgrade complete\n";
 if($flushcache){
 	echo "Now running cron to update the cache tables... This may take some time!\n";
@@ -311,5 +320,8 @@ if($flushcache){
 	echo "cron complete.";
 	scriptFooter('info','upgrade',sprintf('upgrade to version %d complete',$CONFIG->props['database.version']));
 }
+
+
+
 
 ?>
