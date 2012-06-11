@@ -32,7 +32,7 @@ $currenthpname = getNameFromHPCodes($report->hpcodes);
 	if($('#reporttype').val() == 'current'){
 		$('#reportid').attr('disabled', 'disabled');
 	} else {
-		$('#reportid').attr('disabled', '');
+		$('#reportid').removeAttr('disabled');
 	}
  }
 </script>
@@ -43,10 +43,34 @@ $currenthpname = getNameFromHPCodes($report->hpcodes);
 		?>
 	</select>
 	<select id="reporttype" name="reporttype" onchange="reportTypeChanged()">
-		<option value="healthpost" >Health Post</option>
-		<option value="current" >Current</option>
-		<option value="supervisor">Supervisor</option>
-		<option value="midwife">Midwife</option>
+		<?php 
+			if($reporttype == 'healthpost'){
+				echo '<option value="healthpost" selected="selected">Health Post</option>';
+			} else {
+				echo '<option value="healthpost">Health Post</option>';
+			}
+			if($reporttype == 'mch'){
+				echo '<option value="mch" selected="selected">MCH Report</option>';
+			} else {
+				echo '<option value="mch">MCH Report</option>';
+			}
+			if($reporttype == 'current'){
+				echo '<option value="current" selected="selected">Current</option>';
+			} else {
+				echo '<option value="current">Current</option>';
+			}
+			if($reporttype == 'supervisor'){
+				echo '<option value="supervisor" selected="selected">Supervisor</option>';
+			} else {
+				echo '<option value="supervisor">Supervisor</option>';
+			}
+			if($reporttype == 'midwife'){
+				echo '<option value="midwife" selected="selected">Midwife</option>';
+			} else {
+				echo '<option value="midwife">Midwife</option>';
+			}
+		
+		?>
 	</select>
 	<select name="reportid" id="reportid">
 	<?php 
@@ -75,6 +99,9 @@ switch($reporttype){
 		break;
 	case 'current':
 		include_once('includes/report/current.php');
+		break;
+	case 'mch':
+		include_once('includes/report/mch.php');
 		break;
 }
 
