@@ -5,7 +5,8 @@ include_once "includes/header.php";
 $stats = array ('atrisk' =>'At Risk',
 				'anc1defaulters'=>"ANC 1 Non Defaulters",
 				'anc2defaulters'=>"ANC 2 Non Defaulters",
-				'pnc1defaulters'=>"PNC 1 Non Defaulters");
+				'pnc1defaulters'=>"PNC 1 Non Defaulters",
+				'distributions' => "Distributions");
 
 $stat = optional_param('stat','atrisk',PARAM_TEXT);
 
@@ -42,6 +43,9 @@ if ($stat == "pnc1defaulters"){
 	$viewopts = array('height'=>500,'width'=>800,'class'=>'graph','comparison'=>true);
 	$opts = array('months'=>6);
 	include_once "includes/statistics/pnc1defaulters.php";
+}
+if ($stat == "distributions"){
+	include_once "includes/statistics/distributions.php";
 }
 
 
