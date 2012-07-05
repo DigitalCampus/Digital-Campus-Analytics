@@ -48,6 +48,7 @@
 	$rowArray = array(
 					'Q_USERID' => $patient->delivery->Q_USERID,
 					'Q_HEALTHPOINTID' => displayHealthPointName($patient->delivery->patienthpcode),
+					'Q_USERNAME' => $patient->delivery->Q_USERNAME,
 					'Q_YEAROFBIRTH' => $patient->delivery->Q_YEAROFBIRTH,
 					'Q_AGE' => $patient->delivery->Q_AGE
 					);

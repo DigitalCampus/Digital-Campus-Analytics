@@ -952,6 +952,7 @@ class API {
 						Q_URINEGLUCOSE,
 						Q_URINEPROTEIN,
 						Q_USERID,
+						Q_USERNAME,
 						Q_YEAROFBIRTH,
 						_CREATION_DATE AS CREATEDON,
 						TODAY
@@ -1024,6 +1025,7 @@ class API {
 						Q_SYSTOLICBP,
 						Q_TEMPERATURE,
 						Q_USERID,
+						Q_USERNAME,
 						Q_VACUUMFORCEPS,
 						Q_VAGINALDELIVERY,
 						Q_VISITDATE,
@@ -1132,6 +1134,7 @@ class API {
 							Q_TT1,
 							Q_TT2,
 							Q_USERID,
+							Q_USERNAME,
 							Q_VISITDATE,
 							Q_VITASUPPL,
 							Q_YEAROFBIRTH,

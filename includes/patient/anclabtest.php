@@ -64,6 +64,19 @@
 	?>
 </tr>
 <tr class="rrow">
+	<td class="rqcell"><?php echo getstring('Q_USERNAME');?></td>
+	<?php 
+		for($i=0;$i <count($anclabtest); $i++ ){
+			echo "<td class='rdcell'>";
+			if (isset($anclabtest[$i])){
+				echo $anclabtest[$i]->Q_USERNAME;
+			}
+			echo "</td>";
+			
+		}
+	?>
+</tr>
+<tr class="rrow">
 	<td class="rqcell"><?php echo getstring('Q_AGE');?></td>
 	<?php 
 		for($i=0;$i <count($anclabtest); $i++ ){

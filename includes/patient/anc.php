@@ -67,6 +67,7 @@
 <?php 
 	$rows = array(	'Q_USERID',	
 					'Q_HEALTHPOINTID',	
+					'Q_USERNAME',
 					'Q_YEAROFBIRTH',
 					'Q_AGE' 
 					);
@@ -78,6 +79,7 @@
 			$data[$x] = array(
 							'Q_USERID' => $anc[$x]->Q_USERID,
 							'Q_HEALTHPOINTID'  => displayHealthPointName($anc[$x]->patienthpcode),
+							'Q_USERNAME' => $anc[$x]->Q_USERNAME,
 							'Q_YEAROFBIRTH'  => $anc[$x]->Q_YEAROFBIRTH,
 							'Q_AGE'  => $anc[$x]->Q_AGE
 			);
