@@ -30,8 +30,8 @@ function _mysql_query($query,$db) {
     $start = microtime(true);
     $result = mysql_query($query,$db);
     $timetaken = microtime(true) - $start;
-    // log any queries taking over 1 second
-    if($timetaken >1){
+    // log any queries taking over 5 seconds
+    if($timetaken >5){
     	writeToLog("warning","db",$query,0,$timetaken,1);
     }
     $LOGGER->mysql_queries_time += $timetaken;
