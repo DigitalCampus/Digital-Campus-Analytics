@@ -26,6 +26,7 @@ if(($lastrun + ($minint*60) > $now) && !$force){
 	echo "exiting";
 	die;
 }
+echo date('r');
 
 // run data migration script
 /*$f = fopen('migrate.sql',"r");
@@ -39,7 +40,7 @@ foreach ($sqlArray as $stmt) {
 $API->cron($flush, $days);
 
 echo "cron complete.";
-
+echo date('r');
 // this must always be the last function to run in the page
 scriptFooter('info','cron','cron complete');
 ?>
