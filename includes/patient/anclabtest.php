@@ -26,7 +26,7 @@
 	?>
 </tr>
 <tr class="rrow">
-	<td class="rqcell"><?php echo getstring('protocol.datevisitmade');?></td>
+	<td class="rqcell"><?php echo getstring('protocol.datevisitmadephone');?></td>
 	<?php 
 		for($i=0;$i <count($anclabtest); $i++ ){
 			echo "<td class='rdcell'>";

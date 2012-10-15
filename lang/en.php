@@ -557,6 +557,7 @@ $LANG['Q_STILLBIRTHS'] = 'No previous still births';
 $LANG['Q_STOOLEXAMINATION'] = 'Stool examination results';
 $LANG['Q_SYPHILIS'] = 'V.D.R.L (RPR) test for syphilis';
 $LANG['Q_TETANUS'] = 'Tetanus Toxiod';
+$LANG['Q_TETANUS.nocard'] = 'Card not available';
 $LANG['Q_TETANUS.none'] = 'None';
 $LANG['Q_TETANUS.tt1'] = 'Had TT1 only';
 $LANG['Q_TETANUS.tt2'] = 'Had TT1 & TT2';
