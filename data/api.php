@@ -523,18 +523,9 @@ class API {
 		return $hpcodes;
 	}
 	
-	function isDemoUser(){
-		global $USER;
-		if ($USER->username == 'demo'){
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
 	// get the list of ignored health points
 	function getIgnoredHealthPoints($cron = false){
-		if($this->isDemoUser() && $cron == false){
+		if($cron == false){
 			return "";
 		} else {
 			return IGNORE_HEALTHPOINTS;

@@ -723,10 +723,7 @@ $LANG['userid'] = 'User ID';
 $LANG['warning.accessdenied'] = 'Sorry, you do not have access to this page. <br/> <a href="https://localhost/scorecard/index.php">Return to homepage</a>';
 $LANG['warning.datacheck'] = 'There are some inconsistencies in the data, for example duplicate records or patients not being registered. 
 								This may affect the data shown below. To view the full details please <a href="%s">visit the Data Checker page</a>.';
-$LANG['warning.demouser'] = 'You are currently logged in as the demonstration user. 
-								All the data you can see here is practice data and does not represent real patient cases. 
-								This system is currently under development, not all the functionality is finalised, and may not work as expected.
-								What is displayed here is only an indication of how a more developed system may work.';
+$LANG['warning.demouser'] = 'This is a demonstration version. All the data you can see here is practice data and does not represent real patient cases.';
 $LANG['warning.graph.unavailable'] = 'Chart cannot be generated. Please try later.';
 $LANG['warning.login.invalid'] = 'Invalid username/password combination';
 $LANG['warning.login.nopassword'] = 'Please enter your password';

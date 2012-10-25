@@ -16,5 +16,6 @@ $CONFIG->dbname = "****";
 $CONFIG->dbuser = "****";
 $CONFIG->dbpass = "****"; 
 
+$CONFIG->demo = false;
 include_once("setup.php");
 
