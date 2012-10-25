@@ -63,8 +63,8 @@ class DataCheck {
 					WHERE r._URI is null";
 		
 		$sql .= ") a";
-		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " WHERE a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints(true).")";
+		if($API->getIgnoredHealthPoints() != ""){
+			$sql .= " WHERE a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints().")";
 		}
 
 		$result = $API->runSql($sql);
@@ -173,8 +173,8 @@ class DataCheck {
 					HAVING count(i._URI)>1";
 		
 		$sql .= ") a ";
-		if($API->getIgnoredHealthPoints(true) != ""){
-			$sql .= " WHERE a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints(true).")";
+		if($API->getIgnoredHealthPoints() != ""){
+			$sql .= " WHERE a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints().")";
 		}
 		
 		$result = $API->runSql($sql);
@@ -200,15 +200,19 @@ class DataCheck {
 				$age[$p->Q_AGE] = PROTOCOL_REGISTRATION;
 			}
 			//anc
-			foreach($p->anc as $x){
-				if(isset($x->Q_AGE)){
-					$age[$x->Q_AGE] = PROTOCOL_ANC;
+			if(isset($p->anc)){
+				foreach($p->anc as $x){
+					if(isset($x->Q_AGE)){
+						$age[$x->Q_AGE] = PROTOCOL_ANC;
+					}
 				}
 			}
 			//lab
-			foreach($p->anclabtest as $x){
-				if(isset($x->Q_AGE)){
-					$age[$x->Q_AGE] = PROTOCOL_ANCLABTEST;
+			if(isset($p->anclabtest)){
+				foreach($p->anclabtest as $x){
+					if(isset($x->Q_AGE)){
+						$age[$x->Q_AGE] = PROTOCOL_ANCLABTEST;
+					}
 				}
 			}
 			//delivery
@@ -216,9 +220,11 @@ class DataCheck {
 				$age[$p->delivery->Q_AGE] = PROTOCOL_DELIVERY;
 			}
 			//pnc
-			foreach($p->pnc as $x){
-				if(isset($x->Q_AGE)){
-					$age[$x->Q_AGE] = PROTOCOL_PNC;
+			if(isset($p->pnc)){
+				foreach($p->pnc as $x){
+					if(isset($x->Q_AGE)){
+						$age[$x->Q_AGE] = PROTOCOL_PNC;
+					}
 				}
 			}
 		
@@ -229,15 +235,19 @@ class DataCheck {
 				$yob[$p->Q_YEAROFBIRTH] = PROTOCOL_REGISTRATION;
 			}
 			// ANC
-			foreach($p->anc as $x){
-				if(isset($x->Q_YEAROFBIRTH)){
-					$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_ANC;
+			if(isset($p->anc)){
+				foreach($p->anc as $x){
+					if(isset($x->Q_YEAROFBIRTH)){
+						$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_ANC;
+					}
 				}
 			}
 			//lab
-			foreach($p->anclabtest as $x){
-				if(isset($x->Q_YEAROFBIRTH)){
-					$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_ANCLABTEST;
+			if(isset($p->anclabtest)){
+				foreach($p->anclabtest as $x){
+					if(isset($x->Q_YEAROFBIRTH)){
+						$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_ANCLABTEST;
+					}
 				}
 			}
 			//delivery
@@ -245,9 +255,11 @@ class DataCheck {
 				$yob[$p->delivery->Q_YEAROFBIRTH] = PROTOCOL_DELIVERY;
 			}
 			//pnc
-			foreach($p->pnc as $x){
-				if(isset($x->Q_YEAROFBIRTH)){
-					$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_PNC;
+			if(isset($p->pnc)){
+				foreach($p->pnc as $x){
+					if(isset($x->Q_YEAROFBIRTH)){
+						$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_PNC;
+					}
 				}
 			}
 		

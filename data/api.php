@@ -524,12 +524,8 @@ class API {
 	}
 	
 	// get the list of ignored health points
-	function getIgnoredHealthPoints($cron = false){
-		if($cron == false){
-			return "";
-		} else {
-			return IGNORE_HEALTHPOINTS;
-		}
+	function getIgnoredHealthPoints(){
+		return IGNORE_HEALTHPOINTS;
 	}
 	
 	
@@ -632,8 +628,8 @@ class API {
 						SELECT DISTINCT i.Q_HEALTHPOINTID, i.Q_USERID FROM ".TABLE_REGISTRATION." i
 						LEFT OUTER JOIN patientcurrent pc ON i.Q_HEALTHPOINTID = pc.hpcode AND i.Q_USERID = pc.patid
 						WHERE pc.pcid is NULL";
-		if($this->getIgnoredHealthPoints(true) != ""){
-			$sql .= sprintf(" AND i.Q_HEALTHPOINTID NOT IN (%s)",$this->getIgnoredHealthPoints(true));
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= sprintf(" AND i.Q_HEALTHPOINTID NOT IN (%s)",$this->getIgnoredHealthPoints());
 		}
 		$result = $this->runSql($sql);
 		
@@ -656,7 +652,7 @@ class API {
 			} else {
 				// 2 month past the EDD (no delivery)
 				unset($edd);
-				if(count($pat->anc) > 0){
+				if(isset($pat->anc) && count($pat->anc) > 0){
 					$edd = new DateTime($pat->anc[(count($pat->anc)-1)]->Q_EDD);
 				}
 				if(isset($edd)){
@@ -700,8 +696,8 @@ class API {
 				WHERE r.Q_HEALTHPOINTID IN (%s) 
 				AND pc.pcurrent = 1",TABLE_REGISTRATION,$hps) ;
 		
-		if($this->getIgnoredHealthPoints(true) != ""){
-			$sql .= sprintf(" AND r.Q_HEALTHPOINTID NOT IN (%s)",$this->getIgnoredHealthPoints(true));
+		if($this->getIgnoredHealthPoints() != ""){
+			$sql .= sprintf(" AND r.Q_HEALTHPOINTID NOT IN (%s)",$this->getIgnoredHealthPoints());
 		}
 		
 		$result = $this->runSql($sql);
