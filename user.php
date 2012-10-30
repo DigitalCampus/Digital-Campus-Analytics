@@ -6,6 +6,12 @@ $PAGE="user";
 include_once "includes/header.php";
 $submit = optional_param('submit','',PARAM_TEXT);
 
+if($USER->username == "demo"){
+	echo "<p>Sorry - you can't edit the demo user account</p>";
+	include_once "includes/footer.php";
+	die;
+}
+
 if($submit != ""){
 	$password = optional_param('password','',PARAM_TEXT);
 	$confirmpassword = optional_param('confirmpassword','',PARAM_TEXT);
@@ -33,6 +39,8 @@ if($submit != ""){
 		echo "<li>".$err."</li>";
     }
     echo "</ul>";
+    
+    
 }
 ?>
 <form method="post" action="">
