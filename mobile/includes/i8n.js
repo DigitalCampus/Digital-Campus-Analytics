@@ -30,6 +30,9 @@ function changeInterfaceLang(){
 	$('[name^=district]').each(function(index){
 		$(this).text(getString($(this).attr('name')));
 	});
+	$('[name^=tabia]').each(function(index){
+		$(this).text(getString($(this).attr('name')));
+	});
 }
 
 function changeLang(){

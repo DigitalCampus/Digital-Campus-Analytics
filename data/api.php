@@ -1686,7 +1686,9 @@ class API {
 						ct.userid,
 						CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
 						ct.hpcode as patienthpcode,
-						ct.protocol
+						ct.protocol,
+						R.Q_SUBKEBELE as patienttabia,
+						R.Q_MOBILENUMBER as patientphonenumber
 					FROM cache_tasks ct 
 				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 					WHERE (hpcode IN (".$this->getUserHealthPointPermissions(true).") 
@@ -1707,6 +1709,10 @@ class API {
 		$tasks = array();
 		$result = $this->runSql($sql);
 		while($o = mysql_fetch_object($result)){
+			$o->patientphonenumber = "0".(string)((int) $o->patientphonenumber);
+			if($o->patientphonenumber == "00"){
+				$o->patientphonenumber = null;
+			}
 			array_push($tasks, $o);
 		}
 		return $tasks;
@@ -1724,7 +1730,9 @@ class API {
 						ct.userid,
 						CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
 						ct.hpcode as patienthpcode,
-						ct.protocol
+						ct.protocol,
+						R.Q_SUBKEBELE as patienttabia,
+						R.Q_MOBILENUMBER as patientphonenumber
 					FROM cache_tasks ct 
 				INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 					WHERE (hpcode IN (".$this->getUserHealthPointPermissions(true).") 
@@ -1744,6 +1752,10 @@ class API {
 		$tasks = array();
 		$result = $this->runSql($sql);
 		while($o = mysql_fetch_object($result)){
+			$o->patientphonenumber = "0".(string)((int) $o->patientphonenumber);
+			if($o->patientphonenumber == "00"){
+				$o->patientphonenumber = null;
+			}
 			array_push($tasks, $o);
 		}
 		return $tasks;
@@ -1761,7 +1773,9 @@ class API {
 					ct.userid,
 					CONCAT(R.Q_USERNAME,' ',R.Q_USERFATHERSNAME,' ',R.Q_USERGRANDFATHERSNAME) as patientname,
 					ct.hpcode as patienthpcode,
-					ct.protocol
+					ct.protocol,
+					R.Q_SUBKEBELE as patienttabia,
+					R.Q_MOBILENUMBER as patientphonenumber
 				FROM cache_tasks ct 
 					INNER JOIN (SELECT DISTINCT hpcode, userid FROM cache_visit 
 						WHERE (hpcode IN (".$this->getUserHealthPointPermissions().") 
@@ -1783,6 +1797,10 @@ class API {
 		$tasks = array();
 		$result = $this->runSql($sql);
 		while($o = mysql_fetch_object($result)){
+			$o->patientphonenumber = "0".(string)((int) $o->patientphonenumber);
+			if($o->patientphonenumber == "00"){
+				$o->patientphonenumber = null;
+			}
 			array_push($tasks, $o);
 		}
 		return $tasks;

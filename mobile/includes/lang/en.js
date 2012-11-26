@@ -86,6 +86,8 @@ lang['EN']['page_title_overdue'] = 'Overdue';
 lang['EN']['page_title_risk'] = 'Risk Distribution';
 lang['EN']['page_title_tasks'] = 'Tasks Due';
 
+lang['EN']['phone'] = 'Phone: ';
+
 lang['EN']['protocol.anc'] = 'ANC';
 lang['EN']['protocol.anclabtest'] = 'ANC Lab Test';
 lang['EN']['protocol.delivery'] = 'Delivery';
@@ -145,3 +147,53 @@ lang['EN']['risk.category.none'] = 'No high-risk factors';
 lang['EN']['risk.category.notavailable'] = 'Not yet risk-assessed';
 lang['EN']['risk.category.single'] = 'Single high-risk factor';
 lang['EN']['risk.category.unavoidable'] = 'Unavoidable high-risk factor: first pregnancy';
+
+lang['EN']['tabia'] = 'Tabia: ';
+lang['EN']['tabia.id.100000'] = "Mesanu - Kilteawelaelo: Addis Alem";
+lang['EN']['tabia.id.100001'] = "Mesanu - Kilteawelaelo: Adenguar";
+lang['EN']['tabia.id.100002'] = "Mesanu - Kilteawelaelo: Birki";
+lang['EN']['tabia.id.100003'] = "Mesanu - Kilteawelaelo: Laelay Agulae";
+
+lang['EN']['tabia.id.100100'] = "Ayanlem: Adi weroma";
+lang['EN']['tabia.id.100101'] = "Ayanlem: Maytewaru";
+lang['EN']['tabia.id.100102'] = "Ayanlem: Girdada";
+lang['EN']['tabia.id.100103'] = "Ayanlem: Hawza";
+
+lang['EN']['tabia.id.100200'] = "Gemad: Tsahlo";
+lang['EN']['tabia.id.100201'] = "Gemad: Dereba Wehabit";
+lang['EN']['tabia.id.100202'] = "Gemad: Qokuay";
+
+lang['EN']['tabia.id.100300'] = "Negash: Adi Kesho";
+lang['EN']['tabia.id.100301'] = "Negash: Adi Ekli";
+lang['EN']['tabia.id.100302'] = "Negash: Meago";
+lang['EN']['tabia.id.100303'] = "Negash: Kalhabele";
+
+lang['EN']['tabia.id.100400'] = "Tsadanaele: Tsaeda-naele";
+lang['EN']['tabia.id.100401'] = "Tsadanaele: Gua Gua";
+lang['EN']['tabia.id.100402'] = "Tsadanaele: Mayweyni";
+lang['EN']['tabia.id.100403'] = "Tsadanaele: Adi Abagie";
+
+lang['EN']['tabia.id.100500'] = "Maynebri: Maynebri";
+lang['EN']['tabia.id.100501'] = "Maynebri: Sef’o";
+lang['EN']['tabia.id.100502'] = "Maynebri: Adi ba’ekel";
+lang['EN']['tabia.id.100503'] = "Maynebri: La’eley weste";
+
+lang['EN']['tabia.id.100600'] = "Arasegeda: Ara";
+lang['EN']['tabia.id.100601'] = "Arasegeda: Asegeda";
+lang['EN']['tabia.id.100602'] = "Arasegeda: Hidmo mayhaidi";
+lang['EN']['tabia.id.100603'] = "Arasegeda: Adi hana";
+
+lang['EN']['tabia.id.100700'] = "Hagerselam: Munguda";
+lang['EN']['tabia.id.100701'] = "Hagerselam: Belesat";
+lang['EN']['tabia.id.100702'] = "Hagerselam: Afgol ajeraro";
+
+lang['EN']['tabia.id.100800'] = "Mesanu - Hintalowajerat: Durombesa";
+lang['EN']['tabia.id.100801'] = "Mesanu - Hintalowajerat: Ma’ara";
+lang['EN']['tabia.id.100802'] = "Mesanu - Hintalowajerat: Manda";
+
+lang['EN']['tabia.id.100900'] = "Frewoyni: Mayni";
+lang['EN']['tabia.id.100901'] = "Frewoyni: Korkora";
+lang['EN']['tabia.id.100902'] = "Frewoyni: Aybeto";
+lang['EN']['tabia.id.100903'] = "Frewoyni: Melekuse";
+
+lang['EN']['tabia.id.000000'] = "Other";

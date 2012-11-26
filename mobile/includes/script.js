@@ -70,6 +70,17 @@ function displayTasks(data){
 		patient.append($('<br>'));
 		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)));
 		patient.append($('<small>').text('/'+data[i].userid));
+		
+		if(data[i].patienttabia && data[i].patienttabia != 0){
+			patient.append($('<br>'));
+			patient.append($('<small>').attr('name','lang').attr('id','tabia').text(getString('tabia')));
+			patient.append($('<small>').attr('name','tabia.id.'+data[i].patienttabia).text(getString('tabia.id.'+data[i].patienttabia)));
+		}
+		if(data[i].patientphonenumber){
+			patient.append($('<br>'));
+			patient.append($('<small>').attr('name','lang').attr('id','phone').text(getString('phone')));
+			patient.append($('<small>').text(data[i].patientphonenumber));
+		}
 		task.append(patient);		
 		
 		task.append("<div style='clear:both;'></div>");
@@ -106,6 +117,18 @@ function displayDeliveries(data){
 		patient.append($('<br>'));
 		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)));
 		patient.append($('<small>').text('/'+data[i].userid));
+		
+		if(data[i].patienttabia && data[i].patienttabia != 0){
+			patient.append($('<br>'));
+			patient.append($('<small>').attr('name','lang').attr('id','tabia').text(getString('tabia')));
+			patient.append($('<small>').attr('name','tabia.id.'+data[i].patienttabia).text(getString('tabia.id.'+data[i].patienttabia)));
+		}
+		if(data[i].patientphonenumber){
+			patient.append($('<br>'));
+			patient.append($('<small>').attr('name','lang').attr('id','phone').text(getString('phone')));
+			patient.append($('<small>').text(data[i].patientphonenumber));
+		}
+		
 		task.append(patient);
 		var risk = $('<div>').addClass('deltaskright');
 		var category = $('<span>').attr('name','risk.category.'+ data[i].risk.category).text(getString('risk.category.'+ data[i].risk.category));
@@ -163,6 +186,16 @@ function displayOverdue(data){
 		patient.append($('<br>'));
 		patient.append($('<small>').attr('name','healthpoint.id.'+data[i].patienthpcode).text(getString('healthpoint.id.'+data[i].patienthpcode)));
 		patient.append($('<small>').text('/'+data[i].userid));
+		if(data[i].patienttabia && data[i].patienttabia != 0){
+			patient.append($('<br>'));
+			patient.append($('<small>').attr('name','lang').attr('id','tabia').text(getString('tabia')));
+			patient.append($('<small>').attr('name','tabia.id.'+data[i].patienttabia).text(getString('tabia.id.'+data[i].patienttabia)));
+		}
+		if(data[i].patientphonenumber){
+			patient.append($('<br>'));
+			patient.append($('<small>').attr('name','lang').attr('id','phone').text(getString('phone')));
+			patient.append($('<small>').text(data[i].patientphonenumber));
+		}
 		task.append(patient);
 		
 		task.append("<div style='clear:both;'></div>");
