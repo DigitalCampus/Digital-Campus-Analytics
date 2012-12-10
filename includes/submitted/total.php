@@ -50,7 +50,7 @@ foreach($submitted->protocols as $s){
         chart.draw(data, {	width: <?php echo $options['width'] ?>, 
                 			height: <?php echo $options['height'] ?>,
                 			hAxis: {title: 'Date'},
-                			vAxis: {title: 'Number submitted'},
+                			vAxis: {title: 'Number submitted',minValue:0},
                 			legend: 'none',
                 			chartArea:{left:50,top:20,width:"90%",height:"75%"},
                 			pointSize:3,
