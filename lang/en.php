@@ -142,6 +142,7 @@ $LANG['protocol.anclabtest'] = 'ANC Lab Test';
 $LANG['protocol.delivery'] = 'Delivery';
 $LANG['protocol.pnc'] = 'PNC';
 $LANG['protocol.registration'] = 'Registration';
+$LANG['protocol.termination'] = 'Termination';
 $LANG['protocol.total'] = 'Total';
 $LANG['protocollocation'] = 'Protocol Submitted at';
 $LANG['protocolsubmitted'] = 'Protocol submitted on/by';

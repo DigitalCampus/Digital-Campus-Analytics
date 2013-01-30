@@ -14,10 +14,13 @@ class RiskAssessment {
 		if(isset($p->Q_AGE) && $p->Q_AGE < 18 ){
 			$risk->risks['Q_AGE_UNDER'] = true;
 		} 
+		
 		//from ANC Follow
-		foreach($p->anc as $x){
-			if(isset($x->Q_AGE) && $x->Q_AGE < 18){
-				$risk->risks['Q_AGE_UNDER'] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->Q_AGE) && $x->Q_AGE < 18){
+					$risk->risks['Q_AGE_UNDER'] = true;
+				}
 			}
 		}
 		
@@ -27,9 +30,11 @@ class RiskAssessment {
 			$risk->risks['Q_AGE_OVER'] = true;
 		}
 		//from ANC Follow
-		foreach($p->anc as $x){
-			if(isset($x->Q_AGE) && $x->Q_AGE > 34){
-				$risk->risks['Q_AGE_OVER'] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->Q_AGE) && $x->Q_AGE > 34){
+					$risk->risks['Q_AGE_OVER'] = true;
+				}
 			}
 		}
 		if($risk->risks['Q_AGE_OVER'] == true || $risk->risks['Q_AGE_UNDER'] == true){
@@ -41,9 +46,11 @@ class RiskAssessment {
 		 */
 		$risk->risks['Q_BIRTHINTERVAL'] = false;
 		// from ANC
-		foreach($p->anc as $x){
-			if(isset($x->Q_BIRTHINTERVAL) && ($x->Q_BIRTHINTERVAL == 'within1' || $x->Q_BIRTHINTERVAL == 'within2')){
-				$risk->risks['Q_BIRTHINTERVAL'] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->Q_BIRTHINTERVAL) && ($x->Q_BIRTHINTERVAL == 'within1' || $x->Q_BIRTHINTERVAL == 'within2')){
+					$risk->risks['Q_BIRTHINTERVAL'] = true;
+				}
 			}
 		}
 		if($risk->risks['Q_BIRTHINTERVAL'] == true){
@@ -56,9 +63,11 @@ class RiskAssessment {
 		$risk->risks['Q_GRAVIDA'] = false;
 
 		// from ANC
-		foreach($p->anc as $x){
-			if(isset($x->Q_GRAVIDA) && ($x->Q_GRAVIDA > 6)){
-				$risk->risks['Q_GRAVIDA'] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->Q_GRAVIDA) && ($x->Q_GRAVIDA > 6)){
+					$risk->risks['Q_GRAVIDA'] = true;
+				}
 			}
 		}
 		if($risk->risks['Q_GRAVIDA'] == true){
@@ -69,16 +78,18 @@ class RiskAssessment {
 		 * Current pregnancy complaints
 		 */
 		$risks = array ('Q_ABDOMINALPAIN', 'Q_BLEEDING', 'Q_FATIGUE','Q_FEVER','Q_HEADACHE');
-		foreach ($risks AS $r){
-			$risk->risks[$r] = false;
-			// from ANC
-			foreach($p->anc as $x){
-				if(isset($x->{$r}) && ($x->{$r} == 'yes')){
-					$risk->risks[$r] = true;
+		if(isset($p->anc)){
+			foreach ($risks AS $r){
+				$risk->risks[$r] = false;
+				// from ANC
+				foreach($p->anc as $x){
+					if(isset($x->{$r}) && ($x->{$r} == 'yes')){
+						$risk->risks[$r] = true;
+					}
 				}
-			}
-			if($risk->risks[$r] == true){
-				$risk->count++;
+				if($risk->risks[$r] == true){
+					$risk->count++;
+				}
 			}
 		}
 		
@@ -86,16 +97,18 @@ class RiskAssessment {
 		 * Obstetrics/Gynaecology factors
 		 */ 
 		$risks = array ('Q_STILLBIRTHS', 'Q_ABORTION');
-		foreach ($risks AS $r){
-			$risk->risks[$r] = false;
-			// from ANC
-			foreach($p->anc as $x){
-				if(isset($x->{$r}) && ($x->{$r} >= 1)){
-					$risk->risks[$r] = true;
+		if(isset($p->anc)){
+			foreach ($risks AS $r){
+				$risk->risks[$r] = false;
+				// from ANC
+				foreach($p->anc as $x){
+					if(isset($x->{$r}) && ($x->{$r} >= 1)){
+						$risk->risks[$r] = true;
+					}
 				}
-			}
-			if($risk->risks[$r] == true){
-				$risk->count++;
+				if($risk->risks[$r] == true){
+					$risk->count++;
+				}
 			}
 		}
 		
@@ -103,9 +116,11 @@ class RiskAssessment {
 		$risk->risks[$factor] = false;
 
 		// from ANC 
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} == 'no')){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} == 'no')){
+					$risk->risks[$factor] = true;
+				}
 			}
 		}
 		if($risk->risks[$factor] == true){
@@ -122,57 +137,65 @@ class RiskAssessment {
 						'Q_FISTULA',
 						'Q_MALPOSITION',
 						'Q_TWIN');
-		foreach ($risks AS $r){
-			$risk->risks[$r] = false;
-			// from ANC 
-			foreach($p->anc as $x){
-				if(isset($x->{$r}) && ($x->{$r} == 'yes')){
-					$risk->risks[$r] = true;
+		if(isset($p->anc)){
+			foreach ($risks AS $r){
+				$risk->risks[$r] = false;
+				// from ANC 
+				foreach($p->anc as $x){
+					if(isset($x->{$r}) && ($x->{$r} == 'yes')){
+						$risk->risks[$r] = true;
+					}
 				}
-			}
-			if($risk->risks[$r] == true){
-				$risk->count++;
+				if($risk->risks[$r] == true){
+					$risk->count++;
+				}
 			}
 		}
 		
 		$factor = 'Q_BABYWEIGHT';
 		$risk->risks[$factor] = false;
 		// from ANC 
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} != 'neither')){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} != 'neither')){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_PREPOSTTERM';
 		$risk->risks[$factor] = false;
 		// from ANC 
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} != 'neither')){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} != 'neither')){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		/*
 		 *  Social factors
 		 */ 
 		$risks = array ('Q_SOCIALSUPPORT', 'Q_ECONOMICS', 'Q_TRANSPORTATION');
-		foreach ($risks AS $r){
-			$risk->risks[$r] = false;
-			// from ANC 
-			foreach($p->anc as $x){
-				if(isset($x->{$r}) && ($x->{$r} == 'no')){
-					$risk->risks[$r] = true;
+		if(isset($p->anc)){
+			foreach ($risks AS $r){
+				$risk->risks[$r] = false;
+				// from ANC 
+				foreach($p->anc as $x){
+					if(isset($x->{$r}) && ($x->{$r} == 'no')){
+						$risk->risks[$r] = true;
+					}
 				}
-			}
-			if($risk->risks[$r] == true){
-				$risk->count++;
+				if($risk->risks[$r] == true){
+					$risk->count++;
+				}
 			}
 		}
 		
@@ -180,29 +203,33 @@ class RiskAssessment {
 		 * General medical factors
 		 */ 
 		$risks = array ('Q_DIABETES', 'Q_TUBERCULOSIS', 'Q_HYPERTENSION');
-		foreach ($risks AS $r){
-			$risk->risks[$r] = false;
-			// from ANC 
-			foreach($p->anc as $x){
-				if(isset($x->{$r}) && ($x->{$r} == 'yes')){
-					$risk->risks[$r] = true;
+		if(isset($p->anc)){
+			foreach ($risks AS $r){
+				$risk->risks[$r] = false;
+				// from ANC 
+				foreach($p->anc as $x){
+					if(isset($x->{$r}) && ($x->{$r} == 'yes')){
+						$risk->risks[$r] = true;
+					}
 				}
-			}
-			if($risk->risks[$r] == true){
-				$risk->count++;
+				if($risk->risks[$r] == true){
+					$risk->count++;
+				}
 			}
 		}
 		
 		$factor = 'Q_HIV';
 		$risk->risks[$factor] = false;
 		// from ANC 
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		/*
@@ -211,90 +238,104 @@ class RiskAssessment {
 		$factor = 'Q_WEIGHT';
 		$risk->risks[$factor] = false;
 		// from ANC
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} < 40)){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} < 40)){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_HEIGHT';
 		$risk->risks[$factor] = false;
 		// from ANC 
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} == 'below150')){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} == 'below150')){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = "Q_BLOODPRESSURE";
 		$risk->risks[$factor] = false;
 		// from ANC
-		foreach($p->anc as $x){
-			if(isset($x->Q_SYSTOLICBP) && isset($x->Q_DIASTOLICBP)
-					&& $x->Q_SYSTOLICBP != 0 && $x->Q_DIASTOLICBP != 0
-											&& (($x->Q_SYSTOLICBP > 120) 
-											|| ($x->Q_SYSTOLICBP < 90)
-											|| ($x->Q_DIASTOLICBP > 90)
-											|| ($x->Q_DIASTOLICBP < 60))){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->Q_SYSTOLICBP) && isset($x->Q_DIASTOLICBP)
+						&& $x->Q_SYSTOLICBP != 0 && $x->Q_DIASTOLICBP != 0
+												&& (($x->Q_SYSTOLICBP > 120) 
+												|| ($x->Q_SYSTOLICBP < 90)
+												|| ($x->Q_DIASTOLICBP > 90)
+												|| ($x->Q_DIASTOLICBP < 60))){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_PALLORANEMIA';
 		$risk->risks[$factor] = false;
 		// from ANC 
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} == 'pallor')){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} == 'pallor')){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_CARDIACPULSE';
 		$risk->risks[$factor] = false;
-		// from ANC
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && (($x->{$factor} >= 100) || ($x->{$factor} <= 50))){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			// from ANC
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && (($x->{$factor} >= 100) || ($x->{$factor} <= 50))){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_PRESENTATION';
 		$risk->risks[$factor] = false;
 		// from ANC 
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && (($x->{$factor} == 'breech') || ($x->{$factor} == 'transverse'))){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && (($x->{$factor} == 'breech') || ($x->{$factor} == 'transverse'))){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_FETALHEARTRATEAUDIBLE';
 		$risk->risks[$factor] = false;
 		// from ANC 
-		foreach($p->anc as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} == 'notaudible')){
-				$risk->risks[$factor] = true;
+		if(isset($p->anc)){
+			foreach($p->anc as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} == 'notaudible')){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		/*
@@ -304,61 +345,71 @@ class RiskAssessment {
 		$factor = 'Q_URINEPROTEIN';
 		$risk->risks[$factor] = false;
 		// from ANC Lab Test
-		foreach($p->anclabtest as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
-				$risk->risks[$factor] = true;
+		if(isset($p->anclabtest)){
+			foreach($p->anclabtest as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_URINEGLUCOSE';
 		$risk->risks[$factor] = false;
 		// from ANC Lab Test
-		foreach($p->anclabtest as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
-			 $risk->risks[$factor] = true;
+		if(isset($p->anclabtest)){
+			foreach($p->anclabtest as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
+				 $risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_SYPHILIS';
 		$risk->risks[$factor] = false;
 		// from ANC Lab Test
-		foreach($p->anclabtest as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
-			 $risk->risks[$factor] = true;
+		if(isset($p->anclabtest)){
+			foreach($p->anclabtest as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} == 'positive')){
+				 $risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_HEMOGLOBINLEVEL';
 		$risk->risks[$factor] = false;
 		// from ANC Lab Test
-		foreach($p->anclabtest as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} < 12)){
-				$risk->risks[$factor] = true;
+		if(isset($p->anclabtest)){
+			foreach($p->anclabtest as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} < 12)){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		$factor = 'Q_HEMATOCRITLEVEL';
 		$risk->risks[$factor] = false;
 		// from ANC Lab Test
-		foreach($p->anclabtest as $x){
-			if(isset($x->{$factor}) && ($x->{$factor} < 38)){
-				$risk->risks[$factor] = true;
+		if(isset($p->anclabtest)){
+			foreach($p->anclabtest as $x){
+				if(isset($x->{$factor}) && ($x->{$factor} < 38)){
+					$risk->risks[$factor] = true;
+				}
 			}
-		}
-		if($risk->risks[$factor] == true){
-			$risk->count++;
+			if($risk->risks[$factor] == true){
+				$risk->count++;
+			}
 		}
 		
 		// work out the risk category
@@ -368,11 +419,13 @@ class RiskAssessment {
 		//if no other risks and first order birth
 		if($risk->count == 0){
 			// from ANC
-			foreach($p->anc as $x){
-				if(isset($x->Q_GRAVIDA) && ($x->Q_GRAVIDA == 1)){
-					$risk->category = 'unavoidable';
-				}
-			}	
+			if(isset($p->anc)){
+				foreach($p->anc as $x){
+					if(isset($x->Q_GRAVIDA) && ($x->Q_GRAVIDA == 1)){
+						$risk->category = 'unavoidable';
+					}
+				}	
+			}
 		}
 		
 		// single
@@ -384,6 +437,8 @@ class RiskAssessment {
 			$risk->category = 'multiple';
 		}
 		
+		printf("cached risks for %d,%d\n",$p->patienthpcode, $p->Q_USERID);
+		flush_buffers();
 		return $risk;
 	}
 	

@@ -9,6 +9,7 @@ define('PROTOCOL_ANCLABTEST','protocol.anclabtest');
 define('PROTOCOL_DELIVERY','protocol.delivery');
 define('PROTOCOL_REGISTRATION','protocol.registration');
 define('PROTOCOL_PNC','protocol.pnc');
+define('PROTOCOL_TERMINATION','protocol.termination');
 
 define('TABLE_REGISTRATION','REGISTRATION_FORMV7_CORE');
 define('TABLE_REG_HOMEAPPLIANCES','REGISTRATION_FORMV7_Q_HOMEAPPLIANCES');
@@ -28,6 +29,8 @@ define('TABLE_PNC','PNCV2_CORE');
 define('TABLE_PNC_ATTENDED','PNCV2_Q_WHOATTENDED');
 define('TABLE_PNC_BABY','PNCV2_Q_BABIES');
 define('TABLE_PNC_COMPLICATIONS','PNCV2_Q_COMPLICATIONS');
+
+define('TABLE_TERMINATION','TERMINATIONV1_CORE');
 
 define('DEFAULT_LIMIT',50);
 define('DEFAULT_START',0);

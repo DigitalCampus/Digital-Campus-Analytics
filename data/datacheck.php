@@ -61,7 +61,15 @@ class DataCheck {
 					FROM ".TABLE_PNC." p
 					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID) 
 					WHERE r._URI is null";
-		
+		// unregistered from Termination
+		$sql .= " UNION
+					SELECT p.Q_HEALTHPOINTID as patienthpcode,
+							p.Q_USERID,
+							'".PROTOCOL_TERMINATION."' as protocol,
+							p._CREATOR_URI_USER
+					FROM ".TABLE_TERMINATION." p
+					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (p.Q_HEALTHPOINTID = r.Q_HEALTHPOINTID AND p.Q_USERID = r.Q_USERID)
+					WHERE r._URI is null";
 		$sql .= ") a";
 		if($API->getIgnoredHealthPoints() != ""){
 			$sql .= " WHERE a.patienthpcode NOT IN (".$API->getIgnoredHealthPoints().")";
@@ -194,16 +202,19 @@ class DataCheck {
 		$counter = 0;
 		foreach($patients as $p){
 			$age = array();
-		
+			$user = "";
+			
 			// reg
 			if(isset($p->Q_AGE)){
 				$age[$p->Q_AGE] = PROTOCOL_REGISTRATION;
+				$user = $p->_CREATOR_URI_USER;
 			}
 			//anc
 			if(isset($p->anc)){
 				foreach($p->anc as $x){
 					if(isset($x->Q_AGE)){
 						$age[$x->Q_AGE] = PROTOCOL_ANC;
+						$user = $x->_CREATOR_URI_USER;
 					}
 				}
 			}
@@ -212,18 +223,21 @@ class DataCheck {
 				foreach($p->anclabtest as $x){
 					if(isset($x->Q_AGE)){
 						$age[$x->Q_AGE] = PROTOCOL_ANCLABTEST;
+						$user = $x->_CREATOR_URI_USER;
 					}
 				}
 			}
 			//delivery
 			if(isset($p->delivery->Q_AGE)){
 				$age[$p->delivery->Q_AGE] = PROTOCOL_DELIVERY;
+				$user = $p->_CREATOR_URI_USER;
 			}
 			//pnc
 			if(isset($p->pnc)){
 				foreach($p->pnc as $x){
 					if(isset($x->Q_AGE)){
 						$age[$x->Q_AGE] = PROTOCOL_PNC;
+						$user = $x->_CREATOR_URI_USER;
 					}
 				}
 			}
@@ -233,12 +247,14 @@ class DataCheck {
 			// reg
 			if(isset($p->Q_YEAROFBIRTH)){
 				$yob[$p->Q_YEAROFBIRTH] = PROTOCOL_REGISTRATION;
+				$user = $p->_CREATOR_URI_USER;
 			}
 			// ANC
 			if(isset($p->anc)){
 				foreach($p->anc as $x){
 					if(isset($x->Q_YEAROFBIRTH)){
 						$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_ANC;
+						$user = $x->_CREATOR_URI_USER;
 					}
 				}
 			}
@@ -247,18 +263,21 @@ class DataCheck {
 				foreach($p->anclabtest as $x){
 					if(isset($x->Q_YEAROFBIRTH)){
 						$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_ANCLABTEST;
+						$user = $x->_CREATOR_URI_USER;
 					}
 				}
 			}
 			//delivery
 			if(isset($p->delivery->Q_YEAROFBIRTH)){
 				$yob[$p->delivery->Q_YEAROFBIRTH] = PROTOCOL_DELIVERY;
+				$user = $p->_CREATOR_URI_USER;
 			}
 			//pnc
 			if(isset($p->pnc)){
 				foreach($p->pnc as $x){
 					if(isset($x->Q_YEAROFBIRTH)){
 						$yob[$x->Q_YEAROFBIRTH] = PROTOCOL_PNC;
+						$user = $x->_CREATOR_URI_USER;
 					}
 				}
 			}
@@ -268,6 +287,7 @@ class DataCheck {
 				$report[$counter] = new stdClass;
 				$report[$counter]->patid = $p->Q_USERID;
 				$report[$counter]->hpcode = $p->patienthpcode;
+				$report[$counter]->user = $user;
 				$counter++;
 			}
 		
@@ -433,9 +453,10 @@ class DataCheck {
 	
 		if($total == 0){
 			$sql = sprintf("INSERT INTO cache_datacheck (dcdate, patid,hpcode,protocol,dctype,dcregby)
-											VALUES (now(),%d,%d,'','ageyob','')",
+											VALUES (now(),%d,%d,'','ageyob','%s')",
 			$ay->patid,
-			$ay->hpcode);
+			$ay->hpcode,
+			$ay->user);
 			$API->runSql($sql);
 		}
 	}

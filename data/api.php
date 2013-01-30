@@ -746,7 +746,8 @@ class API {
 						Q_YEAROFBIRTH,
 						_URI,
 						_CREATION_DATE AS CREATEDON,
-						TODAY
+						TODAY,
+						_CREATOR_URI_USER
 				FROM ".TABLE_REGISTRATION." p
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -877,7 +878,8 @@ class API {
 								Q_YEAROFBIRTH,
 								Q_YOUNGESTCHILD,
 								_CREATION_DATE AS CREATEDON,
-								TODAY
+								TODAY,
+								_CREATOR_URI_USER
 						FROM ".TABLE_ANC." p
 						INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 						INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -942,7 +944,8 @@ class API {
 						Q_USERNAME,
 						Q_YEAROFBIRTH,
 						_CREATION_DATE AS CREATEDON,
-						TODAY
+						TODAY,
+						_CREATOR_URI_USER
 				FROM ".TABLE_ANCLABTEST." p
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -1019,7 +1022,8 @@ class API {
 						Q_VITASUPPL,
 						Q_YEAROFBIRTH,
 						_CREATION_DATE AS CREATEDON,
-						TODAY
+						TODAY,
+						_CREATOR_URI_USER
 				FROM ".TABLE_DELIVERY." p
 				INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 				INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -1126,7 +1130,8 @@ class API {
 							Q_VITASUPPL,
 							Q_YEAROFBIRTH,
 							_CREATION_DATE AS CREATEDON,
-							TODAY
+							TODAY,
+							_CREATOR_URI_USER
 					FROM ".TABLE_PNC." p
 					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri 
 					INNER JOIN healthpoint hp ON u.hpid = hp.hpid
@@ -1363,6 +1368,33 @@ class API {
 			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
 		}
 		
+		// Termination
+		$sql .= " UNION
+					SELECT
+						p._CREATION_DATE as datestamp,
+						p.Q_USERID,
+						CONCAT(r.Q_USERNAME,' ',r.Q_USERFATHERSNAME,' ',r.Q_USERGRANDFATHERSNAME) as patientname,
+						p.Q_HEALTHPOINTID as patienthpcode,
+						hp.hpcode as protocolhpcode,
+						'".PROTOCOL_TERMINATION."' as protocol,
+						CONCAT(u.firstname,' ',u.lastname) as submittedname,
+						u.userid,
+						p.Q_GPSDATA_LAT,
+						p.Q_GPSDATA_LNG,
+						'' AS Q_LOCATION,
+						hp.locationlat,
+						hp.locationlng,
+						u.user_uri
+					FROM ".TABLE_TERMINATION." p
+					LEFT OUTER JOIN ".TABLE_REGISTRATION." r ON (r.Q_USERID = p.Q_USERID AND r.Q_HEALTHPOINTID = p.Q_HEALTHPOINTID)
+					INNER JOIN user u ON p._CREATOR_URI_USER = u.user_uri
+					INNER JOIN healthpoint hp ON u.hpid = hp.hpid";
+		if(isset($days)){
+			$sql .= sprintf(" WHERE p._CREATION_DATE >= DATE_ADD(NOW(), INTERVAL -%d DAY)",$days);
+		} else {
+			$sql .= sprintf(" WHERE p._CREATION_DATE > '%s'",$startdate);
+			$sql .= sprintf(" AND  p._CREATION_DATE <= '%s'",$enddate);
+		}
 		
 		$sql .= ") a ";
 		$sql .= sprintf("WHERE (a.patienthpcode IN (%s) ", $this->getUserHealthPointPermissions(true));
@@ -1558,7 +1590,7 @@ class API {
 			$edd = "";
 			
 			// based on ANC Follow up are they due for another 
-			if(count($patient->anc)>0 && !isset($patient->delivery) && count($patient->pnc)==0){
+			if(isset($patient->anc) && count($patient->anc)>0 && !isset($patient->delivery) && count($patient->pnc)==0){
 				//get the most recent ANC follow
 				if($patient->anc[count($patient->anc)-1]->Q_APPOINTMENTDATE != ""){
 					$this->cacheAddTask($userid, $hpcode, $patient->anc[count($patient->anc)-1]->Q_APPOINTMENTDATE,PROTOCOL_ANC);
@@ -1567,7 +1599,7 @@ class API {
 			}
 			
 			// get their most recent EDD to enter delivery date 
-			if(!isset($patient->delivery) && count($patient->pnc)==0 && $edd != ''){
+			if(!isset($patient->delivery) && (!isset($patient->pnc) || count($patient->pnc)==0) && $edd != ''){
 				$this->cacheAddTask($userid, $hpcode, $edd, PROTOCOL_DELIVERY);
 				
 				// if they are due for Lab test
@@ -1597,12 +1629,13 @@ class API {
 				$this->cacheAddTask($userid, $hpcode, $date->format('Y-m-d'), PROTOCOL_PNC);
 			}
 			// are they due for next PNC
-			if (count($patient->pnc)>0){
+			if (isset($patient->pnc) && count($patient->pnc)>0){
 				if($patient->pnc[count($patient->pnc)-1]->Q_APPOINTMENTDATE != ""){
 					$this->cacheAddTask($userid, $hpcode, $patient->pnc[count($patient->pnc)-1]->Q_APPOINTMENTDATE,PROTOCOL_PNC);
 				}
 			}
-			
+			printf("Added tasks for %d, %d\n",$hpcode,$userid);
+			flush_buffers();
 		}
 	}
 	

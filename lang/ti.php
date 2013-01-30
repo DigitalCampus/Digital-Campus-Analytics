@@ -142,6 +142,7 @@ $LANG['protocol.anclabtest'] = 'ላብራቶሪ ምርመራ';
 $LANG['protocol.delivery'] = 'ወሊድ';
 $LANG['protocol.pnc'] = 'ክትትል ድሕሪ ወሊድ';
 $LANG['protocol.registration'] = 'ምዝገባ';
+$LANG['protocol.termination'] = 'ምቁራፅ ጥንሲ';
 $LANG['protocol.total'] = 'Total';
 $LANG['protocollocation'] = 'Protocol Submitted at';
 $LANG['protocolsubmitted'] = 'Protocol submitted on/by';
