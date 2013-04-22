@@ -437,7 +437,9 @@ class RiskAssessment {
 			$risk->category = 'multiple';
 		}
 		
-		printf("cached risks for %d,%d\n",$p->patienthpcode, $p->Q_USERID);
+		if(isset($p->patienthpcode)){
+			printf("cached risks for %d,%d\n",$p->patienthpcode, $p->Q_USERID);
+		} 
 		flush_buffers();
 		return $risk;
 	}

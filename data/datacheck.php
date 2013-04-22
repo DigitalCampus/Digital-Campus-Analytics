@@ -230,7 +230,7 @@ class DataCheck {
 			//delivery
 			if(isset($p->delivery->Q_AGE)){
 				$age[$p->delivery->Q_AGE] = PROTOCOL_DELIVERY;
-				$user = $p->_CREATOR_URI_USER;
+				$user = $p->delivery->_CREATOR_URI_USER;
 			}
 			//pnc
 			if(isset($p->pnc)){
@@ -270,7 +270,7 @@ class DataCheck {
 			//delivery
 			if(isset($p->delivery->Q_YEAROFBIRTH)){
 				$yob[$p->delivery->Q_YEAROFBIRTH] = PROTOCOL_DELIVERY;
-				$user = $p->_CREATOR_URI_USER;
+				$user = $p->delivery->_CREATOR_URI_USER;
 			}
 			//pnc
 			if(isset($p->pnc)){

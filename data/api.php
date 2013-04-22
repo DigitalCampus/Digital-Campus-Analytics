@@ -100,7 +100,7 @@ class API {
 					$count++;
 					array_push($temp,$h->hpcode);
 				}
-				//print_r($hps4district);
+				
 				$hps = implode(",",$temp);
 				$opts['hpcodes'] = $hps;
 				$opts['nohps'] = $count;
@@ -668,9 +668,14 @@ class API {
 			}
 			
 			if($archive){
+				if(!isset($pat->Q_HEALTHPOINTID)){
+					$pat->Q_HEALTHPOINTID = $pat->delivery->patienthpcode;
+					$pat->Q_USERID = $pat->delivery->Q_USERID;
+				}
 				$sql = sprintf("UPDATE patientcurrent SET pcurrent = false where hpcode=%d AND patid=%d",$pat->Q_HEALTHPOINTID,$pat->Q_USERID);
 				$this->runSql($sql);
 			}
+			
 		}
 		
 		
@@ -774,6 +779,11 @@ class API {
 	  		}
 	  	}
   		
+	  	if ($pat->regcomplete == false){
+	  		$pat->patienthpcode = $opts['hpcode'];
+	  		$pat->Q_USERID = $opts['patid'];
+	  	}
+	  	
 	  	// add protocol details
 		$pat->anc = $this->getPatientANC($opts);
 		$pat->anclabtest= $this->getPatientANCLabTest($opts);
