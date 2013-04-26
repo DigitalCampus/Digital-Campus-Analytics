@@ -50,7 +50,7 @@ if($today > $temp->setDate(2013, 2, 8)){
 	$rpm->end = $date->setDate(2013, 3, 9)->format('Y-m-d 23:59:59');
 	$rpm->prevtext = getstring('ethio.month.5'). " 2005";
 	$rpm->prevstart = $date->setDate(2013, 1, 9)->format('Y-m-d 00:00:00');
-	$rpm->prevend = $date->setDate(2013, 1, 8)->format('Y-m-d 23:59:59');
+	$rpm->prevend = $date->setDate(2013, 2, 7)->format('Y-m-d 23:59:59');
 	$reportperiod['2005-06'] = $rpm;
 }
 
